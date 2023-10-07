@@ -34,9 +34,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(428, 1025),
+      designSize: const Size(360, 690),
       child: MaterialApp.router(
-        title: 'Flutter Demo',
+        title: 'pks wallet',
         theme: ThemeData.light().copyWith(),
         routerConfig: _router,
       ),

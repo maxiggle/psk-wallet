@@ -16,6 +16,7 @@ dependencies:
   go_router: ^11.1.2
   gradients: ^0.1.1+2
   flutter_svg: ^2.0.7
+  simple_shadow: ^0.3.1
 
 dev_dependencies:
   flutter_test:
@@ -32,14 +33,24 @@ flutter:
   assets:
     - assets/bitcoin.png
     - assets/curve_line.svg
-    - assets/onboard.svg
     - assets/rectangle.svg
     - assets/rec.png
-    - assets/30.png
+    - assets/30.svg
     - assets/curve.svg
     - assets/star.png
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/static/Inter-Black.ttf
+        - asset: assets/fonts/static/Inter-ExtraBold.ttf
+        - asset: assets/fonts/static/Inter-Bold.ttf
+        - asset: assets/fonts/static/Inter-Medium.ttf
+        - asset: assets/fonts/static/Inter-Regular.ttf
+        - asset: assets/fonts/static/Inter-SemiBold.ttf
+        - asset: assets/fonts/static/Inter-Thin.ttf
+        - asset: assets/fonts/static/Inter-Light.ttf
 
-  
+
   
 
   
