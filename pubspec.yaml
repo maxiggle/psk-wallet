@@ -1,0 +1,66 @@
+name: pkswallet
+description: A wallet that leverages Account Abstraction and allows users sign SAFE multi-sig transactions with biometrics, HDkey and Private keys
+
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.6 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  flutter_screenutil: ^5.9.0
+  go_router: ^11.1.2
+  gradients: ^0.1.1+2
+  flutter_svg: ^2.0.7
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+  flutter_lints: ^2.0.0
+
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/bitcoin.png
+    - assets/curve_line.svg
+    - assets/onboard.svg
+    - assets/rectangle.svg
+    - assets/rec.png
+    - assets/30.png
+    - assets/curve.svg
+    - assets/star.png
+
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
