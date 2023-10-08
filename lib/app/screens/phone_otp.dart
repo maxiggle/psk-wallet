@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 import 'dart:async';
@@ -57,6 +58,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: black,
+      resizeToAvoidBottomInset: false,
       body: Container(
         decoration: BoxDecoration(
           gradient: gradient,
@@ -64,15 +66,15 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
         child: Column(
           children: <Widget>[
             SizedBox(
-              height: MediaQuery.of(context).size.height / 6,
+              height: MediaQuery.of(context).size.height / 6.h,
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0).r,
               child: Text(
                 'Phone Number Verification',
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 24,
+                    fontSize: 24.sp,
                     fontFamily: 'Inter',
                     color: Colors.white),
                 textAlign: TextAlign.center,
@@ -80,10 +82,10 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
             ),
             Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 30.0, vertical: 8),
+                  const EdgeInsets.symmetric(horizontal: 30, vertical: 8).r,
               child: RichText(
                 selectionColor: Colors.white,
-                text: const TextSpan(
+                text: TextSpan(
                   text: "Enter the code sent to ",
                   children: [
                     TextSpan(
@@ -91,28 +93,28 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 15,
+                        fontSize: 15.sp,
                         fontFamily: 'Inter',
                       ),
                     ),
                   ],
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 19,
+                    fontSize: 19.sp,
                     fontFamily: 'Inter',
                   ),
                 ),
                 textAlign: TextAlign.center,
               ),
             ),
-            const SizedBox(height: 100),
+            SizedBox(height: 100.h),
             Form(
               key: formKey,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   vertical: 8.0,
-                  horizontal: 30,
-                ),
+                  horizontal: 15,
+                ).r,
                 child: PinCodeTextField(
                   appContext: context,
                   pastedTextStyle: TextStyle(
@@ -126,9 +128,9 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                   animationType: AnimationType.fade,
                   pinTheme: PinTheme(
                     shape: PinCodeFieldShape.box,
-                    borderRadius: BorderRadius.circular(12),
-                    fieldHeight: 65,
-                    fieldWidth: 55,
+                    borderRadius: BorderRadius.circular(12).w,
+                    fieldHeight: 70.h,
+                    fieldWidth: 60.w,
                     activeFillColor: lightGreen,
                     inactiveFillColor: ash.withOpacity(0.3),
                     activeColor: Colors.black,
@@ -171,41 +173,45 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
               ),
             ),
             // 67
-            const SizedBox(
-              height: 20,
+            SizedBox(
+              height: 20.h,
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height / 100,
+              height: MediaQuery.of(context).size.height / 100.h,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
+                Text(
                   "Didn't receive the code? ",
-                  style: TextStyle(color: Colors.white, fontSize: 14),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14.sp,
+                      fontFamily: 'Inter'),
                 ),
                 TextButton(
                   onPressed: () => snackBar("OTP resend!!"),
-                  child: const Text(
+                  child: Text(
                     "RESEND",
                     style: TextStyle(
                       color: lightGreen,
                       fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                      fontSize: 14.sp,
+                      fontFamily: 'Inter',
                     ),
                   ),
                 )
               ],
             ),
-            const SizedBox(
-              height: 14,
+            SizedBox(
+              height: 14.sp,
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height / 6,
+              height: MediaQuery.of(context).size.height / 6.h,
             ),
             Container(
               margin:
-                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 30),
+                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 30).r,
               decoration: BoxDecoration(
                 color: lightGreen,
                 borderRadius: BorderRadius.circular(100).w,
@@ -213,7 +219,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
               child: ButtonTheme(
                 // height: 50,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100)),
+                    borderRadius: BorderRadius.circular(100).w),
                 child: TextButton(
                   onPressed: () {
                     formKey.currentState!.validate();
@@ -227,6 +233,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                         () {
                           hasError = false;
                           snackBar("OTP Verified!!");
+                          context.go('/home');
                         },
                       );
                     }
@@ -234,19 +241,20 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                   child: Center(
                     child: Text(
                       "VERIFY".toUpperCase(),
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: black,
-                        fontSize: 18,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
+                        fontFamily: 'Inter',
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(
-              height: 16,
-            ),
+            // const SizedBox(
+            //   height: 16,
+            // ),
           ],
         ),
       ),

@@ -32,13 +32,15 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/bitcoin.png
-    - assets/curve_line.svg
-    - assets/rectangle.svg
-    - assets/rec.png
-    - assets/30.svg
-    - assets/curve.svg
-    - assets/star.png
+    - assets/images/bitcoin.png
+    - assets/images/curve_line.svg
+    - assets/images/rectangle.svg
+    - assets/images/rec.png
+    - assets/images/30.svg
+    - assets/images/curve.svg
+    - assets/images/star.png
+    - assets/images/settings.svg
+    
   fonts:
     - family: Inter
       fonts:

@@ -39,7 +39,7 @@ class OnBoarding extends StatelessWidget {
               ),
               image: DecorationImage(
                 image: AssetImage(
-                  'assets/rec.png',
+                  'assets/images/rec.png',
                 ),
                 fit: BoxFit.fitHeight,
               ),
@@ -54,7 +54,7 @@ class OnBoarding extends StatelessWidget {
                   Row(
                     children: [
                       Image(
-                        image: const AssetImage('assets/star.png'),
+                        image: const AssetImage('assets/images/star.png'),
                         height: 100.76.h,
                         width: 100.w,
                       ),
@@ -64,7 +64,7 @@ class OnBoarding extends StatelessWidget {
                   Stack(
                     children: [
                       SvgPicture.asset(
-                        'assets/30.svg',
+                        'assets/images/30.svg',
                       ),
                       Transform.translate(
                         offset: const Offset(-105, 200),

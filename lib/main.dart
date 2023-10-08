@@ -19,12 +19,12 @@ final GoRouter _router = GoRouter(
       },
       routes: <RouteBase>[
         GoRoute(
-          path: 'Home',
+          path: 'home',
           builder: (BuildContext context, GoRouterState state) {
             return const HomePage();
           },
         ),
-         GoRoute(
+        GoRoute(
           path: 'phone-otp',
           builder: (BuildContext context, GoRouterState state) {
             return const PinCodeVerificationScreen();
