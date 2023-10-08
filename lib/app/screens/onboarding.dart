@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gradients/gradients.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pkswallet/app/theme/colors.dart';
+import 'package:go_router/go_router.dart';
 
 class OnBoarding extends StatelessWidget {
   OnBoarding({super.key});
@@ -45,28 +46,28 @@ class OnBoarding extends StatelessWidget {
             ),
             child: Padding(
               padding:
-                  const EdgeInsets.symmetric(vertical: 58.0, horizontal: 38.0),
+                  const EdgeInsets.symmetric(vertical: 58.0, horizontal: 38.0)
+                      .r,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Row(
+                  Row(
                     children: [
                       Image(
-                        image: AssetImage('assets/star.png'),
-                        height: 100.76,
-                        width: 100,
+                        image: const AssetImage('assets/star.png'),
+                        height: 100.76.h,
+                        width: 100.w,
                       ),
                     ],
                   ),
-                  const SizedBox(height: 57.96),
+                  SizedBox(height: 57.96.h),
                   Stack(
                     children: [
                       SvgPicture.asset(
                         'assets/30.svg',
-                        height: 200.h,
                       ),
                       Transform.translate(
-                        offset: const Offset(-100, 200),
+                        offset: const Offset(-105, 200),
                         child: ImageFiltered(
                           imageFilter: ImageFilter.blur(
                               sigmaY: 0.6,
@@ -78,7 +79,7 @@ class OnBoarding extends StatelessWidget {
                             width: MediaQuery.of(context).size.height * 0.225.w,
                             decoration: BoxDecoration(
                               gradient: gradient,
-                              borderRadius: BorderRadius.circular(150).w,
+                              borderRadius: BorderRadius.circular(180).w,
                             ),
                           ),
                         ),
@@ -126,7 +127,9 @@ class OnBoarding extends StatelessWidget {
                         height: 17.h,
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          context.go('/phone-otp');
+                        },
                         style: TextButton.styleFrom(
                             padding: EdgeInsets.only(
                                 left: 12.r,
@@ -139,9 +142,10 @@ class OnBoarding extends StatelessWidget {
                         child: Text(
                           'Get Started',
                           style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 20.69.sp,
-                              color: black),
+                            fontFamily: 'Inter',
+                            fontSize: 20.69.sp,
+                            color: black,
+                          ),
                         ),
                       ),
                     ],
