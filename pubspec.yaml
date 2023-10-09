@@ -18,6 +18,7 @@ dependencies:
   flutter_svg: ^2.0.7
   simple_shadow: ^0.3.1
   pin_code_fields: ^8.0.1
+  dropdown_button2: ^2.3.9
 
 dev_dependencies:
   flutter_test:
@@ -40,6 +41,8 @@ flutter:
     - assets/images/curve.svg
     - assets/images/star.png
     - assets/images/settings.svg
+    - assets/images/profile.jpg
+    - assets/images/dropdown.svg
     
   fonts:
     - family: Inter

@@ -43,6 +43,7 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       designSize: const Size(428.413, 1025),
       child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
         title: 'pks wallet',
         theme: ThemeData.light().copyWith(),
         routerConfig: _router,
