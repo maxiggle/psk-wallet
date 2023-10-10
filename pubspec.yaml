@@ -19,6 +19,7 @@ dependencies:
   simple_shadow: ^0.3.1
   pin_code_fields: ^8.0.1
   dropdown_button2: ^2.3.9
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
@@ -33,7 +34,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/bitcoin.png
     - assets/images/curve_line.svg
     - assets/images/rectangle.svg
     - assets/images/rec.png
@@ -43,6 +43,18 @@ flutter:
     - assets/images/settings.svg
     - assets/images/profile.jpg
     - assets/images/dropdown.svg
+    - assets/images/inactive-dropdown.svg
+    - assets/images/add.svg
+    - assets/images/down-right.svg
+    - assets/images/user1.png
+    - assets/images/user2.png
+    - assets/images/user3.png
+    - assets/images/user3-colored.png
+    - assets/images/transx.png
+    - assets/images/solana.svg
+    - assets/images/ethereum.svg
+    - assets/images/bitcoin.svg
+    
     
   fonts:
     - family: Inter

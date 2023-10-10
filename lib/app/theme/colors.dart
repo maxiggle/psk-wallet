@@ -7,8 +7,9 @@ const black = Color(0xff000000);
 const ash = Color(0xffF2F2F2);
 const darkGreen = Color(0xff147E03);
 const blue2 = Color(0xff084CCA);
+final opAshText = const Color(0xff000000).withOpacity(0.30);
 
-final gradient = RadialGradientPainter(
+const gradient = RadialGradientPainter(
   colors: <Color>[
     Color(0xffE1FF01),
     Color(0xff000000),
