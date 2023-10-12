@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1072954622080",
+    "project_id": "pks-wallet",
+    "storage_bucket": "pks-wallet.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1072954622080:android:e4fcaa697f66cc5ed9a665",
+        "android_client_info": {
+          "package_name": "com.pks.pkswallet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJFUETmKB4c_XNYo_lPXATz8tbG_N5Qmo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

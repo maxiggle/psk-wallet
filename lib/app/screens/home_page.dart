@@ -2,10 +2,28 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
-import 'package:pkswallet/app/screens/transactions.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pkswallet/utils/quick_send.dart';
+import 'package:pkswallet/app/screens/transaction.dart';
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
+
+class TransactionData {
+  final String coinImage;
+  final String ensName;
+  final TransactionType type;
+  final TransactionStatus status;
+  final DateTime transactionTime;
+  final String amount;
+
+  TransactionData(
+      {required this.coinImage,
+      required this.ensName,
+      required this.type,
+      required this.status,
+      required this.transactionTime,
+      required this.amount});
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -48,7 +66,7 @@ class _HomePageState extends State<HomePage> {
           amount: '\$21,553',
           coinImage: 'assets/images/ethereum.svg',
           ensName: 'Dave',
-          type: TransactionType.send,
+          type: TransactionType.receive,
           status: TransactionStatus.pending),
     ];
     return SafeArea(
@@ -241,50 +259,46 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 24,
                 ),
+                const QuickSend(),
+                const SizedBox(
+                  height: 24,
+                ),
                 Card(
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(48).r),
+                      borderRadius: BorderRadius.circular(radius).r),
                   elevation: 0,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                            horizontal: 9.74, vertical: 26)
-                        .r,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.fromLTRB(23.13, 21.91, 21.91, 9.74).r,
                     child: Column(
                       children: [
                         Row(
                           children: [
                             Container(
-                              height: 36.512,
-                              width: 36.512,
+                              width: 37.73,
+                              height: 37.73,
                               decoration: BoxDecoration(
-                                  color: ash,
-                                  borderRadius: BorderRadius.circular(100).w),
-                              child: Icon(
-                                Icons.arrow_outward,
-                                size: 25.sp,
+                                  borderRadius: BorderRadius.circular(radius),
+                                  color: ash),
+                              padding: const EdgeInsets.fromLTRB(
+                                      12.7, 13.39, 12.7, 13.39)
+                                  .r,
+                              child: const Image(
+                                image: AssetImage('assets/images/transx.png'),
+                                height: 12,
+                                width: 12,
                               ),
                             ),
-                            SizedBox(
-                              width: 13.48.w,
+                            const SizedBox(
+                              width: 9.74,
                             ),
-                            Column(
-                              children: [
-                                Text(
-                                  'Quick Send',
-                                  style: TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: font19,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                Text(
-                                  'Recently added',
-                                  style: TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: font12,
-                                      fontWeight: FontWeight.w400,
-                                      color: opAshText),
-                                ),
-                              ],
+                            Text(
+                              'Transactions',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: font19,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                             const Spacer(),
                             Container(
@@ -293,128 +307,23 @@ class _HomePageState extends State<HomePage> {
                                 decoration: BoxDecoration(
                                     color: ash,
                                     borderRadius: BorderRadius.circular(100).w),
-                                child: Icon(
-                                  Icons.arrow_forward_ios,
-                                  size: 20.sp,
+                                child: IconButton(
+                                  onPressed: () {
+                                    context.push('/transaction_details');
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 20.sp,
+                                  ),
                                 )),
+                            const SizedBox(height: 21.03),
                           ],
                         ),
-                        SizedBox(
-                          height: 28.h,
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              TextButton(
-                                  onPressed: () {},
-                                  style: TextButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(100),
-                                      ),
-                                      backgroundColor: ash,
-                                      padding: const EdgeInsets.fromLTRB(
-                                              45, 45, 45, 45)
-                                          .r),
-                                  child: SvgPicture.asset(
-                                      'assets/images/add.svg')),
-                              SizedBox(
-                                width: 9.74.w,
-                              ),
-                              TextButton(
-                                onPressed: () {},
-                                style: TextButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(100),
-                                  ),
-                                ),
-                                child: const Image(
-                                  image: AssetImage('assets/images/user1.png'),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 9.74.w,
-                              ),
-                              TextButton(
-                                  onPressed: () {},
-                                  style: TextButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                    // backgroundColor: lightGreen,
-                                  ),
-                                  child: const Image(
-                                    image: AssetImage(
-                                        'assets/images/user3-colored.png'),
-                                  )),
-                              SizedBox(
-                                width: 9.74.w,
-                              ),
-                              TextButton(
-                                onPressed: () {},
-                                style: TextButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(100),
-                                  ),
-                                ),
-                                child: const Image(
-                                  image: AssetImage('assets/images/user3.png'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
+                        TransactionHistory(transactionData: transactionData)
                       ],
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 24,
-                ),
-                Row(
-                  children: [
-                    Container(
-                      width: 37.73,
-                      height: 37.73,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(radius),
-                          color: ash),
-                      padding:
-                          const EdgeInsets.fromLTRB(12.7, 13.39, 12.7, 13.39).r,
-                      child: const Image(
-                        image: AssetImage('assets/images/transx.png'),
-                        height: 12,
-                        width: 12,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 9.74,
-                    ),
-                    Text(
-                      'Transactions',
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: font19,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const Spacer(),
-                    Container(
-                        height: 36.512,
-                        width: 36.512,
-                        decoration: BoxDecoration(
-                            color: ash,
-                            borderRadius: BorderRadius.circular(100).w),
-                        child: Icon(
-                          Icons.arrow_forward_ios,
-                          size: 20.sp,
-                        )),
-                    const SizedBox(height: 21.03),
-                  ],
-                ),
-                TransactionHistory(transactionData: transactionData)
               ],
             ),
           ),
@@ -482,26 +391,4 @@ class ButtonRow extends StatelessWidget {
       ],
     );
   }
-}
-
-enum TransactionType { send, receive }
-
-enum TransactionStatus { pending, received, success, failed }
-
-///
-class TransactionData {
-  final String coinImage;
-  final String ensName;
-  final TransactionType type;
-  final TransactionStatus status;
-  final DateTime transactionTime;
-  final String amount;
-
-  TransactionData(
-      {required this.coinImage,
-      required this.ensName,
-      required this.type,
-      required this.status,
-      required this.transactionTime,
-      required this.amount});
 }

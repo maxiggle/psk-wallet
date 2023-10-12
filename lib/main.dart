@@ -3,10 +3,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pkswallet/app/screens/home_page.dart';
 import 'package:pkswallet/app/screens/phone_otp.dart';
+import 'package:pkswallet/utils/transaction_details.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 import 'app/screens/onboarding.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -28,6 +35,12 @@ final GoRouter _router = GoRouter(
           path: 'phone-otp',
           builder: (BuildContext context, GoRouterState state) {
             return const PinCodeVerificationScreen();
+          },
+        ),
+        GoRoute(
+          path: 'transaction_details',
+          builder: (BuildContext context, GoRouterState state) {
+            return const TransactionDetails();
           },
         ),
       ],
