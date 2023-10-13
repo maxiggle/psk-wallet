@@ -20,9 +20,13 @@ class PinCodeVerificationScreen extends StatefulWidget {
       _PinCodeVerificationScreenState();
 }
 
-class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
+class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
+    with WidgetsBindingObserver {
+  bool isKeyboardVisible = false;
+
+  late final ScrollController scrollController;
+
   TextEditingController textEditingController = TextEditingController();
-  // ..text = "123456";
 
   // ignore: close_sinks
   StreamController<ErrorAnimationType>? errorController;
@@ -33,15 +37,25 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
 
   @override
   void initState() {
+    scrollController = ScrollController();
     errorController = StreamController<ErrorAnimationType>();
+
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    scrollController.dispose();
     errorController!.close();
-
     super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    isKeyboardVisible = keyboardHeight > 0;
   }
 
   // snackBar Widget
