@@ -16,6 +16,26 @@ class _ContactsScreenState extends State<ContactsScreen>
     with AfterLayoutMixin<ContactsScreen> {
   List<Contact>? _contacts;
   bool _permissionDenied = false;
+
+  Future _fectchContacts() async {
+    if (!await FlutterContacts.requestPermission()) {
+      setState(() {
+        _contacts = null;
+        _permissionDenied = true;
+      });
+    }
+    return;
+  }
+
+  Future _loadContacts(bool withPhoto) async {
+    final contact = withPhoto
+        ? await FlutterContacts.getContacts(withProperties: true)
+        : await FlutterContacts.getContacts();
+    setState(() {
+      _contacts = contact;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
