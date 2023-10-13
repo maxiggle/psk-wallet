@@ -33,15 +33,60 @@ class TransactionHistory extends StatelessWidget {
             ),
             onPressed: () {
               Scaffold.of(context).showBottomSheet((context) {
-                return Container(
-                    height: MediaQuery.of(context).size.height * 0.7,
-                    width: MediaQuery.of(context).size.width,
-                    child: const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  width: MediaQuery.of(context).size.width,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10.r),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(radius / 2).r,
+                        topLeft: Radius.circular(radius / 2).r,
+                      ),
+                      color: ash,
+                    ),
+                    child: Column(
                       children: [
-                        Text('Transaction Details'),
+                        SizedBox(
+                          height: 25.h,
+                        ),
+                        SvgPicture.asset(
+                          transactionData[index].coinImage,
+                          height: MediaQuery.of(context).size.height * 0.2555.h,
+                        ),
+                        SizedBox(
+                          height: 50.h,
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              'Name:',
+                              style: TextStyle(
+                                fontSize: font14,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w600,
+                                color: black,
+                              ),
+                            ),
+                            const Spacer(),
+                            Text(
+                              transactionData[index].ensName,
+                              style: TextStyle(
+                                fontSize: font14,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w500,
+                                color: black,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5.w,
+                            ),
+                          ],
+                        ),
                       ],
-                    ));
+                    ),
+                  ),
+                );
               });
             },
             child: Row(

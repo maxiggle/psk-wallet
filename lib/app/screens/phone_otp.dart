@@ -135,7 +135,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
                     color: Colors.green.shade600,
                     fontWeight: FontWeight.bold,
                   ),
-                  length: 6,
+                  length: 4,
                   obscureText: true,
                   obscuringCharacter: '*',
                   blinkWhenObscuring: true,
@@ -238,7 +238,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
                   onPressed: () {
                     formKey.currentState!.validate();
                     // conditions for validating
-                    if (currentText.length != 6 || currentText != "123456") {
+                    if (currentText.length != 4 || currentText != "1234") {
                       errorController!.add(ErrorAnimationType
                           .shake); // Triggering error shake animation
                       setState(() => hasError = true);
