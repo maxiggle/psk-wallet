@@ -1,13 +1,71 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
+import 'package:after_layout/after_layout.dart';
 
-class QuickSend extends StatelessWidget {
-  const QuickSend({
-    super.key,
-  });
+class QuickSend extends StatefulWidget {
+  
+  @override
+  State<QuickSend> createState() => _QuickSendState();
+}
+
+class _QuickSendState extends State<QuickSend> with AfterLayoutMixin<QuickSend> {
+
+   List<Contact>? _contacts;
+  bool _permissionDenied = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    _fetchContacts();
+  }
+
+  Future _fetchContacts() async {
+    if (!await FlutterContacts.requestPermission()) {
+      setState(() {
+        _contacts = null;
+        _permissionDenied = true;
+      });
+      return;
+    }
+
+    await _refetchContacts();
+
+    // Listen to DB changes
+    FlutterContacts.addListener(() async {
+      print('Contacts DB changed, refecthing contacts');
+      await _refetchContacts();
+    });
+  }
+
+  Future _refetchContacts() async {
+    // First load all contacts without photo
+    await _loadContacts(false);
+
+    // Next with photo
+    await _loadContacts(true);
+  }
+
+  Future _loadContacts(bool withPhotos) async {
+    final contacts = withPhotos
+        ? (await FlutterContacts.getContacts(withThumbnail: true)).toList()
+        : (await FlutterContacts.getContacts()).toList();
+    setState(() {
+      _contacts = contacts;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,15 +111,21 @@ class QuickSend extends StatelessWidget {
                   ],
                 ),
                 const Spacer(),
-                Container(
-                    height: 36.512,
-                    width: 36.512,
-                    decoration: BoxDecoration(
-                        color: ash, borderRadius: BorderRadius.circular(100).w),
-                    child: Icon(
-                      Icons.arrow_forward_ios,
-                      size: 20.sp,
-                    )),
+                InkWell(
+                  onTap: () {
+
+                  },
+                  child: Container(
+                      height: 36.512,
+                      width: 36.512,
+                      decoration: BoxDecoration(
+                          color: ash,
+                          borderRadius: BorderRadius.circular(100).w),
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 20.sp,
+                      )),
+                ),
               ],
             ),
             SizedBox(
@@ -131,4 +195,5 @@ class QuickSend extends StatelessWidget {
       ),
     );
   }
+  
 }

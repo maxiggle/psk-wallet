@@ -259,7 +259,7 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 24,
                 ),
-                const QuickSend(),
+                QuickSend(),
                 const SizedBox(
                   height: 24,
                 ),
