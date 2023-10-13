@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
 import 'package:after_layout/after_layout.dart';
 
 class QuickSend extends StatefulWidget {
-  
   @override
   State<QuickSend> createState() => _QuickSendState();
 }
 
-class _QuickSendState extends State<QuickSend> with AfterLayoutMixin<QuickSend> {
-
-   List<Contact>? _contacts;
+class _QuickSendState extends State<QuickSend>
+    with AfterLayoutMixin<QuickSend> {
+  List<Contact>? _contacts;
   bool _permissionDenied = false;
 
   @override
@@ -113,7 +113,7 @@ class _QuickSendState extends State<QuickSend> with AfterLayoutMixin<QuickSend> 
                 const Spacer(),
                 InkWell(
                   onTap: () {
-
+                    context.push('/contacts');
                   },
                   child: Container(
                       height: 36.512,
@@ -195,5 +195,4 @@ class _QuickSendState extends State<QuickSend> with AfterLayoutMixin<QuickSend> 
       ),
     );
   }
-  
 }

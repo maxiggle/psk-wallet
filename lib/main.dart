@@ -43,6 +43,12 @@ final GoRouter _router = GoRouter(
             return const TransactionDetails();
           },
         ),
+        GoRoute(
+          path: '/contacts',
+          builder: (BuildContext context, GoRouterState state) {
+            return const TransactionDetails();
+          },
+        ),
       ],
     ),
   ],
