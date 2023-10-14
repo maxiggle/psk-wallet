@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'dart:developer' as newlog;
 
 import 'dart:async';
 
@@ -13,6 +12,7 @@ import 'package:pkswallet/utils/firebase_helpers.dart';
 class PinCodeVerificationScreen extends StatefulWidget {
   static const id = 'VerifyPhoneNumberScreen';
   final String? phoneNumber;
+
   const PinCodeVerificationScreen({
     Key? key,
     this.phoneNumber,
@@ -28,6 +28,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
   bool isKeyboardVisible = false;
 
   late final ScrollController scrollController;
+  late final FocusNode pinPutFocusNode;
 
   TextEditingController textEditingController = TextEditingController();
 
@@ -43,8 +44,16 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
   void initState() {
     scrollController = ScrollController();
     errorController = StreamController<ErrorAnimationType>();
+    pinPutFocusNode.addListener(() {
+      if (pinPutFocusNode.hasFocus) {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
     WidgetsBinding.instance.addObserver(this);
-    newlog.log("passed number${widget.phoneNumber}");
     super.initState();
   }
 
@@ -53,6 +62,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
     WidgetsBinding.instance.removeObserver(this);
     scrollController.dispose();
     errorController!.close();
+    pinPutFocusNode.dispose();
     super.dispose();
   }
 
@@ -167,220 +177,222 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
                     ),
                   ],
                 )
-              : Container(
-                  decoration: const BoxDecoration(
-                    gradient: gradient,
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 6.h,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0).r,
-                        child: Text(
-                          'Phone Number Verification',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24.sp,
-                              fontFamily: 'Inter',
-                              color: Colors.white),
-                          textAlign: TextAlign.center,
+              : ListView(controller: scrollController, children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      gradient: gradient,
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 6.h,
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 8)
-                            .r,
-                        child: RichText(
-                          selectionColor: Colors.white,
-                          text: TextSpan(
-                            text: "Enter the code sent to ",
-                            children: [
-                              TextSpan(
-                                text: widget.phoneNumber,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15.sp,
-                                  fontFamily: 'Inter',
-                                ),
-                              ),
-                            ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0).r,
+                          child: Text(
+                            'Phone Number Verification',
                             style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 19.sp,
-                              fontFamily: 'Inter',
-                            ),
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      if (controller.isListeningForOtpAutoRetrieve)
-                        const Column(
-                          children: [
-                            CircularProgressIndicator(),
-                            SizedBox(height: 50),
-                            Text(
-                              'Listening for OTP',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            SizedBox(height: 15),
-                            Divider(),
-                            Text('OR', textAlign: TextAlign.center),
-                            Divider(),
-                          ],
-                        ),
-                      SizedBox(height: 100.h),
-                      Form(
-                        key: formKey,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 8.0,
-                            horizontal: 15,
-                          ).r,
-                          child: PinCodeTextField(
-                            appContext: context,
-                            pastedTextStyle: TextStyle(
-                              color: Colors.green.shade600,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            length: 4,
-                            obscureText: true,
-                            obscuringCharacter: '*',
-                            blinkWhenObscuring: true,
-                            animationType: AnimationType.fade,
-                            pinTheme: PinTheme(
-                              shape: PinCodeFieldShape.box,
-                              borderRadius: BorderRadius.circular(12).w,
-                              fieldHeight: 70.h,
-                              fieldWidth: 60.w,
-                              activeFillColor: lightGreen,
-                              inactiveFillColor: ash.withOpacity(0.3),
-                              activeColor: Colors.black,
-                              inactiveColor: Colors.black,
-                              selectedColor: black,
-                              selectedFillColor: ash.withOpacity(0.3),
-                            ),
-                            cursorColor: lightGreen,
-                            animationDuration:
-                                const Duration(milliseconds: 300),
-                            enableActiveFill: true,
-                            errorAnimationController: errorController,
-                            controller: textEditingController,
-                            keyboardType: TextInputType.number,
-                            boxShadows: const [
-                              BoxShadow(
-                                offset: Offset(0, 1),
-                                color: Colors.black12,
-                                blurRadius: 10,
-                              )
-                            ],
-                            onChanged: (value) {
-                              setState(() {
-                                currentText = value;
-                              });
-                            },
-                            beforeTextPaste: (text) {
-                              return true;
-                            },
-                          ),
-                        ),
-                      ),
-                      // 67
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 100.h,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Didn't receive the code? ",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14.sp,
-                                fontFamily: 'Inter'),
-                          ),
-                          TextButton(
-                            onPressed: () => snackBar("OTP resent!!"),
-                            child: Text(
-                              "RESEND",
-                              style: TextStyle(
-                                color: lightGreen,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 14.sp,
+                                fontSize: 24.sp,
+                                fontFamily: 'Inter',
+                                color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 8)
+                              .r,
+                          child: RichText(
+                            selectionColor: Colors.white,
+                            text: TextSpan(
+                              text: "Enter the code sent to ",
+                              children: [
+                                TextSpan(
+                                  text: widget.phoneNumber,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15.sp,
+                                    fontFamily: 'Inter',
+                                  ),
+                                ),
+                              ],
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 19.sp,
                                 fontFamily: 'Inter',
                               ),
                             ),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 14.sp,
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 6.h,
-                      ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                                vertical: 16.0, horizontal: 30)
-                            .r,
-                        decoration: BoxDecoration(
-                          color: lightGreen,
-                          borderRadius: BorderRadius.circular(100).w,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                        child: ButtonTheme(
-                          // height: 50,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100).w),
-                          child: TextButton(
-                            onPressed: () async {
-                              formKey.currentState!.validate();
-                              final validOtp =
-                                  await controller.verifyOtp(currentText);
-                              // conditions for validating
-                              if (currentText.length != 4 ||
-                                  validOtp == false) {
-                                errorController!.add(ErrorAnimationType
-                                    .shake); // Triggering error shake animation
-                                setState(() => hasError = true);
-                              } else {
-                                setState(
-                                  () {
-                                    hasError = false;
-                                    snackBar("OTP Verified!!");
-                                    context.go('/home');
-                                  },
-                                );
-                              }
-                            },
-                            child: Center(
-                              child: Text(
-                                "VERIFY".toUpperCase(),
+                        if (controller.isListeningForOtpAutoRetrieve)
+                          const Column(
+                            children: [
+                              CircularProgressIndicator(),
+                              SizedBox(height: 50),
+                              Text(
+                                'Listening for OTP',
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: black,
-                                  fontSize: 18.sp,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              SizedBox(height: 15),
+                              Divider(),
+                              Text('OR', textAlign: TextAlign.center),
+                              Divider(),
+                            ],
+                          ),
+                        SizedBox(height: 100.h),
+                        Form(
+                          key: formKey,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8.0,
+                              horizontal: 15,
+                            ).r,
+                            child: PinCodeTextField(
+                              focusNode: pinPutFocusNode,
+                              appContext: context,
+                              pastedTextStyle: TextStyle(
+                                color: Colors.green.shade600,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              length: 6,
+                              obscureText: true,
+                              obscuringCharacter: '*',
+                              blinkWhenObscuring: true,
+                              animationType: AnimationType.fade,
+                              pinTheme: PinTheme(
+                                shape: PinCodeFieldShape.box,
+                                borderRadius: BorderRadius.circular(12).w,
+                                fieldHeight: 70.h,
+                                fieldWidth: 60.w,
+                                activeFillColor: lightGreen,
+                                inactiveFillColor: ash.withOpacity(0.3),
+                                activeColor: Colors.black,
+                                inactiveColor: Colors.black,
+                                selectedColor: black,
+                                selectedFillColor: ash.withOpacity(0.3),
+                              ),
+                              cursorColor: lightGreen,
+                              animationDuration:
+                                  const Duration(milliseconds: 300),
+                              enableActiveFill: true,
+                              errorAnimationController: errorController,
+                              controller: textEditingController,
+                              keyboardType: TextInputType.number,
+                              boxShadows: const [
+                                BoxShadow(
+                                  offset: Offset(0, 1),
+                                  color: Colors.black12,
+                                  blurRadius: 10,
+                                )
+                              ],
+                              onChanged: (value) {
+                                setState(() {
+                                  currentText = value;
+                                });
+                              },
+                              beforeTextPaste: (text) {
+                                return true;
+                              },
+                            ),
+                          ),
+                        ),
+                        // 67
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 100.h,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Didn't receive the code? ",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14.sp,
+                                  fontFamily: 'Inter'),
+                            ),
+                            TextButton(
+                              onPressed: () => snackBar("OTP resent!!"),
+                              child: Text(
+                                "RESEND",
+                                style: TextStyle(
+                                  color: lightGreen,
                                   fontWeight: FontWeight.bold,
+                                  fontSize: 14.sp,
                                   fontFamily: 'Inter',
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 14.sp,
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 6.h,
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(
+                                  vertical: 16.0, horizontal: 30)
+                              .r,
+                          decoration: BoxDecoration(
+                            color: lightGreen,
+                            borderRadius: BorderRadius.circular(100).w,
+                          ),
+                          child: ButtonTheme(
+                            // height: 50,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100).w),
+                            child: TextButton(
+                              onPressed: () async {
+                                formKey.currentState!.validate();
+                                final validOtp =
+                                    await controller.verifyOtp(currentText);
+                                // conditions for validating
+                                if (currentText.length != 6 || !validOtp) {
+                                  errorController!.add(ErrorAnimationType
+                                      .shake); // Triggering error shake animation
+                                  setState(() => hasError = true);
+                                } else {
+                                  setState(
+                                    () {
+                                      hasError = false;
+                                      snackBar("OTP Verified!!");
+                                      context.go('/home');
+                                    },
+                                  );
+                                }
+                              },
+                              child: Center(
+                                child: Text(
+                                  "VERIFY".toUpperCase(),
+                                  style: TextStyle(
+                                    color: black,
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Inter',
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      // const SizedBox(
-                      //   height: 16,
-                      // ),
-                    ],
+                        // const SizedBox(
+                        //   height: 16,
+                        // ),
+                      ],
+                    ),
                   ),
-                ),
+                ]),
         );
       },
     ));
