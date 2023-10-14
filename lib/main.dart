@@ -46,7 +46,8 @@ final GoRouter _router = GoRouter(
         GoRoute(
           path: 'phone-otp',
           builder: (BuildContext context, GoRouterState state) {
-            return const PinCodeVerificationScreen();
+            final phone = state.extra as String;
+            return PinCodeVerificationScreen(phoneNumber: phone);
           },
         ),
         GoRoute(

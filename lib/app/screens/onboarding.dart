@@ -128,7 +128,7 @@ class OnBoarding extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () {
-                          context.go('/phone-otp');
+                          context.go('/phone-field');
                         },
                         style: TextButton.styleFrom(
                             padding: EdgeInsets.only(

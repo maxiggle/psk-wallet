@@ -1,5 +1,6 @@
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:pkswallet/utils/firebase_helpers.dart';
 
@@ -61,10 +62,9 @@ class _PhoneFieldScreenState extends State<PhoneFieldScreen> {
                       !_formKey.currentState!.validate()) {
                     showSnackBar('Please enter a valid phone number!');
                   } else {
-                    Navigator.pushNamed(
-                      context,
+                    context.push(
                       '/phone-otp',
-                      arguments: phoneNumber,
+                      extra: phoneNumber,
                     );
                   }
                 },
