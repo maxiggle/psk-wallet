@@ -11,8 +11,8 @@ class _SendTokenByContactState extends State<SendTokenByContact> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ,
-      body: 
+      appBar: AppBar(),
+      body: const Center(child: Text('Send Token')),
     );
   }
 }

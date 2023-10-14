@@ -1,9 +1,11 @@
+import 'package:firebase_phone_auth_handler/firebase_phone_auth_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pkswallet/app/screens/contacts.dart';
 import 'package:pkswallet/app/screens/home_page.dart';
+import 'package:pkswallet/app/screens/phone_field_screen.dart';
 import 'package:pkswallet/app/screens/phone_otp.dart';
 import 'package:pkswallet/app/screens/send_token_by_contact.dart';
 
@@ -33,6 +35,12 @@ final GoRouter _router = GoRouter(
           path: 'home',
           builder: (BuildContext context, GoRouterState state) {
             return const HomePage();
+          },
+        ),
+        GoRoute(
+          path: 'phone-field',
+          builder: (BuildContext context, GoRouterState state) {
+            return const PhoneFieldScreen();
           },
         ),
         GoRoute(
@@ -74,11 +82,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(428.413, 1025),
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        title: 'pks wallet',
-        theme: ThemeData.light().copyWith(),
-        routerConfig: _router,
+      child: FirebasePhoneAuthProvider(
+        child: MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          title: 'pks wallet',
+          theme: ThemeData.light().copyWith(),
+          routerConfig: _router,
+        ),
       ),
     );
   }
