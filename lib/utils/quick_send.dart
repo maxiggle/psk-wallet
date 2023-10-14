@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -62,6 +64,7 @@ class _QuickSendState extends State<QuickSend>
     final contacts = withPhotos
         ? (await FlutterContacts.getContacts(withThumbnail: true)).toList()
         : (await FlutterContacts.getContacts()).toList();
+    log(contacts.toString());
     setState(() {
       _contacts = contacts;
     });
@@ -113,7 +116,7 @@ class _QuickSendState extends State<QuickSend>
                 const Spacer(),
                 InkWell(
                   onTap: () {
-                    context.push('/contacts');
+                    context.push('/contacts_screen');
                   },
                   child: Container(
                       height: 36.512,

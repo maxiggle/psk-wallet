@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pkswallet/app/screens/contacts.dart';
 import 'package:pkswallet/app/screens/home_page.dart';
 import 'package:pkswallet/app/screens/phone_otp.dart';
 import 'package:pkswallet/utils/transaction_details.dart';
@@ -44,9 +45,9 @@ final GoRouter _router = GoRouter(
           },
         ),
         GoRoute(
-          path: '/contacts',
+          path: 'contacts_screen',
           builder: (BuildContext context, GoRouterState state) {
-            return const TransactionDetails();
+            return const ContactsScreen();
           },
         ),
       ],
