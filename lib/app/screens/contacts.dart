@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pkswallet/app/screens/contact_helpers.dart';
 
 class ContactsScreen extends StatefulWidget {
@@ -21,13 +22,11 @@ class _ContactsScreenState extends State<ContactsScreen> {
             itemBuilder: (context, index) {
               final contact = widget.contacts![index];
               return ListTile(
-                leading: avatar(contact, 18.0),
-                title: Text(contact.displayName),
-                onTap: () => Navigator.of(context).pushNamed(
-                  '/contact',
-                  arguments: contact,
-                ),
-              );
+                  leading: avatar(contact, 18.0),
+                  title: Text(contact.displayName),
+                  onTap: () {
+                    context.push('/send_token');
+                  });
             }));
   }
 }

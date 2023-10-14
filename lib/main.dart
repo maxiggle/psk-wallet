@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pkswallet/app/screens/contacts.dart';
 import 'package:pkswallet/app/screens/home_page.dart';
 import 'package:pkswallet/app/screens/phone_otp.dart';
+import 'package:pkswallet/app/screens/send_token_by_contact.dart';
+
 import 'package:pkswallet/utils/transaction_details.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -45,9 +48,18 @@ final GoRouter _router = GoRouter(
           },
         ),
         GoRoute(
-          path: 'contacts_screen',
+          path: "contactScreen",
+          name: 'contactScreen',
           builder: (BuildContext context, GoRouterState state) {
-            return const ContactsScreen();
+            final contacts = state.extra as List<Contact>;
+            return ContactsScreen(contacts: contacts);
+          },
+        ),
+        GoRoute(
+          path: "send_token",
+          name: 'sendToken',
+          builder: (BuildContext context, GoRouterState state) {
+            return const SendTokenByContact();
           },
         ),
       ],

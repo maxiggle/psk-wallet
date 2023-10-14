@@ -16,7 +16,7 @@ class QuickSend extends StatefulWidget {
 
 class _QuickSendState extends State<QuickSend>
     with AfterLayoutMixin<QuickSend> {
-  List<Contact>? _contacts;
+  List<Contact>? contacts;
   bool _permissionDenied = false;
 
   @override
@@ -37,7 +37,7 @@ class _QuickSendState extends State<QuickSend>
   Future _fetchContacts() async {
     if (!await FlutterContacts.requestPermission()) {
       setState(() {
-        _contacts = null;
+        contacts = null;
         _permissionDenied = true;
       });
       return;
@@ -61,12 +61,12 @@ class _QuickSendState extends State<QuickSend>
   }
 
   Future _loadContacts(bool withPhotos) async {
-    final contacts = withPhotos
+    final contact = withPhotos
         ? (await FlutterContacts.getContacts(withThumbnail: true)).toList()
         : (await FlutterContacts.getContacts()).toList();
     log(contacts.toString());
     setState(() {
-      _contacts = contacts;
+      contacts = contact;
     });
   }
 
@@ -116,7 +116,7 @@ class _QuickSendState extends State<QuickSend>
                 const Spacer(),
                 InkWell(
                   onTap: () {
-                    context.push('/contacts_screen');
+                    context.go('/contactScreen', extra: contacts);
                   },
                   child: Container(
                       height: 36.512,
