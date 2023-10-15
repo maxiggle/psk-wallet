@@ -23,74 +23,84 @@ void main() async {
   runApp(const MyApp());
 }
 
-final GoRouter _router = GoRouter(
-  routes: <RouteBase>[
-    GoRoute(
-      path: '/',
-      builder: (BuildContext context, GoRouterState state) {
-        return OnBoarding();
-      },
-      routes: <RouteBase>[
-        GoRoute(
-          path: 'home',
-          builder: (BuildContext context, GoRouterState state) {
-            return const HomePage();
-          },
-        ),
-        GoRoute(
-          path: 'phone-field',
-          builder: (BuildContext context, GoRouterState state) {
-            return const PhoneFieldScreen();
-          },
-        ),
-        GoRoute(
-          path: 'phone-otp',
-          builder: (BuildContext context, GoRouterState state) {
-            final phone = state.extra as String;
-            return PinCodeVerificationScreen(phoneNumber: phone);
-          },
-        ),
-        GoRoute(
-          path: 'transaction_details',
-          builder: (BuildContext context, GoRouterState state) {
-            return const TransactionDetails();
-          },
-        ),
-        GoRoute(
-          path: "contactScreen",
-          name: 'contactScreen',
-          builder: (BuildContext context, GoRouterState state) {
-            final contacts = state.extra as List<Contact>;
-            return ContactsScreen(contacts: contacts);
-          },
-        ),
-        GoRoute(
-          path: "send_token",
-          name: 'sendToken',
-          builder: (BuildContext context, GoRouterState state) {
-            return const SendTokenByContact();
-          },
-        ),
-      ],
-    ),
-  ],
-);
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(428.413, 1025),
-      child: FirebasePhoneAuthProvider(
-        child: MaterialApp.router(
-          debugShowCheckedModeBanner: false,
-          title: 'pks wallet',
-          theme: ThemeData.light().copyWith(),
-          routerConfig: _router,
-        ),
-      ),
-    );
+    return FutureBuilder(
+        future: FirebaseAuth.instance.authStateChanges().first,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            final user = snapshot.data;
+            final GoRouter router = GoRouter(
+              routes: <RouteBase>[
+                GoRoute(
+                  path: '/',
+                  builder: (BuildContext context, GoRouterState state) {
+                    if (user != null) {
+                      return const HomePage();
+                    } else {
+                      return OnBoarding();
+                    }
+                  },
+                ),
+                GoRoute(
+                  path: '/home',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const HomePage();
+                  },
+                ),
+                GoRoute(
+                  path: '/phone-field',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const PhoneFieldScreen();
+                  },
+                ),
+                GoRoute(
+                  path: '/phone-otp',
+                  builder: (BuildContext context, GoRouterState state) {
+                    final phone = state.extra as String;
+                    return PinCodeVerificationScreen(phoneNumber: phone);
+                  },
+                ),
+                GoRoute(
+                  path: '/transaction_details',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const TransactionDetails();
+                  },
+                ),
+                GoRoute(
+                  path: "/contactScreen",
+                  name: 'contactScreen',
+                  builder: (BuildContext context, GoRouterState state) {
+                    final contacts = state.extra as List<Contact>;
+                    return ContactsScreen(contacts: contacts);
+                  },
+                ),
+                GoRoute(
+                  path: "/send_token",
+                  name: 'sendToken',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const SendTokenByContact();
+                  },
+                ),
+              ],
+            );
+            return ScreenUtilInit(
+              designSize: const Size(428.413, 1025),
+              child: FirebasePhoneAuthProvider(
+                child: MaterialApp.router(
+                  debugShowCheckedModeBanner: false,
+                  title: 'pks wallet',
+                  theme: ThemeData.light().copyWith(),
+                  routerConfig: router,
+                ),
+              ),
+            );
+          } else {
+            return const CircularProgressIndicator();
+          }
+        });
   }
 }

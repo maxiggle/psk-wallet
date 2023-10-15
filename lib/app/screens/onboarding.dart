@@ -6,10 +6,16 @@ import 'package:gradients/gradients.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pkswallet/utils/globals.dart';
 
-class OnBoarding extends StatelessWidget {
+class OnBoarding extends StatefulWidget {
   OnBoarding({super.key});
 
+  @override
+  State<OnBoarding> createState() => _OnBoardingState();
+}
+
+class _OnBoardingState extends State<OnBoarding> {
   final gradient = LinearGradientPainter(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
@@ -19,6 +25,19 @@ class OnBoarding extends StatelessWidget {
     ],
     colorSpace: ColorSpace.oklab,
   );
+
+  @override
+  void initState() {
+    super.initState();
+    // Check if the user is authenticated
+    if (Globals.firebaseUser?.uid != null) {
+      // User is authenticated, navigate to the home screen
+      // Replace '/home' with your actual home screen route.
+      Future.microtask(() {
+        context.go('/home');
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

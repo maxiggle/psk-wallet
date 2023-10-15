@@ -28,7 +28,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
   bool isKeyboardVisible = false;
 
   late final ScrollController scrollController;
-  late final FocusNode pinPutFocusNode;
+  FocusNode pinPutFocusNode = FocusNode();
 
   TextEditingController textEditingController = TextEditingController();
 
@@ -59,10 +59,10 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     scrollController.dispose();
     errorController!.close();
     pinPutFocusNode.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -79,20 +79,6 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
         content: Text(message!),
         duration: const Duration(seconds: 2),
       ),
-    );
-  }
-
-  Future<void> _scrollToBottomOnKeyboardOpen() async {
-    while (!isKeyboardVisible) {
-      await Future.delayed(const Duration(milliseconds: 50));
-    }
-
-    await Future.delayed(const Duration(milliseconds: 250));
-
-    await scrollController.animateTo(
-      scrollController.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 250),
-      curve: Curves.easeIn,
     );
   }
 
@@ -159,6 +145,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
         showSnackBar('An error occurred!');
       },
       builder: (context, controller) {
+        final timeLeft = controller.otpExpirationTimeLeft;
         return Scaffold(
           backgroundColor: black,
           resizeToAvoidBottomInset: false,
@@ -321,9 +308,13 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
                                   fontFamily: 'Inter'),
                             ),
                             TextButton(
-                              onPressed: () => snackBar("OTP resent!!"),
+                              onPressed: () {
+                                setState(() {
+                                  hasError = false;
+                                });
+                              },
                               child: Text(
-                                "RESEND",
+                                "RESEND it in $timeLeft",
                                 style: TextStyle(
                                   color: lightGreen,
                                   fontWeight: FontWeight.bold,

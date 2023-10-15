@@ -27,6 +27,12 @@ dependencies:
   after_layout: ^1.2.0
   intl_phone_field: ^3.2.0
   easy_container: ^1.0.4+1
+  webauthn: ^0.2.1
+  lottie: ^2.6.0
+  liquid_pull_to_refresh: ^3.0.1
+  
+
+  
 
 dev_dependencies:
   flutter_test:
