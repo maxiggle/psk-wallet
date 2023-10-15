@@ -114,13 +114,13 @@ class _TransactionDetailsState extends State<TransactionDetails>
                     controller: _tabController,
                     children: [
                       // first tab bar view widget
-                      TransactionHistory(
+                      Transactions(
                         transactionData:
                             getFilteredTransactions(TransactionType.send),
                       ),
 
                       // second tab bar view widget
-                      TransactionHistory(
+                      Transactions(
                           transactionData:
                               getFilteredTransactions(TransactionType.receive))
                     ],

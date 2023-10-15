@@ -3,37 +3,68 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
-import 'package:pkswallet/app/screens/home_page.dart';
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
 
-class Transactions extends StatefulWidget {
-  const Transactions(
-      {super.key,
-      required this.transactionData,
-      this.refreshIndicatorKey,
-      this.scaffoldKey,
-      this.transactionType,
-      this.includeModal});
+class TokenData {
+  final String? tokenPrice;
+  final String? tokenBalance;
+  final String? tokenBalanceInUSD;
+  final String? tokenName;
+  final String? tokenSymbol;
+  final String? tokenImage;
 
-  final List<TransactionData>? transactionData;
-  final TransactionType? transactionType;
-  final GlobalKey<ScaffoldState>? scaffoldKey;
-  final GlobalKey<LiquidPullToRefreshState>? refreshIndicatorKey;
-  final Function(int index)? includeModal;
-
-  @override
-  State<Transactions> createState() => _TransactionsState();
+  TokenData(
+      {this.tokenPrice,
+      this.tokenBalance,
+      this.tokenBalanceInUSD,
+      this.tokenName,
+      this.tokenSymbol,
+      this.tokenImage});
 }
 
-class _TransactionsState extends State<Transactions> {
+class TokenBalance extends StatefulWidget {
+  const TokenBalance({super.key});
+
+  @override
+  State<TokenBalance> createState() => _TokenBalanceState();
+}
+
+class _TokenBalanceState extends State<TokenBalance> {
+  final GlobalKey<ScaffoldState>? scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<LiquidPullToRefreshState>? refreshIndicatorKey =
+      GlobalKey<LiquidPullToRefreshState>();
   static int? refreshNum = 10;
   final counterStream =
       Stream<int>.periodic(const Duration(seconds: 3), (x) => refreshNum!);
 
+  List<TokenData> token = [
+    TokenData(
+      tokenBalance: '0.0005ETH',
+      tokenBalanceInUSD: 'US\$21,553',
+      tokenName: "Ethereum",
+      tokenSymbol: "ETH",
+      tokenPrice: "\$1600",
+      tokenImage: 'assets/images/ethereum.svg',
+    ),
+    TokenData(
+      tokenBalance: '0.0005BTC',
+      tokenBalanceInUSD: 'US\$21,553',
+      tokenName: "Bitcoin",
+      tokenSymbol: "BTC",
+      tokenPrice: "\$1600",
+      tokenImage: 'assets/images/bitcoin.svg',
+    ),
+    TokenData(
+      tokenBalance: '0.0005LTC',
+      tokenBalanceInUSD: 'US\$21,553',
+      tokenName: "Litecoin",
+      tokenSymbol: "LTC",
+      tokenPrice: "\$1600",
+      tokenImage: 'assets/images/litecoin.svg',
+    )
+  ];
   Future<void> _handleRefresh() {
     final Completer<void> completer = Completer<void>();
     Timer(const Duration(seconds: 3), () {
@@ -43,14 +74,13 @@ class _TransactionsState extends State<Transactions> {
       refreshNum = Random().nextInt(100);
     });
     return completer.future.then<void>((_) {
-      ScaffoldMessenger.of(widget.scaffoldKey!.currentState!.context)
-          .showSnackBar(
+      ScaffoldMessenger.of(scaffoldKey!.currentState!.context).showSnackBar(
         SnackBar(
           content: const Text('Refresh complete'),
           action: SnackBarAction(
             label: 'RETRY',
             onPressed: () {
-              widget.refreshIndicatorKey!.currentState!.show();
+              refreshIndicatorKey!.currentState!.show();
             },
           ),
         ),
@@ -82,11 +112,10 @@ class _TransactionsState extends State<Transactions> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(radius).r),
                       ),
-                      onPressed: () => widget.includeModal?.call(index),
+                      onPressed: () {},
                       child: Row(
                         children: [
-                          SvgPicture.asset(
-                              widget.transactionData![index].coinImage),
+                          // SvgPicture.asset(''),
                           SizedBox(
                             width: 9.74.w,
                           ),
@@ -94,7 +123,7 @@ class _TransactionsState extends State<Transactions> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                widget.transactionData![index].ensName,
+                               "ensname",
                                 style: TextStyle(
                                     fontSize: font14,
                                     fontFamily: 'Inter',
@@ -104,10 +133,7 @@ class _TransactionsState extends State<Transactions> {
                               Row(
                                 children: [
                                   Text(
-                                    widget.transactionData![index].type ==
-                                            widget.transactionType
-                                        ? 'Receive'
-                                        : 'Send',
+                                    "Date",
                                     style: TextStyle(
                                         fontSize: font14,
                                         fontFamily: 'Inter',
@@ -129,9 +155,7 @@ class _TransactionsState extends State<Transactions> {
                                     width: 5.w,
                                   ),
                                   Text(
-                                    DateFormat('yyyy-MM-dd').format(widget
-                                        .transactionData![index]
-                                        .transactionTime),
+                                   "Status",
                                     style: TextStyle(
                                         fontSize: font14,
                                         fontFamily: 'Inter',
@@ -146,7 +170,7 @@ class _TransactionsState extends State<Transactions> {
                           Column(
                             children: [
                               Text(
-                                widget.transactionData![index].amount,
+                            "Status",
                                 style: TextStyle(
                                     fontFamily: 'Inter',
                                     fontSize: font14,
@@ -154,16 +178,10 @@ class _TransactionsState extends State<Transactions> {
                                     color: black),
                               ),
                               Text(
-                                widget.transactionData![index].status ==
-                                        TransactionStatus.pending
-                                    ? 'In-transit'
-                                    : 'Success',
+                               "Status",
                                 style: TextStyle(
                                     color:
-                                        widget.transactionData![index].status ==
-                                                TransactionStatus.pending
-                                            ? blue2
-                                            : darkGreen),
+                                        black.withOpacity(0.30),),
                               ),
                             ],
                           ),
@@ -183,7 +201,7 @@ class _TransactionsState extends State<Transactions> {
                     ),
                   );
                 },
-                itemCount: widget.transactionData!.length,
+                itemCount: token.length,
               );
             }));
   }

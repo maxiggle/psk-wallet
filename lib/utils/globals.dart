@@ -9,4 +9,5 @@ class Globals {
   static User? get firebaseUser => auth.currentUser;
 
   static final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+  
 }

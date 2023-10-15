@@ -1,5 +1,4 @@
-import 'dart:async';
-import 'dart:math';
+import 'dart:developer';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -334,7 +333,14 @@ class _HomePageState extends State<HomePage> {
                             const SizedBox(height: 21.03),
                           ],
                         ),
-                        TransactionHistory(transactionData: transactionData)
+                        Transactions(
+                          transactionData: transactionData,
+                          includeModal: (index) {
+                            displayTransactionModal(
+                                context, transactionData[index]);
+                          },
+                        ),
+                        const SizedBox(height: 21.03),
                       ],
                     ),
                   ),
@@ -344,6 +350,63 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+    );
+  }
+
+  void displayTransactionModal(BuildContext context, TransactionData trnxData) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            return SizedBox(
+              height: MediaQuery.of(context).size.height * 0.7,
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 25.h,
+                  ),
+                  SvgPicture.asset(
+                    trnxData.coinImage,
+                    height: MediaQuery.of(context).size.height * 0.2555.h,
+                  ),
+                  SizedBox(
+                    height: 50.h,
+                  ),
+                  Column(
+                    children: [
+                      Text(
+                        'Name:',
+                        style: TextStyle(
+                          fontSize: font14,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w600,
+                          color: black,
+                        ),
+                      ),
+                      const Spacer(),
+                      Text(
+                        trnxData.ensName,
+                        style: TextStyle(
+                          fontSize: font14,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w500,
+                          color: black,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5.w,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

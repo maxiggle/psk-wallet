@@ -67,6 +67,7 @@ flutter:
     - assets/images/solana.svg
     - assets/images/ethereum.svg
     - assets/images/bitcoin.svg
+    - assets/images/litecoin.svg
     
     
   fonts:

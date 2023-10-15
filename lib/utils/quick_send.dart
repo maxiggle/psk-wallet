@@ -116,7 +116,7 @@ class _QuickSendState extends State<QuickSend>
                 const Spacer(),
                 InkWell(
                   onTap: () {
-                    context.go('/contactScreen', extra: contacts);
+                    context.push('/contactScreen', extra: contacts);
                   },
                   child: Container(
                       height: 36.512,
