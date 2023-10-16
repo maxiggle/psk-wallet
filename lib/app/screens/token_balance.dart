@@ -32,7 +32,8 @@ class TokenBalance extends StatefulWidget {
   State<TokenBalance> createState() => _TokenBalanceState();
 }
 
-class _TokenBalanceState extends State<TokenBalance> {
+class _TokenBalanceState extends State<TokenBalance>
+    with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState>? scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<LiquidPullToRefreshState>? refreshIndicatorKey =
       GlobalKey<LiquidPullToRefreshState>();
@@ -66,6 +67,21 @@ class _TokenBalanceState extends State<TokenBalance> {
       tokenImage: 'assets/images/litecoin.svg',
     )
   ];
+
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    _tabController = TabController(length: 2, vsync: this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
   Future<void> _handleRefresh() {
     final Completer<void> completer = Completer<void>();
     Timer(const Duration(seconds: 3), () {
@@ -91,76 +107,119 @@ class _TokenBalanceState extends State<TokenBalance> {
 
   @override
   Widget build(BuildContext context) {
-    return LiquidPullToRefresh(
-        onRefresh: _handleRefresh,
-        showChildOpacityTransition: false,
-        child: StreamBuilder<int>(
-            stream: counterStream,
-            builder: (context, snapshot) {
-              return ListView.builder(
-                shrinkWrap: true,
-                padding: const EdgeInsets.only(top: 20).r,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 9.74).r,
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        elevation: 0,
-                        backgroundColor: ash,
-                        padding: const EdgeInsets.fromLTRB(
-                                23.31, 24.34, 13.51, 24.34)
-                            .r,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(radius).r),
-                      ),
-                      onPressed: () {},
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 9.4.w),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              '${token[index].tokenImage}',
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+    return DefaultTabController(
+      length: 2,
+      child: Card(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(48).r),
+        shadowColor: Colors.red,
+        elevation: 0,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 9.74, vertical: 26).r,
+          child: LiquidPullToRefresh(
+              onRefresh: _handleRefresh,
+              showChildOpacityTransition: false,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 60).r,
+                    child: Text(
+                      'Crypto',
+                      style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: font19,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  StreamBuilder<int>(
+                      stream: counterStream,
+                      builder: (context, snapshot) {
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.only(top: 20).r,
+                          itemBuilder: (context, index) {
+                            return Column(
                               children: [
-                                Text(
-                                  "${token[index].tokenName}",
-                                  style: TextStyle(
-                                      fontSize: font14,
-                                      fontFamily: 'Inter',
-                                      fontWeight: FontWeight.w600,
-                                      color: black),
-                                ),
-                              ],
-                            ),
-                            const Spacer(),
-                            Column(
-                              children: [
-                                Text(
-                                  "Status",
-                                  style: TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: font14,
-                                      fontWeight: FontWeight.w600,
-                                      color: black),
-                                ),
-                                Text(
-                                  "Status",
-                                  style: TextStyle(
-                                    color: black.withOpacity(0.30),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(bottom: 9.74).r,
+                                  child: TextButton(
+                                    style: TextButton.styleFrom(
+                                      elevation: 0,
+                                      backgroundColor: ash,
+                                      padding: const EdgeInsets.fromLTRB(
+                                              23.31, 24.34, 13.51, 24.34)
+                                          .r,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(radius).r),
+                                    ),
+                                    onPressed: () {},
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 9.4.w),
+                                      child: Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                            '${token[index].tokenImage}',
+                                          ),
+                                          SizedBox(
+                                            width: 13.51.w,
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "${token[index].tokenName}",
+                                                style: TextStyle(
+                                                    fontSize: font14,
+                                                    fontFamily: 'Inter',
+                                                    fontWeight: FontWeight.w600,
+                                                    color: black),
+                                              ),
+                                            ],
+                                          ),
+                                          const Spacer(),
+                                          Column(
+                                            children: [
+                                              Text(
+                                                "${token[index].tokenBalanceInUSD}",
+                                                style: TextStyle(
+                                                    fontFamily: 'Inter',
+                                                    fontSize: font14,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: black),
+                                              ),
+                                              SizedBox(height: 3.91.h),
+                                              Text(
+                                                "${token[index].tokenBalance}",
+                                                style: TextStyle(
+                                                  color:
+                                                      black.withOpacity(0.30),
+                                                  fontFamily: 'Inter',
+                                                  fontSize: font14,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                itemCount: token.length,
-              );
-            }));
+                            );
+                          },
+                          itemCount: token.length,
+                        );
+                      }),
+                ],
+              )),
+        ),
+      ),
+    );
   }
 }

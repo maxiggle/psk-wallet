@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,6 +8,8 @@ import 'package:pkswallet/const.dart';
 import 'package:after_layout/after_layout.dart';
 
 class QuickSend extends StatefulWidget {
+  const QuickSend({super.key});
+
   @override
   State<QuickSend> createState() => _QuickSendState();
 }
@@ -17,17 +17,7 @@ class QuickSend extends StatefulWidget {
 class _QuickSendState extends State<QuickSend>
     with AfterLayoutMixin<QuickSend> {
   List<Contact>? contacts;
-  bool _permissionDenied = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  bool permissionDenied = false;
 
   @override
   void afterFirstLayout(BuildContext context) {
@@ -38,7 +28,7 @@ class _QuickSendState extends State<QuickSend>
     if (!await FlutterContacts.requestPermission()) {
       setState(() {
         contacts = null;
-        _permissionDenied = true;
+        permissionDenied = true;
       });
       return;
     }
@@ -64,7 +54,6 @@ class _QuickSendState extends State<QuickSend>
     final contact = withPhotos
         ? (await FlutterContacts.getContacts(withThumbnail: true)).toList()
         : (await FlutterContacts.getContacts()).toList();
-    log(contacts.toString());
     setState(() {
       contacts = contact;
     });

@@ -1,11 +1,9 @@
-import 'dart:developer';
-
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+
 import 'package:pkswallet/app/screens/token_balance.dart';
 import 'package:pkswallet/utils/quick_send.dart';
 import 'package:pkswallet/app/screens/transaction.dart';
@@ -47,9 +45,6 @@ bool isNotOpen = false;
 
 class _HomePageState extends State<HomePage> {
   String? selectedValue = items.first;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
-      GlobalKey<LiquidPullToRefreshState>();
 
   late final ScrollController? scrollController;
 
@@ -274,13 +269,13 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(
                   height: 24.h,
                 ),
+                const QuickSend(),
+                const SizedBox(
+                  height: 24,
+                ),
                 const TokenBalance(),
                 SizedBox(
                   height: 24.h,
-                ),
-                QuickSend(),
-                const SizedBox(
-                  height: 24,
                 ),
                 Card(
                   shape: RoundedRectangleBorder(
@@ -423,54 +418,185 @@ class ButtonRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        TextButton(
-          onPressed: () {},
-          style: TextButton.styleFrom(
+        SizedBox(
+          height: 87.63.h,
+          width: 150.714.w,
+          child: TextButton(
+            onPressed: () {},
+            style: TextButton.styleFrom(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(radius),
               ),
               backgroundColor: lightGreen,
-              padding: const EdgeInsets.fromLTRB(51, 30, 51, 30).r),
-          child: Text(
-            'Send',
-            style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: font19.sp,
-                color: black,
-                fontWeight: FontWeight.w500),
+            ),
+            child: Text(
+              'Send',
+              style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: font19.sp,
+                  color: black,
+                  fontWeight: FontWeight.w500),
+            ),
           ),
         ),
         const SizedBox(
           width: 8.52,
         ),
-        TextButton(
-          onPressed: () {},
-          style: TextButton.styleFrom(
+        SizedBox(
+          height: 87.63.h,
+          width: 150.714.w,
+          child: TextButton(
+            onPressed: () {
+              Scaffold.of(context).showBottomSheet(elevation: 1, (context) {
+                final TextEditingController textEditingController =
+                    TextEditingController();
+                String hintText = 'Address';
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0).r,
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.89.h,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(
+                          height: 50.h,
+                        ),
+                        Center(
+                          child: Text(
+                            'Send',
+                            style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: font19,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              height: 100.h,
+                            ),
+                            Text('To',
+                                style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: font19,
+                                    fontWeight: FontWeight.w600))
+                          ],
+                        ),
+                        AddressBar(
+                            textEditingController: textEditingController,
+                            hintText: hintText),
+                        Expanded(child: Container()),
+                        ElevatedButton(
+                            onPressed: () {}, child: const Text('Next'), style: ElevatedButton.styleFrom(),)
+                      ],
+                    ),
+                  ),
+                );
+              });
+            },
+            style: TextButton.styleFrom(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(radius),
               ),
               backgroundColor: ash,
-              padding: const EdgeInsets.fromLTRB(51, 30, 51, 30).r),
-          child: Text(
-            'Receive',
-            style: TextStyle(
-                fontFamily: 'Inter', fontSize: font19.sp, color: black),
+            ),
+            child: Text(
+              'Receive',
+              style: TextStyle(
+                  fontFamily: 'Inter', fontSize: font19.sp, color: black),
+            ),
           ),
         ),
         const SizedBox(
           width: 8.52,
         ),
-        TextButton(
-          onPressed: () {},
-          style: TextButton.styleFrom(
+        SizedBox(
+          height: 87.63.h,
+          width: 150.714.w,
+          child: TextButton(
+            onPressed: () {},
+            style: TextButton.styleFrom(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(radius),
               ),
               backgroundColor: ash,
-              padding: const EdgeInsets.fromLTRB(51, 30, 51, 30).r),
-          child: SvgPicture.asset('assets/images/add.svg'),
+            ),
+            child: SvgPicture.asset('assets/images/add.svg'),
+          ),
         ),
       ],
+    );
+  }
+}
+
+class AddressBar extends StatefulWidget {
+  final String hintText;
+  final TextEditingController textEditingController;
+
+  const AddressBar(
+      {required this.textEditingController, required this.hintText, Key? key})
+      : super(key: key);
+
+  @override
+  State<AddressBar> createState() => _AddressBarState();
+}
+
+class _AddressBarState extends State<AddressBar> {
+  bool pwdVisibility = false;
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: widget.textEditingController,
+      obscureText: !pwdVisibility,
+      decoration: InputDecoration(
+        hintText: widget.hintText,
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.grey,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.red,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.red,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.grey,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        // suffixIcon: InkWell(
+        //   onTap: () => setState(
+        //     () => pwdVisibility = !pwdVisibility,
+        //   ),
+        //   child: Icon(
+        //     pwdVisibility
+        //         ? Icons.visibility_outlined
+        //         : Icons.visibility_off_outlined,
+        //     color: Colors.grey.shade400,
+        //     size: 18,
+        //   ),
+        // ),
+      ),
+      validator: (val) {
+        if (val!.isEmpty) {
+          return 'Required';
+        }
+        return null;
+      },
     );
   }
 }
