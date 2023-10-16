@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+import 'package:pkswallet/app/screens/token_balance.dart';
 import 'package:pkswallet/utils/quick_send.dart';
 import 'package:pkswallet/app/screens/transaction.dart';
 import 'package:pkswallet/app/theme/colors.dart';
@@ -270,8 +271,12 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 24,
+                SizedBox(
+                  height: 24.h,
+                ),
+                const TokenBalance(),
+                SizedBox(
+                  height: 24.h,
                 ),
                 QuickSend(),
                 const SizedBox(
@@ -340,7 +345,6 @@ class _HomePageState extends State<HomePage> {
                                 context, transactionData[index]);
                           },
                         ),
-                        const SizedBox(height: 21.03),
                       ],
                     ),
                   ),

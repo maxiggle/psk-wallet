@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
@@ -49,12 +50,12 @@ class _TokenBalanceState extends State<TokenBalance> {
       tokenImage: 'assets/images/ethereum.svg',
     ),
     TokenData(
-      tokenBalance: '0.0005BTC',
+      tokenBalance: '0.0005LTC',
       tokenBalanceInUSD: 'US\$21,553',
-      tokenName: "Bitcoin",
-      tokenSymbol: "BTC",
+      tokenName: "Litecoin",
+      tokenSymbol: "LTC",
       tokenPrice: "\$1600",
-      tokenImage: 'assets/images/bitcoin.svg',
+      tokenImage: 'assets/images/litecoin.svg',
     ),
     TokenData(
       tokenBalance: '0.0005LTC',
@@ -113,90 +114,47 @@ class _TokenBalanceState extends State<TokenBalance> {
                             borderRadius: BorderRadius.circular(radius).r),
                       ),
                       onPressed: () {},
-                      child: Row(
-                        children: [
-                          // SvgPicture.asset(''),
-                          SizedBox(
-                            width: 9.74.w,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                               "ensname",
-                                style: TextStyle(
-                                    fontSize: font14,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w600,
-                                    color: black),
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    "Date",
-                                    style: TextStyle(
-                                        fontSize: font14,
-                                        fontFamily: 'Inter',
-                                        fontWeight: FontWeight.w400,
-                                        color: black.withOpacity(0.30)),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 9.4.w),
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(
+                              '${token[index].tokenImage}',
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "${token[index].tokenName}",
+                                  style: TextStyle(
+                                      fontSize: font14,
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.w600,
+                                      color: black),
+                                ),
+                              ],
+                            ),
+                            const Spacer(),
+                            Column(
+                              children: [
+                                Text(
+                                  "Status",
+                                  style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: font14,
+                                      fontWeight: FontWeight.w600,
+                                      color: black),
+                                ),
+                                Text(
+                                  "Status",
+                                  style: TextStyle(
+                                    color: black.withOpacity(0.30),
                                   ),
-                                  SizedBox(
-                                    width: 5.w,
-                                  ),
-                                  Container(
-                                    height: 5.h,
-                                    width: 5.w,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10).r,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 5.w,
-                                  ),
-                                  Text(
-                                   "Status",
-                                    style: TextStyle(
-                                        fontSize: font14,
-                                        fontFamily: 'Inter',
-                                        fontWeight: FontWeight.w400,
-                                        color: black.withOpacity(0.30)),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          Column(
-                            children: [
-                              Text(
-                            "Status",
-                                style: TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontSize: font14,
-                                    fontWeight: FontWeight.w600,
-                                    color: black),
-                              ),
-                              Text(
-                               "Status",
-                                style: TextStyle(
-                                    color:
-                                        black.withOpacity(0.30),),
-                              ),
-                            ],
-                          ),
-                          Container(
-                              height: 36.512,
-                              width: 36.512,
-                              decoration: BoxDecoration(
-                                  // color: black,
-                                  borderRadius: BorderRadius.circular(100).w),
-                              child: Icon(
-                                Icons.arrow_forward_ios,
-                                size: 20.sp,
-                                color: black,
-                              )),
-                        ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );
