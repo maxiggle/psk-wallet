@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart'
+    show FirebaseAuthPlatform;
 
 import 'dart:async';
 
@@ -86,6 +88,13 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
   Widget build(BuildContext context) {
     return SafeArea(
         child: FirebasePhoneAuthHandler(
+      recaptchaVerifierForWebProvider: (isWeb) {
+        if (isWeb) {
+          return RecaptchaVerifier(
+            auth: FirebaseAuthPlatform.instance,
+          );
+        }
+      },
       phoneNumber: widget.phoneNumber!,
       signOutOnSuccessfulVerification: false,
       sendOtpOnInitialize: true,
@@ -147,7 +156,6 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
       builder: (context, controller) {
         final timeLeft = controller.otpExpirationTimeLeft;
         return Scaffold(
-          backgroundColor: black,
           resizeToAvoidBottomInset: false,
           body: controller.isSendingCode
               ? const Column(

@@ -17,6 +17,7 @@ class _AddPassKeyState extends State<AddPassKey> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Set a passkey to sign your wallet transactions'),
+          
         ],
       ),
     );

@@ -1,7 +1,10 @@
 import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:pkswallet/app/theme/colors.dart';
+
 import 'package:pkswallet/utils/firebase_helpers.dart';
 
 class PhoneFieldScreen extends StatefulWidget {
@@ -25,55 +28,78 @@ class _PhoneFieldScreenState extends State<PhoneFieldScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                "We'll send an SMS with a verification code...",
-                style: TextStyle(fontSize: 22),
-              ),
-              const SizedBox(height: 15),
-              EasyContainer(
-                elevation: 0,
-                borderRadius: 10,
-                color: Colors.transparent,
-                child: Form(
-                  key: _formKey,
-                  child: IntlPhoneField(
-                    autofocus: true,
-                    invalidNumberMessage: 'Invalid Phone Number!',
-                    textAlignVertical: TextAlignVertical.center,
-                    style: const TextStyle(fontSize: 25),
-                    onChanged: (phone) => phoneNumber = phone.completeNumber,
-                    initialCountryCode: 'IN',
-                    flagsButtonPadding: const EdgeInsets.only(right: 10),
-                    showDropdownIcon: false,
-                    keyboardType: TextInputType.phone,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height * 0.12.h),
+                Text(
+                  "Phone Verification",
+                  style: TextStyle(
+                    fontSize: 43.sp,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              ),
-              const SizedBox(height: 15),
-              EasyContainer(
-                width: double.infinity,
-                onTap: () async {
-                  if (isNullOrBlank(phoneNumber) ||
-                      !_formKey.currentState!.validate()) {
-                    showSnackBar('Please enter a valid phone number!');
-                  } else {
-                    context.push(
-                      '/phone-otp',
-                      extra: phoneNumber,
-                    );
-                  }
-                },
-                child: const Text(
-                  'Verify',
-                  style: TextStyle(fontSize: 18),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.2.h),
+                EasyContainer(
+                  elevation: 0,
+                  showBorder: true,
+                  borderStyle: BorderStyle.solid,
+                  borderColor: black,
+                  height: 100.h,
+                  borderRadius: 25,
+                  color: Colors.transparent,
+                  child: Form(
+                    key: _formKey,
+                    child: IntlPhoneField(
+                      cursorColor: black,
+                      decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          hintText: '000-000-0000',
+                          hintMaxLines: 1,
+                          alignLabelWithHint: true,
+                          counter: Offstage()),
+                      autofocus: true,
+                      invalidNumberMessage: 'Invalid Phone Number!',
+                      textAlignVertical: TextAlignVertical.center,
+                      style: const TextStyle(fontSize: 25),
+                      onChanged: (phone) => phoneNumber = phone.completeNumber,
+                      initialCountryCode: 'IN',
+                      flagsButtonPadding: const EdgeInsets.only(right: 10),
+                      showDropdownIcon: false,
+                      keyboardType: TextInputType.phone,
+                    ),
+                  ),
                 ),
-              ),
-            ],
+                SizedBox(height: 100.h),
+                EasyContainer(
+                  color: lightGreen,
+                  borderRadius: 25,
+                  customPadding: EdgeInsets.only(
+                      left: 12.r, right: 12.r, top: 17.r, bottom: 17.r),
+                  onTap: () async {
+                    if (isNullOrBlank(phoneNumber) ||
+                        !_formKey.currentState!.validate()) {
+                      showSnackBar('Please enter a valid phone number!');
+                    } else {
+                      context.push(
+                        '/phone-otp',
+                        extra: phoneNumber,
+                      );
+                    }
+                  },
+                  child: Text(
+                    'Verify',
+                    style: TextStyle(
+                        fontSize: 18.sp,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

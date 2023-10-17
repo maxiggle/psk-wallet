@@ -9,6 +9,7 @@ import 'package:pkswallet/app/screens/token_balance.dart';
 import 'package:pkswallet/app/screens/transaction.dart';
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
+import 'package:pkswallet/utils/globals.dart';
 import 'package:pkswallet/utils/quick_send.dart';
 
 bool isNotOpen = false;
@@ -22,11 +23,17 @@ final List<String> items = [
 
 class AddressBar extends StatefulWidget {
   final String hintText;
-  final TextEditingController textEditingController;
+  final TextEditingController? textEditingController;
 
-  const AddressBar(
-      {required this.textEditingController, required this.hintText, Key? key})
-      : super(key: key);
+  // Add an optional parameter for the initial value
+  final String initialValue;
+
+  const AddressBar({
+    required this.hintText,
+    this.textEditingController,
+    this.initialValue = "0.0", // Provide a default initial value
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<AddressBar> createState() => _AddressBarState();
@@ -103,7 +110,9 @@ class ButtonRow extends StatelessWidget {
           height: 87.63.h,
           width: 150.714.w,
           child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Globals.auth.signOut();
+            },
             style: TextButton.styleFrom(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(radius),
@@ -144,6 +153,16 @@ class TransactionData {
 
 class _AddressBarState extends State<AddressBar> {
   bool pwdVisibility = false;
+  final formKey = GlobalKey<FormState>();
+  late final TextEditingController textEditingController;
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the TextEditingController with the initial value
+    textEditingController = widget.textEditingController ??
+        TextEditingController(text: widget.initialValue);
+  }
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -155,22 +174,21 @@ class _AddressBarState extends State<AddressBar> {
             color: Colors.grey,
             width: 1,
           ),
-          borderRadius: BorderRadius.circular(25.0),
+          borderRadius: BorderRadius.circular(15.0),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderSide: const BorderSide(
             color: Colors.red,
             width: 1,
           ),
-          borderRadius: BorderRadius.circular(25.0),
+          borderRadius: BorderRadius.circular(15.0),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.grey,
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(25.0),
-        ),
+            borderSide: const BorderSide(
+              color: Colors.grey,
+              width: 1,
+            ),
+            borderRadius: BorderRadius.circular(15.0)),
       ),
       validator: (val) {
         if (val!.isEmpty) {

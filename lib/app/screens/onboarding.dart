@@ -93,7 +93,7 @@ class _OnBoardingState extends State<OnBoarding> {
                     ],
                   ),
                   SizedBox(
-                    height: 187.93.h,
+                    height: 100.93.h,
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
