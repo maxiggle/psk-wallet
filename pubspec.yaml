@@ -33,6 +33,7 @@ dependencies:
   decimal: ^2.3.3
   web3dart: ^2.7.1
   qr_code_scanner: ^1.0.1
+  qr_flutter: ^4.1.0
   
 
   
@@ -72,6 +73,8 @@ flutter:
     - assets/images/bitcoin.svg
     - assets/images/litecoin.svg
     - assets/images/polygon.svg
+    - assets/images/logo_yakka.png
+    - assets/images/qr_eth.png
     
     
   fonts:

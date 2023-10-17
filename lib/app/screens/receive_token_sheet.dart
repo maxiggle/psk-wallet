@@ -1,13 +1,17 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:pkswallet/const.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class ReceiveTokenSheet extends StatefulWidget {
   const ReceiveTokenSheet({Key? key}) : super(key: key);
@@ -16,19 +20,44 @@ class ReceiveTokenSheet extends StatefulWidget {
   State<ReceiveTokenSheet> createState() => _ReceiveTokenSheetState();
 }
 
-Barcode? result;
-QRViewController? controller;
-final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-
-// In order to get hot reload to work we need to pause the camera if the platform
-// is android, or resume the camera if the platform is iOS.
-@override
-void reassemble() {
-  if (Platform.isAndroid) {
-    controller!.pauseCamera();
-  }
-  controller!.resumeCamera();
+const String message =
+    '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+Future<ui.Image> _loadOverlayImage() async {
+  final Completer<ui.Image> completer = Completer<ui.Image>();
+  final ByteData byteData = await rootBundle.load('assets/images/qr_eth.png');
+  ui.decodeImageFromList(byteData.buffer.asUint8List(), completer.complete);
+  return completer.future;
 }
+
+final FutureBuilder<ui.Image> qrFutureBuilder = FutureBuilder<ui.Image>(
+  future: _loadOverlayImage(),
+  builder: (BuildContext ctx, AsyncSnapshot<ui.Image> snapshot) {
+    const double size = 280.0;
+    if (!snapshot.hasData) {
+      return const SizedBox(width: size, height: size);
+    }
+    return CustomPaint(
+      size: const Size.square(size),
+      painter: QrPainter(
+        data: message,
+        version: QrVersions.auto,
+        eyeStyle: const QrEyeStyle(
+          eyeShape: QrEyeShape.square,
+          color: Color(0xff000000),
+        ),
+        dataModuleStyle: const QrDataModuleStyle(
+          dataModuleShape: QrDataModuleShape.circle,
+          color: Color(0xff000000),
+        ),
+        // size: 320.0,
+        embeddedImage: snapshot.data,
+        embeddedImageStyle: const QrEmbeddedImageStyle(
+          size: Size.square(60),
+        ),
+      ),
+    );
+  },
+);
 
 class _ReceiveTokenSheetState extends State<ReceiveTokenSheet> {
   @override
@@ -45,148 +74,29 @@ class _ReceiveTokenSheetState extends State<ReceiveTokenSheet> {
             ),
             Center(
               child: Text(
-                'Receive',
+                'Fund your',
                 style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: font19,
                     fontWeight: FontWeight.w600),
               ),
             ),
-            SizedBox(
-              height: 24.h,
-            ),
-            Expanded(flex: 4, child: _buildQrView(context)),
-            Expanded(
-              flex: 1,
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    if (result != null)
-                      Text(
-                          'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
-                    else
-                      const Text('Scan a code'),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          margin: const EdgeInsets.all(8),
-                          child: ElevatedButton(
-                              onPressed: () async {
-                                await controller?.toggleFlash();
-                                setState(() {});
-                              },
-                              child: FutureBuilder(
-                                future: controller?.getFlashStatus(),
-                                builder: (context, snapshot) {
-                                  return Text('Flash: ${snapshot.data}');
-                                },
-                              )),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.all(8),
-                          child: ElevatedButton(
-                              onPressed: () async {
-                                await controller?.flipCamera();
-                                setState(() {});
-                              },
-                              child: FutureBuilder(
-                                future: controller?.getCameraInfo(),
-                                builder: (context, snapshot) {
-                                  if (snapshot.data != null) {
-                                    return Text(
-                                        'Camera facing ${describeEnum(snapshot.data!)}');
-                                  } else {
-                                    return const Text('loading');
-                                  }
-                                },
-                              )),
-                        )
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          margin: const EdgeInsets.all(8),
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              await controller?.pauseCamera();
-                            },
-                            child: const Text('pause',
-                                style: TextStyle(fontSize: 20)),
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.all(8),
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              await controller?.resumeCamera();
-                            },
-                            child: const Text('resume',
-                                style: TextStyle(fontSize: 20)),
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
+            Center(
+              child: Text(
+                'PKS Wallet',
+                style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: font19,
+                    fontWeight: FontWeight.w600),
               ),
+            ),
+            Expanded(
+              child:
+                  Center(child: SizedBox(width: 280.w, child: qrFutureBuilder)),
             )
           ],
         ),
       ),
     );
-  }
-
-  Widget _buildQrView(BuildContext context) {
-    // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
-    var scanArea = (MediaQuery.of(context).size.width < 400 ||
-            MediaQuery.of(context).size.height < 400)
-        ? 150.0
-        : 300.0;
-    // To ensure the Scanner view is properly sizes after rotation
-    // we need to listen for Flutter SizeChanged notification and update controller
-    return QRView(
-      key: qrKey,
-      onQRViewCreated: _onQRViewCreated,
-      overlay: QrScannerOverlayShape(
-          borderColor: Colors.red,
-          borderRadius: 10,
-          borderLength: 30,
-          borderWidth: 10,
-          cutOutSize: scanArea),
-      onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
-    );
-  }
-
-  void _onQRViewCreated(QRViewController controller) {
-    setState(() {
-      controller = controller;
-    });
-    controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData;
-      });
-    });
-  }
-
-  void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
-    log('${DateTime.now().toIso8601String()}_onPermissionSet $p');
-    if (!p) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('no Permission')),
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
   }
 }
