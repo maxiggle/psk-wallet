@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pkswallet/app/screens/send_token_sheet.dart';
 
 import 'package:pkswallet/app/screens/token_balance.dart';
 import 'package:pkswallet/utils/quick_send.dart';
@@ -422,7 +423,17 @@ class ButtonRow extends StatelessWidget {
           height: 87.63.h,
           width: 150.714.w,
           child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Scaffold.of(context).showBottomSheet(elevation: 1, (context) {
+                final TextEditingController textEditingController =
+                    TextEditingController();
+                String hintText = 'Address';
+                return SendTokenSheet(
+                  addressController: textEditingController,
+                  hintText: hintText,
+                );
+              });
+            },
             style: TextButton.styleFrom(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(radius),
@@ -446,54 +457,7 @@ class ButtonRow extends StatelessWidget {
           height: 87.63.h,
           width: 150.714.w,
           child: TextButton(
-            onPressed: () {
-              Scaffold.of(context).showBottomSheet(elevation: 1, (context) {
-                final TextEditingController textEditingController =
-                    TextEditingController();
-                String hintText = 'Address';
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0).r,
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.89.h,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SizedBox(
-                          height: 50.h,
-                        ),
-                        Center(
-                          child: Text(
-                            'Send',
-                            style: TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: font19,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            SizedBox(
-                              height: 100.h,
-                            ),
-                            Text('To',
-                                style: TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontSize: font19,
-                                    fontWeight: FontWeight.w600))
-                          ],
-                        ),
-                        AddressBar(
-                            textEditingController: textEditingController,
-                            hintText: hintText),
-                        Expanded(child: Container()),
-                        ElevatedButton(
-                            onPressed: () {}, child: const Text('Next'), style: ElevatedButton.styleFrom(),)
-                      ],
-                    ),
-                  ),
-                );
-              });
-            },
+            onPressed: () {},
             style: TextButton.styleFrom(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(radius),
@@ -547,7 +511,6 @@ class _AddressBarState extends State<AddressBar> {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: widget.textEditingController,
-      obscureText: !pwdVisibility,
       decoration: InputDecoration(
         hintText: widget.hintText,
         enabledBorder: OutlineInputBorder(
@@ -564,13 +527,6 @@ class _AddressBarState extends State<AddressBar> {
           ),
           borderRadius: BorderRadius.circular(25.0),
         ),
-        errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.red,
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(25.0),
-        ),
         focusedBorder: OutlineInputBorder(
           borderSide: const BorderSide(
             color: Colors.grey,
@@ -578,18 +534,6 @@ class _AddressBarState extends State<AddressBar> {
           ),
           borderRadius: BorderRadius.circular(25.0),
         ),
-        // suffixIcon: InkWell(
-        //   onTap: () => setState(
-        //     () => pwdVisibility = !pwdVisibility,
-        //   ),
-        //   child: Icon(
-        //     pwdVisibility
-        //         ? Icons.visibility_outlined
-        //         : Icons.visibility_off_outlined,
-        //     color: Colors.grey.shade400,
-        //     size: 18,
-        //   ),
-        // ),
       ),
       validator: (val) {
         if (val!.isEmpty) {

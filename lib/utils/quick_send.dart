@@ -20,6 +20,16 @@ class _QuickSendState extends State<QuickSend>
   bool permissionDenied = false;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   void afterFirstLayout(BuildContext context) {
     _fetchContacts();
   }
