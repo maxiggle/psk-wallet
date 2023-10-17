@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pkswallet/app/screens/receive_token_sheet.dart';
 import 'package:pkswallet/app/screens/send_token_sheet.dart';
 
 import 'package:pkswallet/app/screens/token_balance.dart';
@@ -336,10 +337,6 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Transactions(
                           transactionData: transactionData,
-                          includeModal: (index) {
-                            displayTransactionModal(
-                                context, transactionData[index]);
-                          },
                         ),
                       ],
                     ),
@@ -353,61 +350,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void displayTransactionModal(BuildContext context, TransactionData trnxData) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            return SizedBox(
-              height: MediaQuery.of(context).size.height * 0.7,
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 25.h,
-                  ),
-                  SvgPicture.asset(
-                    trnxData.coinImage,
-                    height: MediaQuery.of(context).size.height * 0.2555.h,
-                  ),
-                  SizedBox(
-                    height: 50.h,
-                  ),
-                  Column(
-                    children: [
-                      Text(
-                        'Name:',
-                        style: TextStyle(
-                          fontSize: font14,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w600,
-                          color: black,
-                        ),
-                      ),
-                      const Spacer(),
-                      Text(
-                        trnxData.ensName,
-                        style: TextStyle(
-                          fontSize: font14,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w500,
-                          color: black,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 5.w,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
 
@@ -457,7 +402,11 @@ class ButtonRow extends StatelessWidget {
           height: 87.63.h,
           width: 150.714.w,
           child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Scaffold.of(context).showBottomSheet((context) {
+                return const ReceiveTokenSheet();
+              });
+            },
             style: TextButton.styleFrom(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(radius),

@@ -27,7 +27,7 @@ class _SendTokenSheetState extends State<SendTokenSheet> {
     "zero": "Sending amount must be greater than zero",
   };
   BigInt actualAmount = BigInt.zero;
-  BigInt amount = BigInt.zero;
+  BigInt? amount;
   @override
   void initState() {
     super.initState();
@@ -40,7 +40,14 @@ class _SendTokenSheetState extends State<SendTokenSheet> {
     if (input.isEmpty || input == ".") {
       input = "0";
     }
-    amount = Decimal.parse(input) as BigInt;
+    amount = Decimal.parse(input).toBigInt();
+    if (amount == null) {
+      if (errorMessage != _errors["zero"]) {
+        setState(() {
+          errorMessage = _errors["zero"]!;
+        });
+      }
+    }
     if (setActualAmount) {}
     if (actualAmount == BigInt.zero) {
       if (errorMessage != _errors["zero"]) {
@@ -109,16 +116,7 @@ class _SendTokenSheetState extends State<SendTokenSheet> {
                 ],
                 style: const TextStyle(fontFamily: 'Inter', fontSize: 25),
                 textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    labelText: 'Enter Amount',
-                    labelStyle: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: font14,
-                        fontWeight: FontWeight.w500),
-                    focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(),
-                    )),
+                decoration: InputDecoration(),
                 onChanged: (val) {
                   _validateAmountInput(val);
                 },

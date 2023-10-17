@@ -32,6 +32,7 @@ dependencies:
   liquid_pull_to_refresh: ^3.0.1
   decimal: ^2.3.3
   web3dart: ^2.7.1
+  qr_code_scanner: ^1.0.1
   
 
   
