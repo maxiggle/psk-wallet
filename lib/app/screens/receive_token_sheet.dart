@@ -1,33 +1,16 @@
 import 'dart:async';
-import 'dart:developer';
-import 'dart:io';
 import 'dart:ui' as ui;
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-
-class ReceiveTokenSheet extends StatefulWidget {
-  const ReceiveTokenSheet({Key? key}) : super(key: key);
-
-  @override
-  State<ReceiveTokenSheet> createState() => _ReceiveTokenSheetState();
-}
 
 const String message =
     '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-Future<ui.Image> _loadOverlayImage() async {
-  final Completer<ui.Image> completer = Completer<ui.Image>();
-  final ByteData byteData = await rootBundle.load('assets/images/qr_eth.png');
-  ui.decodeImageFromList(byteData.buffer.asUint8List(), completer.complete);
-  return completer.future;
-}
 
 final FutureBuilder<ui.Image> qrFutureBuilder = FutureBuilder<ui.Image>(
   future: _loadOverlayImage(),
@@ -58,6 +41,19 @@ final FutureBuilder<ui.Image> qrFutureBuilder = FutureBuilder<ui.Image>(
     );
   },
 );
+Future<ui.Image> _loadOverlayImage() async {
+  final Completer<ui.Image> completer = Completer<ui.Image>();
+  final ByteData byteData = await rootBundle.load('assets/images/qr_eth.png');
+  ui.decodeImageFromList(byteData.buffer.asUint8List(), completer.complete);
+  return completer.future;
+}
+
+class ReceiveTokenSheet extends StatefulWidget {
+  const ReceiveTokenSheet({Key? key}) : super(key: key);
+
+  @override
+  State<ReceiveTokenSheet> createState() => _ReceiveTokenSheetState();
+}
 
 class _ReceiveTokenSheetState extends State<ReceiveTokenSheet> {
   @override
@@ -70,7 +66,7 @@ class _ReceiveTokenSheetState extends State<ReceiveTokenSheet> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SizedBox(
-              height: 50.h,
+              height: 25.h,
             ),
             Center(
               child: Text(
@@ -90,10 +86,47 @@ class _ReceiveTokenSheetState extends State<ReceiveTokenSheet> {
                     fontWeight: FontWeight.w600),
               ),
             ),
+            SizedBox(
+              height: 24.h,
+            ),
             Expanded(
-              child:
-                  Center(child: SizedBox(width: 280.w, child: qrFutureBuilder)),
-            )
+              child: Center(
+                child: SizedBox(width: 280.w, child: qrFutureBuilder),
+              ),
+            ),
+            SizedBox(
+              height: 10.h,
+            ),
+            TextButton(
+              onPressed: () async {
+                await Clipboard.setData(const ClipboardData(text: message))
+                    .then((value) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Copied to clipboard',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'Inter',
+                        fontSize: font14,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ));
+                });
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: lightGreen,
+              ),
+              child: Text(
+                'Copy to clipboard',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontFamily: 'Inter',
+                  fontSize: font14,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
           ],
         ),
       ),

@@ -8,7 +8,7 @@ import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
 
 class SendTokenSheet extends StatefulWidget {
-  SendTokenSheet(
+  const SendTokenSheet(
       {super.key, this.hintText, this.addressController, this.emailError});
   final TextEditingController? addressController;
   final String? hintText;
@@ -116,7 +116,7 @@ class _SendTokenSheetState extends State<SendTokenSheet> {
                 ],
                 style: const TextStyle(fontFamily: 'Inter', fontSize: 25),
                 textAlign: TextAlign.center,
-                decoration: InputDecoration(),
+                decoration: const InputDecoration(),
                 onChanged: (val) {
                   _validateAmountInput(val);
                 },

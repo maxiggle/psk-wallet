@@ -5,12 +5,125 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pkswallet/app/screens/receive_token_sheet.dart';
 import 'package:pkswallet/app/screens/send_token_sheet.dart';
-
 import 'package:pkswallet/app/screens/token_balance.dart';
-import 'package:pkswallet/utils/quick_send.dart';
 import 'package:pkswallet/app/screens/transaction.dart';
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
+import 'package:pkswallet/utils/quick_send.dart';
+
+bool isNotOpen = false;
+
+final List<String> items = [
+  'Item1',
+  'Item2',
+  'Item3',
+  'Item4',
+];
+
+class AddressBar extends StatefulWidget {
+  final String hintText;
+  final TextEditingController textEditingController;
+
+  const AddressBar(
+      {required this.textEditingController, required this.hintText, Key? key})
+      : super(key: key);
+
+  @override
+  State<AddressBar> createState() => _AddressBarState();
+}
+
+class ButtonRow extends StatelessWidget {
+  const ButtonRow({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        SizedBox(
+          height: 87.63.h,
+          width: 150.714.w,
+          child: TextButton(
+            onPressed: () {
+              Scaffold.of(context).showBottomSheet(elevation: 1, (context) {
+                final TextEditingController textEditingController =
+                    TextEditingController();
+                String hintText = 'Address';
+                return SendTokenSheet(
+                  addressController: textEditingController,
+                  hintText: hintText,
+                );
+              });
+            },
+            style: TextButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(radius / 2),
+              ),
+              backgroundColor: lightGreen,
+            ),
+            child: Text(
+              'Send',
+              style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: font19.sp,
+                  color: black,
+                  fontWeight: FontWeight.w500),
+            ),
+          ),
+        ),
+        const SizedBox(
+          width: 8.52,
+        ),
+        SizedBox(
+          height: 87.63.h,
+          width: 150.714.w,
+          child: TextButton(
+            onPressed: () {
+              Scaffold.of(context).showBottomSheet((context) {
+                return const ReceiveTokenSheet();
+              });
+            },
+            style: TextButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(radius),
+              ),
+              backgroundColor: ash,
+            ),
+            child: Text(
+              'Receive',
+              style: TextStyle(
+                  fontFamily: 'Inter', fontSize: font19.sp, color: black),
+            ),
+          ),
+        ),
+        const SizedBox(
+          width: 8.52,
+        ),
+        SizedBox(
+          height: 87.63.h,
+          width: 150.714.w,
+          child: TextButton(
+            onPressed: () {},
+            style: TextButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(radius),
+              ),
+              backgroundColor: ash,
+            ),
+            child: SvgPicture.asset('assets/images/add.svg'),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
 
 class TransactionData {
   final String coinImage;
@@ -29,32 +142,50 @@ class TransactionData {
       required this.amount});
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
+class _AddressBarState extends State<AddressBar> {
+  bool pwdVisibility = false;
   @override
-  State<HomePage> createState() => _HomePageState();
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: widget.textEditingController,
+      decoration: InputDecoration(
+        hintText: widget.hintText,
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.grey,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.red,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.grey,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+      ),
+      validator: (val) {
+        if (val!.isEmpty) {
+          return 'Required';
+        }
+        return null;
+      },
+    );
+  }
 }
-
-final List<String> items = [
-  'Item1',
-  'Item2',
-  'Item3',
-  'Item4',
-];
-
-bool isNotOpen = false;
 
 class _HomePageState extends State<HomePage> {
   String? selectedValue = items.first;
 
   late final ScrollController? scrollController;
-
-  @override
-  void initState() {
-    super.initState();
-    scrollController = ScrollController();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -354,142 +485,10 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     super.dispose();
   }
-}
-
-class ButtonRow extends StatelessWidget {
-  const ButtonRow({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        SizedBox(
-          height: 87.63.h,
-          width: 150.714.w,
-          child: TextButton(
-            onPressed: () {
-              Scaffold.of(context).showBottomSheet(elevation: 1, (context) {
-                final TextEditingController textEditingController =
-                    TextEditingController();
-                String hintText = 'Address';
-                return SendTokenSheet(
-                  addressController: textEditingController,
-                  hintText: hintText,
-                );
-              });
-            },
-            style: TextButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(radius),
-              ),
-              backgroundColor: lightGreen,
-            ),
-            child: Text(
-              'Send',
-              style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: font19.sp,
-                  color: black,
-                  fontWeight: FontWeight.w500),
-            ),
-          ),
-        ),
-        const SizedBox(
-          width: 8.52,
-        ),
-        SizedBox(
-          height: 87.63.h,
-          width: 150.714.w,
-          child: TextButton(
-            onPressed: () {
-              Scaffold.of(context).showBottomSheet((context) {
-                return const ReceiveTokenSheet();
-              });
-            },
-            style: TextButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(radius),
-              ),
-              backgroundColor: ash,
-            ),
-            child: Text(
-              'Receive',
-              style: TextStyle(
-                  fontFamily: 'Inter', fontSize: font19.sp, color: black),
-            ),
-          ),
-        ),
-        const SizedBox(
-          width: 8.52,
-        ),
-        SizedBox(
-          height: 87.63.h,
-          width: 150.714.w,
-          child: TextButton(
-            onPressed: () {},
-            style: TextButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(radius),
-              ),
-              backgroundColor: ash,
-            ),
-            child: SvgPicture.asset('assets/images/add.svg'),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class AddressBar extends StatefulWidget {
-  final String hintText;
-  final TextEditingController textEditingController;
-
-  const AddressBar(
-      {required this.textEditingController, required this.hintText, Key? key})
-      : super(key: key);
-
-  @override
-  State<AddressBar> createState() => _AddressBarState();
-}
-
-class _AddressBarState extends State<AddressBar> {
-  bool pwdVisibility = false;
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: widget.textEditingController,
-      decoration: InputDecoration(
-        hintText: widget.hintText,
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.grey,
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(25.0),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.red,
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(25.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.grey,
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(25.0),
-        ),
-      ),
-      validator: (val) {
-        if (val!.isEmpty) {
-          return 'Required';
-        }
-        return null;
-      },
-    );
+  void initState() {
+    super.initState();
+    scrollController = ScrollController();
   }
 }
