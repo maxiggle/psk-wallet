@@ -65,7 +65,11 @@ class _PhoneFieldScreenState extends State<PhoneFieldScreen> {
                       invalidNumberMessage: 'Invalid Phone Number!',
                       textAlignVertical: TextAlignVertical.center,
                       style: const TextStyle(fontSize: 25),
-                      onChanged: (phone) => phoneNumber = phone.completeNumber,
+                      onChanged: (phone) {
+                        setState(() {
+                          phoneNumber = phone.completeNumber;
+                        });
+                      },
                       initialCountryCode: 'IN',
                       flagsButtonPadding: const EdgeInsets.only(right: 10),
                       showDropdownIcon: false,
@@ -80,6 +84,7 @@ class _PhoneFieldScreenState extends State<PhoneFieldScreen> {
                   customPadding: EdgeInsets.only(
                       left: 12.r, right: 12.r, top: 17.r, bottom: 17.r),
                   onTap: () async {
+                    log(phoneNumber.toString());
                     if (isNullOrBlank(phoneNumber) ||
                         !_formKey.currentState!.validate()) {
                       showSnackBar('Please enter a valid phone number!');

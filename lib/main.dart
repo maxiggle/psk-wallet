@@ -1,20 +1,20 @@
-import 'package:flutter/material.dart';
-
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_phone_auth_handler/firebase_phone_auth_handler.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:pkswallet/app/screens/contacts.dart';
+import 'package:pkswallet/app/screens/create_account.dart';
 import 'package:pkswallet/app/screens/home_page.dart';
 import 'package:pkswallet/app/screens/phone_field_screen.dart';
 import 'package:pkswallet/app/screens/phone_otp.dart';
 import 'package:pkswallet/app/screens/send_token_by_contact.dart';
+
 import 'package:pkswallet/utils/transaction_details.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 import 'app/screens/onboarding.dart';
-import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,11 +39,7 @@ class MyApp extends StatelessWidget {
                 GoRoute(
                   path: '/',
                   builder: (BuildContext context, GoRouterState state) {
-                    if (user != null) {
-                      return const HomePage();
-                    } else {
-                      return const OnBoarding();
-                    }
+                    return const CreateAccount();
                   },
                 ),
                 GoRoute(
@@ -82,6 +78,13 @@ class MyApp extends StatelessWidget {
                 GoRoute(
                   path: "/send_token",
                   name: 'sendToken',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const SendTokenByContact();
+                  },
+                ),
+                GoRoute(
+                  path: "/CreateAccountScreen",
+                  name: 'CreateAccountScreen',
                   builder: (BuildContext context, GoRouterState state) {
                     return const SendTokenByContact();
                   },
