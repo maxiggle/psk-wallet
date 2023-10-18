@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pkswallet/app/providers/passkeys_provider.dart';
 import 'package:pkswallet/app/screens/contacts.dart';
 import 'package:pkswallet/app/screens/create_account.dart';
 import 'package:pkswallet/app/screens/home_page.dart';
@@ -13,15 +14,16 @@ import 'package:pkswallet/app/screens/send_token_by_contact.dart';
 import 'package:pkswallet/utils/transaction_details.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-
-import 'app/screens/onboarding.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => PasskeysProvider()),
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

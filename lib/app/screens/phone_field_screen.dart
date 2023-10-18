@@ -4,8 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:pkswallet/app/theme/colors.dart';
-
 import 'package:pkswallet/utils/firebase_helpers.dart';
+
 
 class PhoneFieldScreen extends StatefulWidget {
   static const id = 'AuthenticationScreen';
@@ -26,6 +26,7 @@ class _PhoneFieldScreenState extends State<PhoneFieldScreen> {
 
   @override
   Widget build(BuildContext context) {
+   
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
