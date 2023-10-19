@@ -2,10 +2,10 @@ import 'package:easy_container/easy_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/utils/firebase_helpers.dart';
-
 
 class PhoneFieldScreen extends StatefulWidget {
   static const id = 'AuthenticationScreen';
@@ -26,7 +26,6 @@ class _PhoneFieldScreenState extends State<PhoneFieldScreen> {
 
   @override
   Widget build(BuildContext context) {
-   
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -52,26 +51,29 @@ class _PhoneFieldScreenState extends State<PhoneFieldScreen> {
                   height: 100.h,
                   borderRadius: 25,
                   color: Colors.transparent,
+                  customPadding: EdgeInsets.all(10.r),
                   child: Form(
                     key: _formKey,
                     child: IntlPhoneField(
                       cursorColor: black,
                       decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          hintText: '000-000-0000',
-                          hintMaxLines: 1,
-                          alignLabelWithHint: true,
-                          counter: Offstage()),
+                        border: InputBorder.none,
+                        hintText: '000-000-0000',
+                        hintMaxLines: 1,
+                        counter: Offstage(),
+                      ),
                       autofocus: true,
-                      invalidNumberMessage: 'Invalid Phone Number!',
                       textAlignVertical: TextAlignVertical.center,
-                      style: const TextStyle(fontSize: 25),
+                      style: const TextStyle(
+                          fontSize: 24,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400),
                       onChanged: (phone) {
                         setState(() {
                           phoneNumber = phone.completeNumber;
                         });
                       },
-                      initialCountryCode: 'IN',
+                      initialCountryCode: 'NG',
                       flagsButtonPadding: const EdgeInsets.only(right: 10),
                       showDropdownIcon: false,
                       keyboardType: TextInputType.phone,

@@ -76,11 +76,11 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
   }
 
   // snackBar Widget
-  snackBar(String? message) {
-    return ScaffoldMessenger.of(context).showSnackBar(
+  void showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message!),
-        duration: const Duration(seconds: 2),
+        content: Text(message),
+        duration: Duration(seconds: 2),
       ),
     );
   }
@@ -89,13 +89,6 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
   Widget build(BuildContext context) {
     return SafeArea(
         child: FirebasePhoneAuthHandler(
-      recaptchaVerifierForWebProvider: (isWeb) {
-        if (isWeb) {
-          return RecaptchaVerifier(
-            auth: FirebaseAuthPlatform.instance,
-          );
-        }
-      },
       phoneNumber: widget.phoneNumber!,
       signOutOnSuccessfulVerification: false,
       sendOtpOnInitialize: true,
@@ -135,14 +128,14 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
         switch (authException.code) {
           case 'invalid-phone-number':
             // invalid phone number
-            return showSnackBar('Invalid phone number!');
+            showSnackBar('Invalid phone number!');
+            break; // Add a break statement here to prevent falling through to the default case.
           case 'invalid-verification-code':
             // invalid otp entered
-            return showSnackBar('The entered OTP is invalid!');
-          // handle other error codes
+            showSnackBar('The entered OTP is invalid!');
+            break; // Add a break statement here to prevent falling through to the default case.
           default:
             showSnackBar('Something went wrong!');
-          // handle error further if needed
         }
       },
       onError: (error, stackTrace) {
@@ -306,7 +299,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
                           setState(
                             () {
                               hasError = false;
-                              snackBar("OTP Verified!!");
+                              showSnackBar("OTP Verified!!");
                               context.go('/CreateAccountScreen');
                             },
                           );

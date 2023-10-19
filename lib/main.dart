@@ -7,6 +7,7 @@ import 'package:pkswallet/app/providers/passkeys_provider.dart';
 import 'package:pkswallet/app/screens/contacts.dart';
 import 'package:pkswallet/app/screens/create_account.dart';
 import 'package:pkswallet/app/screens/home_page.dart';
+import 'package:pkswallet/app/screens/onboarding.dart';
 import 'package:pkswallet/app/screens/phone_field_screen.dart';
 import 'package:pkswallet/app/screens/phone_otp.dart';
 import 'package:pkswallet/app/screens/send_token_by_contact.dart';
@@ -41,7 +42,11 @@ class MyApp extends StatelessWidget {
                 GoRoute(
                   path: '/',
                   builder: (BuildContext context, GoRouterState state) {
-                    return const CreateAccount();
+                    if (user != null) {
+                      return const HomePage();
+                    } else {
+                      return const OnBoarding();
+                    }
                   },
                 ),
                 GoRoute(
@@ -88,7 +93,7 @@ class MyApp extends StatelessWidget {
                   path: "/CreateAccountScreen",
                   name: 'CreateAccountScreen',
                   builder: (BuildContext context, GoRouterState state) {
-                    return const SendTokenByContact();
+                    return const CreateAccount();
                   },
                 ),
               ],

@@ -7,6 +7,8 @@ class CreateAccount extends StatefulWidget {
   State<CreateAccount> createState() => _CreateAccountState();
 }
 
+final TextEditingController controller = TextEditingController();
+
 class _CreateAccountState extends State<CreateAccount> {
   @override
   Widget build(BuildContext context) {
@@ -32,10 +34,11 @@ class _CreateAccountState extends State<CreateAccount> {
                     child: Container(
                   decoration:
                       BoxDecoration(borderRadius: BorderRadius.circular(25)),
-                  child: const TextField(
+                  child: TextField(
+                    controller: controller,
                     maxLines: 1,
                     textAlign: TextAlign.center,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         contentPadding: EdgeInsets.all(8),
                         hintText: 'Choose a username',
                         hintStyle: TextStyle(
