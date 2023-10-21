@@ -10,7 +10,8 @@ import 'package:pkswallet/app/screens/home_page.dart';
 import 'package:pkswallet/app/screens/onboarding.dart';
 import 'package:pkswallet/app/screens/phone_field_screen.dart';
 import 'package:pkswallet/app/screens/phone_otp.dart';
-import 'package:pkswallet/app/screens/send_token_by_contact.dart';
+import 'package:pkswallet/app/screens/receive_token_sheet.dart';
+import 'package:pkswallet/app/screens/send_token_sheet.dart';
 
 import 'package:pkswallet/utils/transaction_details.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -79,6 +80,7 @@ class MyApp extends StatelessWidget {
                   name: 'contactScreen',
                   builder: (BuildContext context, GoRouterState state) {
                     final contacts = state.extra as List<Contact>;
+
                     return ContactsScreen(contacts: contacts);
                   },
                 ),
@@ -86,7 +88,16 @@ class MyApp extends StatelessWidget {
                   path: "/send_token",
                   name: 'sendToken',
                   builder: (BuildContext context, GoRouterState state) {
-                    return const SendTokenByContact();
+                    return SendTokenSheet(
+                      contactName: state.extra as String,
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: "/receive_token",
+                  name: 'receiveToken',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const ReceiveTokenSheet();
                   },
                 ),
                 GoRoute(
@@ -104,7 +115,6 @@ class MyApp extends StatelessWidget {
                 child: MaterialApp.router(
                   debugShowCheckedModeBanner: false,
                   title: 'pks wallet',
-                  theme: ThemeData.light().copyWith(),
                   routerConfig: router,
                 ),
               ),
