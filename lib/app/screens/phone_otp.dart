@@ -1,15 +1,14 @@
-import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
-import 'package:firebase_phone_auth_handler/firebase_phone_auth_handler.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+
+import 'package:firebase_phone_auth_handler/firebase_phone_auth_handler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-import 'dart:async';
-
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
-
 import 'package:pkswallet/utils/firebase_helpers.dart';
 
 class PinCodeVerificationScreen extends StatefulWidget {

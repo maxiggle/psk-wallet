@@ -1,10 +1,10 @@
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pkswallet/app/screens/receive_token_sheet.dart';
-import 'package:pkswallet/app/screens/send_token_sheet.dart';
+
 import 'package:pkswallet/app/screens/token_balance.dart';
 import 'package:pkswallet/app/screens/transaction.dart';
 import 'package:pkswallet/app/theme/colors.dart';
@@ -52,7 +52,7 @@ class ButtonRow extends StatelessWidget {
           width: 150.714.w,
           child: TextButton(
             onPressed: () {
-              context.push('/send_token', extra: 'Enter an address');
+              context.push('/send_token', extra: '');
             },
             style: TextButton.styleFrom(
               shape: RoundedRectangleBorder(
@@ -157,25 +157,21 @@ class _AddressBarState extends State<AddressBar> {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: widget.textEditingController,
+      textAlign: TextAlign.center,
       decoration: InputDecoration(
+        fillColor: ash,
+        filled: true,
         hintText: widget.hintText,
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(
-            color: Colors.grey,
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.red,
+            color: Colors.white,
             width: 1,
           ),
           borderRadius: BorderRadius.circular(15.0),
         ),
         focusedBorder: OutlineInputBorder(
             borderSide: const BorderSide(
-              color: Colors.grey,
+              color: Colors.white,
               width: 1,
             ),
             borderRadius: BorderRadius.circular(15.0)),
@@ -414,7 +410,7 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 24,
                 ),
-                const TokenBalance(),
+                TokenBalance(),
                 SizedBox(
                   height: 24.h,
                 ),
