@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -50,12 +48,12 @@ class _ContactsScreenState extends State<ContactsScreen> {
                     itemCount: widget.contacts!.length,
                     itemBuilder: (context, index) {
                       final contact = widget.contacts![index];
+                      final name = contact.displayName;
                       return ListTile(
                           leading: avatar(contact, 18.0),
-                          title: Text(contact.displayName),
+                          title: Text(name),
                           onTap: () {
-                            context.push('/contactScreen',
-                                extra: widget.contacts);
+                            context.push('/send_token', extra: name);
                           });
                     }))
           ]),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CreateAccount extends StatefulWidget {
   const CreateAccount({super.key});
@@ -60,7 +61,9 @@ class _CreateAccountState extends State<CreateAccount> {
                 SizedBox(
                   height: 45,
                   child: TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.go('/home');
+                    },
                     style: TextButton.styleFrom(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12)),

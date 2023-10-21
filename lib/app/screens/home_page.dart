@@ -52,15 +52,7 @@ class ButtonRow extends StatelessWidget {
           width: 150.714.w,
           child: TextButton(
             onPressed: () {
-              Scaffold.of(context).showBottomSheet(elevation: 1, (context) {
-                final TextEditingController textEditingController =
-                    TextEditingController();
-                String hintText = 'Address';
-                return SendTokenSheet(
-                  addressController: textEditingController,
-                  hintText: hintText,
-                );
-              });
+              context.push('/send_token', extra: 'Enter an address');
             },
             style: TextButton.styleFrom(
               shape: RoundedRectangleBorder(
@@ -86,9 +78,7 @@ class ButtonRow extends StatelessWidget {
           width: 150.714.w,
           child: TextButton(
             onPressed: () {
-              Scaffold.of(context).showBottomSheet((context) {
-                return const ReceiveTokenSheet();
-              });
+              context.push('/receive_token');
             },
             style: TextButton.styleFrom(
               shape: RoundedRectangleBorder(
