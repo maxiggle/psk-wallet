@@ -79,76 +79,47 @@ class _ReceiveTokenSheetState extends State<ReceiveTokenSheet> {
                 height: MediaQuery.of(context).size.height * 0.89.h,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      height: 25.h,
-                    ),
                     Center(
-                      child: Text(
-                        'Fund your',
-                        style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: font51,
-                            fontWeight: FontWeight.w600),
+                      child: SizedBox(
+                        width: 280.w,
+                        child: qrFutureBuilder,
                       ),
                     ),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    Center(
-                      child: Text(
-                        'PKS Wallet',
-                        style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 40.sp,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 24.h,
-                    ),
-                    Expanded(
-                      child: Center(
-                        child: SizedBox(width: 280.w, child: qrFutureBuilder),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        await Clipboard.setData(
-                                const ClipboardData(text: message))
-                            .then((value) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              'Copied to clipboard',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontFamily: 'Inter',
-                                fontSize: font14,
-                                fontWeight: FontWeight.w400,
+                    SizedBox(height: 50.h),
+                    Container(
+                        height: 85.h,
+                        width: 280.w,
+                        padding: EdgeInsets.symmetric(horizontal: 10.w),
+                        decoration: BoxDecoration(
+                          color: white,
+                          borderRadius: BorderRadius.circular(radius),
+                          border: Border.all(color: black),
+                        ),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                                width: 280.w,
+                                child: const Text(message,
+                                    style: TextStyle(
+                                        color: black,
+                                        overflow: TextOverflow.ellipsis))),
+                            Spacer(),
+                            TextButton(
+                              onPressed: () {},
+                              style: TextButton.styleFrom(
+                                  backgroundColor: lightGreen,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(radius))),
+                              child: const Text(
+                                'copy',
+                                style: TextStyle(color: black),
                               ),
                             ),
-                          ));
-                        });
-                      },
-                      style: TextButton.styleFrom(
-                          backgroundColor: lightGreen,
-                          minimumSize: const Size.fromHeight(50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(radius),
-                          )),
-                      child: Text(
-                        'Copy to clipboard',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'Inter',
-                          fontSize: font14,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
+                          ],
+                        )),
                   ],
                 ),
               ),
