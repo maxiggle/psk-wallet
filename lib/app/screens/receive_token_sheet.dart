@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gradients/gradients.dart';
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -61,9 +62,9 @@ class _ReceiveTokenSheetState extends State<ReceiveTokenSheet> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: white,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: white,
           elevation: 0,
           leading: BackButton(
             color: black,
@@ -82,44 +83,75 @@ class _ReceiveTokenSheetState extends State<ReceiveTokenSheet> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Center(
-                      child: SizedBox(
-                        width: 280.w,
+                      child: Container(
+                        padding: const EdgeInsets.all(10.0).r,
+                        decoration: BoxDecoration(
+                            color: white,
+                            borderRadius: BorderRadius.circular(10)),
                         child: qrFutureBuilder,
                       ),
                     ),
                     SizedBox(height: 50.h),
                     Container(
-                        height: 85.h,
-                        width: 280.w,
-                        padding: EdgeInsets.symmetric(horizontal: 10.w),
-                        decoration: BoxDecoration(
-                          color: white,
-                          borderRadius: BorderRadius.circular(radius),
-                          border: Border.all(color: black),
-                        ),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                                width: 280.w,
-                                child: const Text(message,
-                                    style: TextStyle(
-                                        color: black,
-                                        overflow: TextOverflow.ellipsis))),
-                            Spacer(),
-                            TextButton(
-                              onPressed: () {},
-                              style: TextButton.styleFrom(
-                                  backgroundColor: lightGreen,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(radius))),
-                              child: const Text(
-                                'copy',
-                                style: TextStyle(color: black),
+                      width: 280.w,
+                      padding: EdgeInsets.symmetric(horizontal: 10.w),
+                      margin: EdgeInsets.symmetric(horizontal: 15.w),
+                      decoration: BoxDecoration(
+                        color: white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey.shade400),
+                      ),
+                      child: Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Your Ethereum address',
+                                style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    color: const Color(0xff32353E)
+                                        .withOpacity(0.5),
+                                    overflow: TextOverflow.ellipsis),
                               ),
+                              SizedBox(
+                                height: 5.h,
+                              ),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 280.w,
+                                    child: const Text(
+                                      message,
+                                      style: TextStyle(
+                                          color: Color(0xff32353E),
+                                          overflow: TextOverflow.ellipsis),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const Spacer(),
+                          TextButton(
+                            onPressed: () {
+                              Clipboard.setData(
+                                  const ClipboardData(text: message));
+                            },
+                            style: TextButton.styleFrom(
+                                backgroundColor: const Color(0xff32353E),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(radius))),
+                            child: const Text(
+                              'copy',
+                              style:
+                                  TextStyle(color: white, fontFamily: 'Inter'),
                             ),
-                          ],
-                        )),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -130,3 +162,19 @@ class _ReceiveTokenSheetState extends State<ReceiveTokenSheet> {
     );
   }
 }
+
+
+  //  const Spacer(),
+  //                             TextButton(
+  //                               onPressed: () {},
+  //                               style: TextButton.styleFrom(
+  //                                   backgroundColor: const Color(0xff32353E),
+  //                                   shape: RoundedRectangleBorder(
+  //                                       borderRadius:
+  //                                           BorderRadius.circular(radius))),
+  //                               child: const Text(
+  //                                 'copy',
+  //                                 style: TextStyle(
+  //                                     color: white, fontFamily: 'Inter'),
+  //                               ),
+  //                             ),

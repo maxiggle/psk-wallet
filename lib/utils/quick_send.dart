@@ -36,10 +36,13 @@ class _QuickSendState extends State<QuickSend>
 
   Future _fetchContacts() async {
     if (!await FlutterContacts.requestPermission()) {
-      setState(() {
-        contacts = null;
-        permissionDenied = true;
-      });
+      if (mounted) {
+        setState(() {
+          contacts = null;
+          permissionDenied = true;
+        });
+      }
+
       return;
     }
 
@@ -64,9 +67,11 @@ class _QuickSendState extends State<QuickSend>
     final contact = withPhotos
         ? (await FlutterContacts.getContacts(withThumbnail: true)).toList()
         : (await FlutterContacts.getContacts()).toList();
-    setState(() {
-      contacts = contact;
-    });
+    if (mounted) {
+      setState(() {
+        contacts = contact;
+      });
+    }
   }
 
   @override

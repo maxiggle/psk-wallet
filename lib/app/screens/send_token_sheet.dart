@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -93,13 +91,19 @@ class _SendTokenSheetState extends State<SendTokenSheet> {
                   AddressBar(
                     textEditingController: _contactController,
                     hintText: 'Enter Address',
+                    hintTextStyle:
+                        TextStyle(fontFamily: 'Inter', fontSize: font19),
                   ),
                   SizedBox(
                     height: 50.h,
                   ),
                   SendTokenButton(
-                    buttonText: selectedValue ?? 'Token',
+                    buttonText: selectedValue ?? 'Select Token',
                     color: ash,
+                    buttonTextStyle: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: font19,
+                        color: Colors.grey.shade600),
                     onPressed: () {
                       TokenModal(_);
                     },
@@ -136,6 +140,8 @@ class _SendTokenSheetState extends State<SendTokenSheet> {
                       decoration: InputDecoration(
                         focusColor: white,
                         hintText: '0.0',
+                        hintStyle:
+                            const TextStyle(fontFamily: 'Inter', fontSize: 51),
                         enabledBorder: OutlineInputBorder(
                           borderSide: const BorderSide(
                             color: Colors.white,
@@ -154,12 +160,12 @@ class _SendTokenSheetState extends State<SendTokenSheet> {
                           RegExp(r'^\.?\d*(?<!\.)\.?\d*'),
                         )
                       ]),
-                  const SizedBox(
-                    height: 50,
-                  ),
+                  Expanded(child: Container()),
                   SendTokenButton(
                     buttonText: 'Send',
                     color: lightGreen,
+                    buttonTextStyle: TextStyle(
+                        color: black, fontFamily: 'Inter', fontSize: font19.sp),
                     onPressed: () {},
                   )
                 ],
@@ -179,14 +185,16 @@ class _SendTokenSheetState extends State<SendTokenSheet> {
         builder: (context) {
           return Wrap(children: <Widget>[
             Container(
+              padding: const EdgeInsets.fromLTRB(23.31, 24.34, 13.51, 24.34).r,
               decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(radius / 2),
-                      topRight: Radius.circular(radius / 2))),
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(radius / 2),
+                  topRight: Radius.circular(radius / 2),
+                ),
+              ),
               child: ListView.builder(
                 shrinkWrap: true,
-                padding: const EdgeInsets.only(top: 20, left: 20, right: 20).r,
                 itemBuilder: (context, index) {
                   return Column(
                     children: [
@@ -274,29 +282,27 @@ class SendTokenButton extends StatelessWidget {
   final String buttonText;
   final Function()? onPressed;
   final Color? color;
+  final TextStyle? buttonTextStyle;
   const SendTokenButton(
-      {super.key, required this.buttonText, this.onPressed, this.color});
+      {super.key,
+      required this.buttonText,
+      this.onPressed,
+      this.color,
+      this.buttonTextStyle});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        minimumSize: const Size.fromHeight(50),
+        padding: const EdgeInsets.fromLTRB(23.31, 24.34, 13.51, 24.34).r,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(radius),
         ),
         elevation: 0,
         backgroundColor: color,
       ),
-      child: Text(
-        buttonText,
-        style: TextStyle(
-            color: black,
-            fontFamily: 'Inter',
-            fontSize: font19,
-            fontWeight: FontWeight.w500),
-      ),
+      child: Text(buttonText, style: buttonTextStyle),
     );
   }
 }

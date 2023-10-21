@@ -24,12 +24,14 @@ final List<String> items = [
 class AddressBar extends StatefulWidget {
   final String hintText;
   final TextEditingController? textEditingController;
+  final TextStyle? hintTextStyle;
 
   // Add an optional parameter for the initial value
   final String initialValue;
 
   const AddressBar({
     required this.hintText,
+    this.hintTextStyle,
     this.textEditingController,
     this.initialValue = "0.0", // Provide a default initial value
     Key? key,
@@ -156,25 +158,27 @@ class _AddressBarState extends State<AddressBar> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      cursorColor: black,
       controller: widget.textEditingController,
       textAlign: TextAlign.center,
       decoration: InputDecoration(
         fillColor: ash,
         filled: true,
         hintText: widget.hintText,
+        hintStyle: widget.hintTextStyle,
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(
             color: Colors.white,
             width: 1,
           ),
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(radius),
         ),
         focusedBorder: OutlineInputBorder(
             borderSide: const BorderSide(
               color: Colors.white,
               width: 1,
             ),
-            borderRadius: BorderRadius.circular(15.0)),
+            borderRadius: BorderRadius.circular(radius)),
       ),
       validator: (val) {
         if (val!.isEmpty) {
