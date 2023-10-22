@@ -19,10 +19,8 @@ import 'package:pkswallet/app/screens/phone_otp.dart';
 import 'package:pkswallet/app/screens/receive_token_sheet.dart';
 import 'package:pkswallet/app/screens/send_token_sheet.dart';
 
-// import 'package:pkswallet/utils/tokenData.dart';
-// import 'package:pkswallet/utils/transactionData.dart';
-
-import 'package:pks_4337_sdk/src/modules/covalent_api/covalent_api.dart' as cov;
+import 'package:pkswallet/utils/tokenData.dart';
+import 'package:pkswallet/utils/transactionData.dart';
 
 import 'package:pkswallet/utils/transaction_details.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -47,10 +45,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Future.wait([
-          rootBundle.loadString('assets/.env'),
-          FirebaseAuth.instance.authStateChanges().first
-        ]),
+        future: FirebaseAuth.instance.authStateChanges().first,
         builder: (context, snapshot) {
           final cKey = dotenv.get('CKEY');
           final walletAddress = context.read<WalletProvider>().wallet.address;
@@ -71,47 +66,46 @@ class MyApp extends StatelessWidget {
                       return FutureBuilder(
                         future: context
                             .read<WalletProvider>()
-                            .getBlockchainDataForAddress(walletAddress, cKey),
+                            .getBlockchainDataForAddress(withEns, cKey),
                         builder: (context, snapshot) {
-                          List<cov.Token> tk = snapshot.data?[1];
-                          List<cov.Transaction> tx = snapshot.data?[2];
+                          // List<cov.Token> tk = snapshot.data?[1];
+                          // List<cov.Transaction> tx = snapshot.data?[2];
 
-                          List<TokenData> td = tk.map((e) {
-                            return TokenData(
-                              contractAddress: e.contractAddress,
-                              quoteRate: e.quoteRate.toString(),
-                              balance: e.balance?.getInEther.toString(),
-                              tokenBalanceInUSD: e.quoteRate.toString(),
-                              contractName: e.contractName,
-                              contractTickerSymbol: e.contractTickerSymbol,
-                              logoUrl: e.logoUrl,
-                            );
-                          }).toList();
+                          // List<TokenData> td = tk.map((e) {
+                          //   return TokenData(
+                          //     contractAddress: e.contractAddress,
+                          //     quoteRate: e.quoteRate.toString(),
+                          //     balance: e.balance?.getInEther.toString(),
+                          //     tokenBalanceInUSD: e.quoteRate.toString(),
+                          //     contractName: e.contractName,
+                          //     contractTickerSymbol: e.contractTickerSymbol,
+                          //     logoUrl: e.logoUrl,
+                          //   );
+                          // }).toList();
 
-                          List<TransactionData> txd = tx.map((e) {
-                            return TransactionData(
-                                coinImage: e.transfers?[0].logoUrl,
-                                ensName: e.toAddressLabel,
-                                txHash: e.txHash,
-                                type: TransactionType.send,
-                                status: e.successful!
-                                    ? TransactionStatus.success
-                                    : TransactionStatus.failed,
-                                transactionTime: e.blockSignedAt,
-                                amount: e.value);
-                          }).toList();
+                          // List<TransactionData> txd = tx.map((e) {
+                          //   return TransactionData(
+                          //       coinImage: e.transfers?[0].logoUrl,
+                          //       ensName: e.toAddressLabel,
+                          //       txHash: e.txHash,
+                          //       type: TransactionType.send,
+                          //       status: e.successful!
+                          //           ? TransactionStatus.success
+                          //           : TransactionStatus.failed,
+                          //       transactionTime: e.blockSignedAt,
+                          //       amount: e.value);
+                          // }).toList();
 
-                          if (!snapshot.hasData) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          } else {
-                            return HomePage(
-                              balance: snapshot.data?[0] as EtherAmount,
-                              tokenData: td,
-                              transactionData: txd,
-                            );
-                          }
+                          // if (!snapshot.hasData) {
+                          //   return const Center(
+                          //     child: CircularProgressIndicator(),
+                          //   );
+                          // } else {
+                          return HomePage(
+                            balance: EtherAmount.zero(),
+                            tokenData: token,
+                            transactionData: transactionData,
+                          );
                         },
                       );
                     } else {
@@ -125,46 +119,45 @@ class MyApp extends StatelessWidget {
                     return FutureBuilder(
                       future: context
                           .read<WalletProvider>()
-                          .getBlockchainDataForAddress(walletAddress, cKey),
+                          .getBlockchainDataForAddress(withEns, cKey),
                       builder: (context, snapshot) {
-                        List<cov.Token> tk = snapshot.data?[1];
-                        List<cov.Transaction> tx = snapshot.data?[2];
+                        // List<cov.Token> tk = snapshot.data?[1];
+                        // List<cov.Transaction> tx = snapshot.data?[2];
 
-                        List<TokenData> td = tk.map((e) {
-                          return TokenData(
-                            contractAddress: e.contractAddress,
-                            quoteRate: e.quoteRate.toString(),
-                            balance: e.balance?.getInEther.toString(),
-                            tokenBalanceInUSD: e.quoteRate.toString(),
-                            contractName: e.contractName,
-                            contractTickerSymbol: e.contractTickerSymbol,
-                            logoUrl: e.logoUrl,
-                          );
-                        }).toList();
+                        // List<TokenData> td = tk.map((e) {
+                        //   return TokenData(
+                        //     contractAddress: e.contractAddress,
+                        //     quoteRate: e.quoteRate.toString(),
+                        //     balance: e.balance?.getInEther.toString(),
+                        //     tokenBalanceInUSD: e.quoteRate.toString(),
+                        //     contractName: e.contractName,
+                        //     contractTickerSymbol: e.contractTickerSymbol,
+                        //     logoUrl: e.logoUrl,
+                        //   );
+                        // }).toList();
 
-                        List<TransactionData> txd = tx.map((e) {
-                          return TransactionData(
-                              coinImage: e.transfers?[0].logoUrl,
-                              ensName: e.toAddressLabel,
-                              txHash: e.txHash,
-                              type: TransactionType.send,
-                              status: e.successful!
-                                  ? TransactionStatus.success
-                                  : TransactionStatus.failed,
-                              transactionTime: e.blockSignedAt,
-                              amount: e.value);
-                        }).toList();
-                        if (!snapshot.hasData) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else {
-                          return HomePage(
-                            balance: snapshot.data?[0] as EtherAmount,
-                            tokenData: td,
-                            transactionData: txd,
-                          );
-                        }
+                        // List<TransactionData> txd = tx.map((e) {
+                        //   return TransactionData(
+                        //       coinImage: e.transfers?[0].logoUrl,
+                        //       ensName: e.toAddressLabel,
+                        //       txHash: e.txHash,
+                        //       type: TransactionType.send,
+                        //       status: e.successful!
+                        //           ? TransactionStatus.success
+                        //           : TransactionStatus.failed,
+                        //       transactionTime: e.blockSignedAt,
+                        //       amount: e.value);
+                        // }).toList();
+                        // if (!snapshot.hasData) {
+                        //   return const Center(
+                        //     child: CircularProgressIndicator(),
+                        //   );
+                        // } else {
+                        return HomePage(
+                          balance: EtherAmount.zero(),
+                          tokenData: token,
+                          transactionData: transactionData,
+                        );
                       },
                     );
                   },
@@ -188,30 +181,29 @@ class MyApp extends StatelessWidget {
                     return FutureBuilder(
                       future: context
                           .read<WalletProvider>()
-                          .getBlockchainDataForAddress(walletAddress, cKey),
+                          .getBlockchainDataForAddress(withEns, cKey),
                       builder: (context, snapshot) {
-                        List<cov.Transaction> tx = snapshot.data?[2];
-                        List<TransactionData> txd = tx.map((e) {
-                          return TransactionData(
-                              coinImage: e.transfers?[0].logoUrl,
-                              ensName: e.toAddressLabel,
-                              txHash: e.txHash,
-                              type: TransactionType.send,
-                              status: e.successful!
-                                  ? TransactionStatus.success
-                                  : TransactionStatus.failed,
-                              transactionTime: e.blockSignedAt,
-                              amount: e.value);
-                        }).toList();
-                        if (!snapshot.hasData) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else {
-                          return TransactionDetails(
-                            transactionData: txd,
-                          );
-                        }
+                        // List<cov.Transaction> tx = snapshot.data?[2];
+                        // List<TransactionData> txd = tx.map((e) {
+                        //   return TransactionData(
+                        //       coinImage: e.transfers?[0].logoUrl,
+                        //       ensName: e.toAddressLabel,
+                        //       txHash: e.txHash,
+                        //       type: TransactionType.send,
+                        //       status: e.successful!
+                        //           ? TransactionStatus.success
+                        //           : TransactionStatus.failed,
+                        //       transactionTime: e.blockSignedAt,
+                        //       amount: e.value);
+                        // }).toList();
+                        // if (!snapshot.hasData) {
+                        //   return const Center(
+                        //     child: CircularProgressIndicator(),
+                        //   );
+                        // } else {
+                        return TransactionDetails(
+                          transactionData: transactionData,
+                        );
                       },
                     );
                   },
@@ -255,7 +247,7 @@ class MyApp extends StatelessWidget {
                     final response = context
                         .read<WalletProvider>()
                         .getTokensForAddress(cKey, walletAddress, chain);
-                    return const CryptoDetails(tokenData: null);
+                    return CryptoDetails(tokenData: token);
                   },
                 ),
               ],

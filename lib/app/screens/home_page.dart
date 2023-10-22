@@ -9,6 +9,7 @@ import 'package:pkswallet/app/screens/token_balance.dart';
 import 'package:pkswallet/app/screens/transaction.dart';
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
+import 'package:pkswallet/utils/globals.dart';
 import 'package:pkswallet/utils/quick_send.dart';
 import 'package:provider/provider.dart';
 import 'package:web3dart/web3dart.dart';
@@ -106,9 +107,10 @@ class ButtonRow extends StatelessWidget {
               width: 150.714.w,
               child: TextButton(
                 onPressed: () async {
-                  await context
-                      .read<WalletProvider>()
-                      .register('Gef', '080012345457');
+                  // await context
+                  //     .read<WalletProvider>()
+                  //     .register('Gef', '080012345457');
+                  Globals.auth.signOut();
                 },
                 style: TextButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -238,7 +240,7 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 SizedBox(height: 25.56.h / 2),
                                 Text(
-                                  'Hey, ${context.read<WalletProvider>().wallet.address.ens ?? context.read<WalletProvider>().passKeyPair?.name}!',
+                                  'Hey, Geffy!',
                                   style: TextStyle(
                                     fontFamily: 'Inter',
                                     fontSize: font19,
@@ -305,7 +307,7 @@ class _HomePageState extends State<HomePage> {
                             Padding(
                               padding: const EdgeInsets.only(top: 45.3).r,
                               child: Text(
-                                '+\$233',
+                                '+\$0',
                                 style: TextStyle(
                                     fontFamily: 'Inter',
                                     fontSize: font14.sp,

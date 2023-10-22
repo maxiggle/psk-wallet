@@ -12,6 +12,7 @@ import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:web3dart/web3dart.dart';
 
 Address? message;
 final FutureBuilder<ui.Image> qrFutureBuilder = FutureBuilder<ui.Image>(
@@ -60,8 +61,8 @@ class ReceiveTokenSheet extends StatefulWidget {
 class _ReceiveTokenSheetState extends State<ReceiveTokenSheet> {
   @override
   void initState() {
-    message =
-        Provider.of<WalletProvider>(context, listen: false).wallet.address;
+    message = Address.fromEthAddress(
+        EthereumAddress.fromHex("0x104EDD9708fFeeCd0b6bAaA37387E155Bce7d060"));
     super.initState();
   }
 
