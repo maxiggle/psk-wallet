@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pkswallet/app/providers/wallet_provider.dart';
 
 import 'package:pkswallet/app/screens/token_balance.dart';
 import 'package:pkswallet/app/screens/transaction.dart';
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
-import 'package:pkswallet/utils/globals.dart';
 import 'package:pkswallet/utils/quick_send.dart';
+import 'package:provider/provider.dart';
+import 'package:web3dart/web3dart.dart';
 
 bool isNotOpen = false;
 
@@ -46,101 +47,97 @@ class ButtonRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        SizedBox(
-          height: 87.63.h,
-          width: 150.714.w,
-          child: TextButton(
-            onPressed: () {
-              context.push('/send_token', extra: '');
-            },
-            style: TextButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(radius / 2),
+    return Consumer(
+      builder: (context, value, child) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            SizedBox(
+              height: 87.63.h,
+              width: 150.714.w,
+              child: TextButton(
+                onPressed: () {
+                  context.push('/send_token', extra: '');
+                },
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(radius / 2),
+                  ),
+                  backgroundColor: lightGreen,
+                ),
+                child: Text(
+                  'Send',
+                  style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: font19.sp,
+                      color: black,
+                      fontWeight: FontWeight.w500),
+                ),
               ),
-              backgroundColor: lightGreen,
             ),
-            child: Text(
-              'Send',
-              style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: font19.sp,
-                  color: black,
-                  fontWeight: FontWeight.w500),
+            const SizedBox(
+              width: 8.52,
             ),
-          ),
-        ),
-        const SizedBox(
-          width: 8.52,
-        ),
-        SizedBox(
-          height: 87.63.h,
-          width: 150.714.w,
-          child: TextButton(
-            onPressed: () {
-              context.push('/receive_token');
-            },
-            style: TextButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(radius),
+            SizedBox(
+              height: 87.63.h,
+              width: 150.714.w,
+              child: TextButton(
+                onPressed: () {
+                  context.push('/receive_token');
+                },
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(radius),
+                  ),
+                  backgroundColor: ash,
+                ),
+                child: Text(
+                  'Receive',
+                  style: TextStyle(
+                      fontFamily: 'Inter', fontSize: font19.sp, color: black),
+                ),
               ),
-              backgroundColor: ash,
             ),
-            child: Text(
-              'Receive',
-              style: TextStyle(
-                  fontFamily: 'Inter', fontSize: font19.sp, color: black),
+            const SizedBox(
+              width: 8.52,
             ),
-          ),
-        ),
-        const SizedBox(
-          width: 8.52,
-        ),
-        SizedBox(
-          height: 87.63.h,
-          width: 150.714.w,
-          child: TextButton(
-            onPressed: () {
-              Globals.auth.signOut();
-            },
-            style: TextButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(radius),
+            SizedBox(
+              height: 87.63.h,
+              width: 150.714.w,
+              child: TextButton(
+                onPressed: () async {
+                  await context
+                      .read<WalletProvider>()
+                      .register('Gef', '080012345457');
+                },
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(radius),
+                  ),
+                  backgroundColor: ash,
+                ),
+                child: SvgPicture.asset('assets/images/add.svg'),
               ),
-              backgroundColor: ash,
             ),
-            child: SvgPicture.asset('assets/images/add.svg'),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final EtherAmount? balance;
+  final List<TransactionData>? transactionData;
+  final List<TokenData>? tokenData;
+  const HomePage(
+      {super.key,
+      required this.balance,
+      required this.transactionData,
+      required this.tokenData});
 
   @override
   State<HomePage> createState() => _HomePageState();
-}
-
-class TransactionData {
-  final String coinImage;
-  final String ensName;
-  final TransactionType type;
-  final TransactionStatus status;
-  final DateTime transactionTime;
-  final String amount;
-
-  TransactionData(
-      {required this.coinImage,
-      required this.ensName,
-      required this.type,
-      required this.status,
-      required this.transactionTime,
-      required this.amount});
 }
 
 class _AddressBarState extends State<AddressBar> {
@@ -197,29 +194,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<TransactionData> transactionData = [
-      TransactionData(
-          transactionTime: DateTime.now(),
-          amount: '\$21,553',
-          coinImage: 'assets/images/ethereum.svg',
-          ensName: 'Dave',
-          type: TransactionType.send,
-          status: TransactionStatus.pending),
-      TransactionData(
-          transactionTime: DateTime.now(),
-          amount: '\$3',
-          coinImage: 'assets/images/bitcoin.svg',
-          ensName: 'Steven',
-          type: TransactionType.send,
-          status: TransactionStatus.success),
-      TransactionData(
-          transactionTime: DateTime.now(),
-          amount: '\$21,553',
-          coinImage: 'assets/images/ethereum.svg',
-          ensName: 'Dave',
-          type: TransactionType.receive,
-          status: TransactionStatus.pending),
-    ];
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -246,23 +220,25 @@ class _HomePageState extends State<HomePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              height: appBarItemsH.h * 1.18,
-                              width: appBarItemsW.w,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(70.591),
-                              ),
-                              child: const Image(
-                                  image:
-                                      AssetImage('assets/images/profile.jpg')),
-                            ),
+                                height: appBarItemsH.h * 1.18,
+                                width: appBarItemsW.w,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(70.591),
+                                ),
+                                child: SvgPicture.network(context
+                                    .read<WalletProvider>()
+                                    .wallet
+                                    .address
+                                    .diceAvatar())),
                             const SizedBox(
                               width: 14.6,
                             ),
                             Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 SizedBox(height: 25.56.h / 2),
                                 Text(
-                                  'Hey, Jazie',
+                                  'Hey, ${context.read<WalletProvider>().wallet.address.ens ?? context.read<WalletProvider>().passKeyPair?.name}!',
                                   style: TextStyle(
                                     fontFamily: 'Inter',
                                     fontSize: font19,
@@ -278,16 +254,6 @@ class _HomePageState extends State<HomePage> {
                                       color: const Color(0xffB2B2B2)),
                                 ),
                               ],
-                            ),
-                            const Spacer(),
-                            Container(
-                              padding: const EdgeInsets.all(20.69).r,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(34),
-                                  border: Border.all(style: BorderStyle.solid)),
-                              child: SvgPicture.asset(
-                                'assets/images/settings.svg',
-                              ),
                             ),
                           ],
                         ),
@@ -314,54 +280,6 @@ class _HomePageState extends State<HomePage> {
                             ),
                             const Text('Total balance'),
                             const Spacer(),
-                            Expanded(
-                              child: SizedBox(
-                                height: 18.h,
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton2<String>(
-                                    onMenuStateChange: (isOpen) {
-                                      setState(() {
-                                        isNotOpen = !isOpen;
-                                      });
-                                    },
-                                    iconStyleData: IconStyleData(
-                                        icon: isNotOpen
-                                            ? SvgPicture.asset(
-                                                'assets/images/inactive-dropdown.svg',
-                                              )
-                                            : SvgPicture.asset(
-                                                'assets/images/dropdown.svg')),
-                                    items: items
-                                        .map((String item) =>
-                                            DropdownMenuItem<String>(
-                                              value: item,
-                                              child: Text(
-                                                item,
-                                                style: TextStyle(
-                                                  fontSize: 14.sp,
-                                                ),
-                                              ),
-                                            ))
-                                        .toList(),
-                                    value: selectedValue,
-                                    onChanged: (String? value) {
-                                      setState(() {
-                                        selectedValue = value!;
-                                      });
-                                    },
-                                    buttonStyleData: ButtonStyleData(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 16),
-                                      height: 40.h,
-                                      width: 140.w,
-                                    ),
-                                    menuItemStyleData: MenuItemStyleData(
-                                      height: 40.h,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                         Row(
@@ -374,7 +292,7 @@ class _HomePageState extends State<HomePage> {
                               height: 2.h,
                             ),
                             Text(
-                              '\$17,200',
+                              'ETH ${widget.balance?.getInEther}',
                               style: TextStyle(
                                 fontFamily: 'Inter',
                                 fontSize: font51,
@@ -414,7 +332,7 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 24,
                 ),
-                TokenBalance(),
+                TokenBalance(tokenData: widget.tokenData),
                 SizedBox(
                   height: 24.h,
                 ),
@@ -475,7 +393,7 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                         Transactions(
-                          transactionData: transactionData,
+                          transactionData: widget.transactionData,
                         ),
                       ],
                     ),

@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
-import 'package:pkswallet/app/screens/home_page.dart';
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
 
@@ -77,7 +76,8 @@ class _TransactionsState extends State<Transactions> {
             onPressed: () => widget.includeModal?.call(index),
             child: Row(
               children: [
-                SvgPicture.asset(widget.transactionData![index].coinImage),
+                SvgPicture.asset(
+                    widget.transactionData?[index].coinImage ?? ""),
                 SizedBox(
                   width: 9.74.w,
                 ),
@@ -85,7 +85,7 @@ class _TransactionsState extends State<Transactions> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.transactionData![index].ensName,
+                      widget.transactionData?[index].ensName ?? "",
                       style: TextStyle(
                           fontSize: font14,
                           fontFamily: 'Inter',
@@ -95,7 +95,7 @@ class _TransactionsState extends State<Transactions> {
                     Row(
                       children: [
                         Text(
-                          widget.transactionData![index].type ==
+                          widget.transactionData?[index].type ==
                                   widget.transactionType
                               ? 'Receive'
                               : 'Send',
@@ -121,7 +121,8 @@ class _TransactionsState extends State<Transactions> {
                         ),
                         Text(
                           DateFormat('yyyy-MM-dd').format(
-                              widget.transactionData![index].transactionTime),
+                              widget.transactionData?[index].transactionTime ??
+                                  DateTime.now()),
                           style: TextStyle(
                               fontSize: font14,
                               fontFamily: 'Inter',
@@ -136,7 +137,7 @@ class _TransactionsState extends State<Transactions> {
                 Column(
                   children: [
                     Text(
-                      widget.transactionData![index].amount,
+                      widget.transactionData?[index].amount ?? "",
                       style: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: font14,
@@ -144,12 +145,12 @@ class _TransactionsState extends State<Transactions> {
                           color: black),
                     ),
                     Text(
-                      widget.transactionData![index].status ==
+                      widget.transactionData?[index].status ==
                               TransactionStatus.pending
                           ? 'In-transit'
                           : 'Success',
                       style: TextStyle(
-                          color: widget.transactionData![index].status ==
+                          color: widget.transactionData?[index].status ==
                                   TransactionStatus.pending
                               ? blue2
                               : darkGreen),
@@ -172,7 +173,26 @@ class _TransactionsState extends State<Transactions> {
           ),
         );
       },
-      itemCount: widget.transactionData!.length,
+      itemCount: widget.transactionData?.length,
     );
   }
+}
+
+class TransactionData {
+  final String? txHash;
+  final String? coinImage;
+  final String? ensName;
+  final TransactionType? type;
+  final TransactionStatus? status;
+  final DateTime? transactionTime;
+  final String? amount;
+
+  TransactionData(
+      {this.txHash,
+      required this.coinImage,
+      required this.ensName,
+      required this.type,
+      required this.status,
+      required this.transactionTime,
+      required this.amount});
 }

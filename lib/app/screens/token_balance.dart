@@ -4,31 +4,34 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
+import 'package:web3dart/web3dart.dart';
 
 class TokenData {
-  final String? tokenPrice;
-  final String? tokenBalance;
+  final EthereumAddress? contractAddress;
+  final String? quoteRate;
+  final String? balance;
   final String? tokenBalanceInUSD;
-  final String? tokenName;
-  final String? tokenSymbol;
-  final String? tokenImage;
+  final String? contractName;
+  final String? contractTickerSymbol;
+  final String? logoUrl;
 
   TokenData(
-      {this.tokenPrice,
-      this.tokenBalance,
+      {this.contractAddress,
+      this.quoteRate,
+      this.balance,
       this.tokenBalanceInUSD,
-      this.tokenName,
-      this.tokenSymbol,
-      this.tokenImage});
+      this.contractName,
+      this.contractTickerSymbol,
+      this.logoUrl});
 }
 
 class TokenBalance extends StatefulWidget {
-  const TokenBalance({
-    super.key,
-  });
+  final List<TokenData>? tokenData;
+  const TokenBalance({super.key, required this.tokenData});
 
   @override
   State<TokenBalance> createState() => _TokenBalanceState();
@@ -42,33 +45,6 @@ class _TokenBalanceState extends State<TokenBalance>
   static int? refreshNum = 10;
   final counterStream =
       Stream<int>.periodic(const Duration(seconds: 3), (x) => refreshNum!);
-
-  List<TokenData> token = [
-    TokenData(
-      tokenBalance: '0.0005ETH',
-      tokenBalanceInUSD: 'US\$21,553',
-      tokenName: "Ethereum",
-      tokenSymbol: "ETH",
-      tokenPrice: "\$1600",
-      tokenImage: 'assets/images/ethereum.svg',
-    ),
-    TokenData(
-      tokenBalance: '0.0005LTC',
-      tokenBalanceInUSD: 'US\$21,553',
-      tokenName: "Litecoin",
-      tokenSymbol: "LTC",
-      tokenPrice: "\$1600",
-      tokenImage: 'assets/images/litecoin.svg',
-    ),
-    TokenData(
-      tokenBalance: '0.0005LTC',
-      tokenBalanceInUSD: 'US\$21,553',
-      tokenName: "Litecoin",
-      tokenSymbol: "LTC",
-      tokenPrice: "\$1600",
-      tokenImage: 'assets/images/litecoin.svg',
-    )
-  ];
 
   late TabController _tabController;
 
@@ -124,13 +100,35 @@ class _TokenBalanceState extends State<TokenBalance>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 60).r,
-                  child: Text(
-                    'Crypto',
-                    style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: font19,
-                        fontWeight: FontWeight.w600),
+                  padding: const EdgeInsets.only(
+                          left: 23, right: 21.91, top: 9.91, bottom: 9.74)
+                      .r,
+                  child: Row(
+                    children: [
+                      Text(
+                        'Crypto',
+                        style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: font19,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      const Spacer(),
+                      Container(
+                          height: 36.512,
+                          width: 36.512,
+                          decoration: BoxDecoration(
+                              color: ash,
+                              borderRadius: BorderRadius.circular(100).w),
+                          child: IconButton(
+                            onPressed: () {
+                              context.push('/crypto_details');
+                            },
+                            icon: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 20.sp,
+                            ),
+                          )),
+                    ],
                   ),
                 ),
                 ListView.builder(
@@ -158,7 +156,7 @@ class _TokenBalanceState extends State<TokenBalance>
                               child: Row(
                                 children: [
                                   SvgPicture.asset(
-                                    '${token[index].tokenImage}',
+                                    '${widget.tokenData?[index].logoUrl}',
                                   ),
                                   SizedBox(
                                     width: 13.51.w,
@@ -168,7 +166,7 @@ class _TokenBalanceState extends State<TokenBalance>
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "${token[index].tokenName}",
+                                        "${widget.tokenData?[index].contractName}",
                                         style: TextStyle(
                                             fontSize: font14,
                                             fontFamily: 'Inter',
@@ -181,7 +179,7 @@ class _TokenBalanceState extends State<TokenBalance>
                                   Column(
                                     children: [
                                       Text(
-                                        "${token[index].tokenBalanceInUSD}",
+                                        "${widget.tokenData?[index].tokenBalanceInUSD}",
                                         style: TextStyle(
                                             fontFamily: 'Inter',
                                             fontSize: font14,
@@ -190,7 +188,7 @@ class _TokenBalanceState extends State<TokenBalance>
                                       ),
                                       SizedBox(height: 3.91.h),
                                       Text(
-                                        "${token[index].tokenBalance}",
+                                        "${widget.tokenData?[index].balance}",
                                         style: TextStyle(
                                           color: black.withOpacity(0.30),
                                           fontFamily: 'Inter',
@@ -208,7 +206,7 @@ class _TokenBalanceState extends State<TokenBalance>
                       ],
                     );
                   },
-                  itemCount: token.length,
+                  itemCount: widget.tokenData?.length,
                 ),
               ],
             ),

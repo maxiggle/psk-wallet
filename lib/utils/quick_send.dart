@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
@@ -107,14 +107,14 @@ class _QuickSendState extends State<QuickSend>
                           fontSize: font19,
                           fontWeight: FontWeight.w600),
                     ),
-                    Text(
-                      'Recently added',
-                      style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: font12,
-                          fontWeight: FontWeight.w400,
-                          color: opAshText),
-                    ),
+                    // Text(
+                    //   'Recently added',
+                    //   style: TextStyle(
+                    //       fontFamily: 'Inter',
+                    //       fontSize: font12,
+                    //       fontWeight: FontWeight.w400,
+                    //       color: opAshText),
+                    // ),
                   ],
                 ),
                 const Spacer(),
@@ -135,68 +135,68 @@ class _QuickSendState extends State<QuickSend>
                 ),
               ],
             ),
-            SizedBox(
-              height: 28.h,
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  TextButton(
-                      onPressed: () {},
-                      style: TextButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                          backgroundColor: ash,
-                          padding: const EdgeInsets.fromLTRB(45, 45, 45, 45).r),
-                      child: SvgPicture.asset('assets/images/add.svg')),
-                  SizedBox(
-                    width: 9.74.w,
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                    ),
-                    child: const Image(
-                      image: AssetImage('assets/images/user1.png'),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 9.74.w,
-                  ),
-                  TextButton(
-                      onPressed: () {},
-                      style: TextButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        // backgroundColor: lightGreen,
-                      ),
-                      child: const Image(
-                        image: AssetImage('assets/images/user3-colored.png'),
-                      )),
-                  SizedBox(
-                    width: 9.74.w,
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                    ),
-                    child: const Image(
-                      image: AssetImage('assets/images/user3.png'),
-                    ),
-                  ),
-                ],
-              ),
-            )
+            // SizedBox(
+            //   height: 28.h,
+            // ),
+            // SingleChildScrollView(
+            //   scrollDirection: Axis.horizontal,
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+            //     children: [
+            //       TextButton(
+            //           onPressed: () {},
+            //           style: TextButton.styleFrom(
+            //               shape: RoundedRectangleBorder(
+            //                 borderRadius: BorderRadius.circular(100),
+            //               ),
+            //               backgroundColor: ash,
+            //               padding: const EdgeInsets.fromLTRB(45, 45, 45, 45).r),
+            //           child: SvgPicture.asset('assets/images/add.svg')),
+            //       SizedBox(
+            //         width: 9.74.w,
+            //       ),
+            //       TextButton(
+            //         onPressed: () {},
+            //         style: TextButton.styleFrom(
+            //           shape: RoundedRectangleBorder(
+            //             borderRadius: BorderRadius.circular(100),
+            //           ),
+            //         ),
+            //         child: const Image(
+            //           image: AssetImage('assets/images/user1.png'),
+            //         ),
+            //       ),
+            //       SizedBox(
+            //         width: 9.74.w,
+            //       ),
+            //       TextButton(
+            //           onPressed: () {},
+            //           style: TextButton.styleFrom(
+            //             shape: RoundedRectangleBorder(
+            //               borderRadius: BorderRadius.circular(100),
+            //             ),
+            //             // backgroundColor: lightGreen,
+            //           ),
+            //           child: const Image(
+            //             image: AssetImage('assets/images/user3-colored.png'),
+            //           )),
+            //       SizedBox(
+            //         width: 9.74.w,
+            //       ),
+            //       TextButton(
+            //         onPressed: () {},
+            //         style: TextButton.styleFrom(
+            //           shape: RoundedRectangleBorder(
+            //             borderRadius: BorderRadius.circular(100),
+            //           ),
+            //         ),
+            //         child: const Image(
+            //           image: AssetImage('assets/images/user3.png'),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // )
           ],
         ),
       ),

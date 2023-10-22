@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gradients/gradients.dart';
+import 'package:pks_4337_sdk/pks_4337_sdk.dart';
+import 'package:pkswallet/app/providers/wallet_provider.dart';
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-const String message =
-    '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
+Address? message;
 final FutureBuilder<ui.Image> qrFutureBuilder = FutureBuilder<ui.Image>(
   future: _loadOverlayImage(),
   builder: (BuildContext ctx, AsyncSnapshot<ui.Image> snapshot) {
@@ -24,7 +24,7 @@ final FutureBuilder<ui.Image> qrFutureBuilder = FutureBuilder<ui.Image>(
     return CustomPaint(
       size: const Size.square(size),
       painter: QrPainter(
-        data: message,
+        data: message!.hex,
         version: QrVersions.auto,
         eyeStyle: const QrEyeStyle(
           eyeShape: QrEyeShape.square,
@@ -59,106 +59,116 @@ class ReceiveTokenSheet extends StatefulWidget {
 
 class _ReceiveTokenSheetState extends State<ReceiveTokenSheet> {
   @override
+  void initState() {
+    message =
+        Provider.of<WalletProvider>(context, listen: false).wallet.address;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: white,
-        appBar: AppBar(
+      child: Consumer(builder: (context, value, child) {
+        return Scaffold(
           backgroundColor: white,
-          elevation: 0,
-          leading: BackButton(
-            color: black,
-            onPressed: () => GoRouter.of(context).pop('/home'),
+          appBar: AppBar(
+            backgroundColor: white,
+            elevation: 0,
+            leading: BackButton(
+              color: black,
+              onPressed: () => GoRouter.of(context).pop('/home'),
+            ),
           ),
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0).r,
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.89.h,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Center(
-                      child: Container(
-                        padding: const EdgeInsets.all(10.0).r,
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0).r,
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.89.h,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Container(
+                          padding: const EdgeInsets.all(10.0).r,
+                          decoration: BoxDecoration(
+                              color: white,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: qrFutureBuilder,
+                        ),
+                      ),
+                      SizedBox(height: 50.h),
+                      Container(
+                        width: 280.w,
+                        padding: EdgeInsets.symmetric(horizontal: 10.w),
+                        margin: EdgeInsets.symmetric(horizontal: 15.w),
                         decoration: BoxDecoration(
-                            color: white,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: qrFutureBuilder,
-                      ),
-                    ),
-                    SizedBox(height: 50.h),
-                    Container(
-                      width: 280.w,
-                      padding: EdgeInsets.symmetric(horizontal: 10.w),
-                      margin: EdgeInsets.symmetric(horizontal: 15.w),
-                      decoration: BoxDecoration(
-                        color: white,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey.shade400),
-                      ),
-                      child: Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Your Ethereum address',
-                                style: TextStyle(
-                                    fontFamily: 'Inter',
-                                    color: const Color(0xff32353E)
-                                        .withOpacity(0.5),
-                                    overflow: TextOverflow.ellipsis),
-                              ),
-                              SizedBox(
-                                height: 5.h,
-                              ),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    width: 280.w,
-                                    child: const Text(
-                                      message,
-                                      style: TextStyle(
-                                          color: Color(0xff32353E),
-                                          overflow: TextOverflow.ellipsis),
+                          color: white,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.grey.shade400),
+                        ),
+                        child: Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Your Ethereum address',
+                                  style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      color: const Color(0xff32353E)
+                                          .withOpacity(0.5),
+                                      overflow: TextOverflow.ellipsis),
+                                ),
+                                SizedBox(
+                                  height: 5.h,
+                                ),
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 280.w,
+                                      child: Text(
+                                        message?.hexEip55 ?? "",
+                                        style: const TextStyle(
+                                            color: Color(0xff32353E),
+                                            overflow: TextOverflow.ellipsis),
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          TextButton(
-                            onPressed: () {
-                              Clipboard.setData(
-                                  const ClipboardData(text: message));
-                            },
-                            style: TextButton.styleFrom(
-                                backgroundColor: const Color(0xff32353E),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(radius))),
-                            child: const Text(
-                              'copy',
-                              style:
-                                  TextStyle(color: white, fontFamily: 'Inter'),
+                                  ],
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                            const Spacer(),
+                            TextButton(
+                              onPressed: () {
+                                Clipboard.setData(ClipboardData(
+                                  text: message?.hex ?? "",
+                                ));
+                              },
+                              style: TextButton.styleFrom(
+                                  backgroundColor: const Color(0xff32353E),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(radius))),
+                              child: const Text(
+                                'copy',
+                                style: TextStyle(
+                                    color: white, fontFamily: 'Inter'),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      }),
     );
   }
 }

@@ -6,9 +6,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:pkswallet/app/screens/home_page.dart';
-import 'package:pkswallet/app/screens/token_balance.dart';
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
+import 'package:pkswallet/utils/tokenData.dart';
 
 class SendTokenSheet extends StatefulWidget {
   final String? contactName;
@@ -112,6 +112,12 @@ class _SendTokenSheetState extends State<SendTokenSheet> {
                     height: 50.h,
                   ),
                   TextFormField(
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 51.sp,
+                        fontWeight: FontWeight.w600,
+                        color: black,
+                      ),
                       key: _formKey,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -212,7 +218,7 @@ class _SendTokenSheetState extends State<SendTokenSheet> {
                           ),
                           onPressed: () {
                             setState(() {
-                              selectedValue = token[index].tokenName;
+                              selectedValue = token[index].contractName;
                             });
                             context.pop();
                           },
@@ -221,7 +227,7 @@ class _SendTokenSheetState extends State<SendTokenSheet> {
                             child: Row(
                               children: [
                                 SvgPicture.asset(
-                                  '${token[index].tokenImage}',
+                                  '${token[index].logoUrl}',
                                 ),
                                 SizedBox(
                                   width: 13.51.w,
@@ -230,7 +236,7 @@ class _SendTokenSheetState extends State<SendTokenSheet> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "${token[index].tokenName}",
+                                      "${token[index].contractName}",
                                       style: TextStyle(
                                           fontSize: font14,
                                           fontFamily: 'Inter',
@@ -252,7 +258,7 @@ class _SendTokenSheetState extends State<SendTokenSheet> {
                                     ),
                                     SizedBox(height: 3.91.h),
                                     Text(
-                                      "${token[index].tokenBalance}",
+                                      "${token[index].balance}",
                                       style: TextStyle(
                                         color: black.withOpacity(0.30),
                                         fontFamily: 'Inter',
@@ -306,30 +312,3 @@ class SendTokenButton extends StatelessWidget {
     );
   }
 }
-
-List<TokenData> token = [
-  TokenData(
-    tokenBalance: '0.0005ETH',
-    tokenBalanceInUSD: 'US\$21,553',
-    tokenName: "Ethereum",
-    tokenSymbol: "ETH",
-    tokenPrice: "\$1600",
-    tokenImage: 'assets/images/ethereum.svg',
-  ),
-  TokenData(
-    tokenBalance: '0.0005LTC',
-    tokenBalanceInUSD: 'US\$21,553',
-    tokenName: "Litecoin",
-    tokenSymbol: "LTC",
-    tokenPrice: "\$1600",
-    tokenImage: 'assets/images/litecoin.svg',
-  ),
-  TokenData(
-    tokenBalance: '0.0005LTC',
-    tokenBalanceInUSD: 'US\$21,553',
-    tokenName: "Litecoin",
-    tokenSymbol: "LTC",
-    tokenPrice: "\$1600",
-    tokenImage: 'assets/images/litecoin.svg',
-  )
-];

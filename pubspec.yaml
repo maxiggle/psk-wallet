@@ -1,12 +1,12 @@
 name: pkswallet
 description: A wallet that leverages Account Abstraction and allows users sign SAFE multi-sig transactions with biometrics, HDkey and Private keys
 
-publish_to: 'none' 
+publish_to: "none"
 
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.6 <4.0.0'
+  sdk: ">=3.0.6 <4.0.0"
 
 dependencies:
   flutter:
@@ -27,33 +27,30 @@ dependencies:
   after_layout: ^1.2.0
   intl_phone_field: ^3.2.0
   easy_container: ^1.0.4+1
-  webauthn: ^0.2.1
   lottie: ^2.6.0
   liquid_pull_to_refresh: ^3.0.1
-  decimal: ^2.3.3
-  web3dart: ^2.7.1
   qr_code_scanner: ^1.0.1
   qr_flutter: ^4.1.0
   firebase_auth_platform_interface: ^7.0.0
   shared_preferences: ^2.2.2
   provider: ^6.0.5
   flutter_launcher_icons: ^0.13.1
-  
-  
-
-  
+  web3dart: ^2.7.1
+  flutter_dotenv: ^5.1.0
+  pks_4337_sdk:
+    git:
+      url: https://github.com/infinit3-labs/4337-dart.git
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-
-
   flutter_lints: ^2.0.0
 
+dependency_overrides:
+  http: ^1.1.0
 
 flutter:
-
   uses-material-design: true
 
   assets:
@@ -83,8 +80,8 @@ flutter:
     - assets/images/qr_eth.png
     - assets/images/textfield.svg
     - assets/images/launcher_icon.png
-    
-    
+    - assets/.env
+
   fonts:
     - family: Inter
       fonts:
@@ -96,29 +93,3 @@ flutter:
         - asset: assets/fonts/static/Inter-SemiBold.ttf
         - asset: assets/fonts/static/Inter-Thin.ttf
         - asset: assets/fonts/static/Inter-Light.ttf
-
-
-  
-
-  
-  
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  

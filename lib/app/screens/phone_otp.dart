@@ -17,7 +17,7 @@ class PinCodeVerificationScreen extends StatefulWidget {
 
   const PinCodeVerificationScreen({
     Key? key,
-    this.phoneNumber = '+2348064875115',
+    this.phoneNumber,
   }) : super(key: key);
 
   @override
@@ -62,7 +62,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
   @override
   void dispose() {
     scrollController.dispose();
-    errorController!.close();
+    errorController?.close();
     pinPutFocusNode.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -88,7 +88,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
   Widget build(BuildContext context) {
     return SafeArea(
         child: FirebasePhoneAuthHandler(
-      phoneNumber: widget.phoneNumber!,
+      phoneNumber: widget.phoneNumber ?? "+2348144734001",
       signOutOnSuccessfulVerification: false,
       sendOtpOnInitialize: true,
       linkWithExistingUser: false,
@@ -287,19 +287,20 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
                         borderRadius: BorderRadius.circular(100).w),
                     child: TextButton(
                       onPressed: () async {
-                        formKey.currentState!.validate();
+                        formKey.currentState?.validate();
                         final validOtp =
                             await controller.verifyOtp(currentText);
                         // conditions for validating
                         if (currentText.length != 6 || !validOtp) {
-                          errorController!.add(ErrorAnimationType.shake);
+                          errorController?.add(ErrorAnimationType.shake);
                           setState(() => hasError = true);
                         } else {
                           setState(
                             () {
                               hasError = false;
                               showSnackBar("OTP Verified!!");
-                              context.go('/CreateAccountScreen');
+                              context.go('/CreateAccountScreen',
+                                  extra: widget.phoneNumber);
                             },
                           );
                         }
