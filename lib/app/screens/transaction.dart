@@ -6,19 +6,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+import 'package:pkswallet/app/providers/home_provider.dart';
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
+import 'package:provider/provider.dart';
 
 class Transactions extends StatefulWidget {
   const Transactions(
       {super.key,
-      required this.transactionData,
       this.refreshIndicatorKey,
       this.scaffoldKey,
       this.transactionType,
       this.includeModal});
 
-  final List<TransactionData>? transactionData;
   final TransactionType? transactionType;
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final GlobalKey<LiquidPullToRefreshState>? refreshIndicatorKey;
@@ -59,10 +59,21 @@ class _TransactionsState extends State<Transactions> {
 
   @override
   Widget build(BuildContext context) {
+    final transactionData = context.select(
+      (HomeProvider provider) => provider.transactionData,
+    );
+
     return ListView.builder(
       shrinkWrap: true,
       padding: const EdgeInsets.only(top: 20).r,
       itemBuilder: (context, index) {
+        var transaction = transactionData[index];
+        final image = transaction.transfers?.firstOrNull?.logoUrl;
+        const type = TransactionType.send;
+        final status = (transaction.successful == true)
+            ? TransactionStatus.success
+            : TransactionStatus.failed;
+
         return Padding(
           padding: const EdgeInsets.only(bottom: 9.74).r,
           child: TextButton(
@@ -76,16 +87,13 @@ class _TransactionsState extends State<Transactions> {
             onPressed: () => widget.includeModal?.call(index),
             child: Row(
               children: [
-                SvgPicture.asset(
-                    widget.transactionData?[index].coinImage ?? ""),
-                SizedBox(
-                  width: 9.74.w,
-                ),
+                SvgPicture.network(image ?? ""),
+                SizedBox(width: 9.74.w),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.transactionData?[index].ensName ?? "",
+                      transaction.toAddressLabel ?? "",
                       style: TextStyle(
                           fontSize: font14,
                           fontFamily: 'Inter',
@@ -95,10 +103,7 @@ class _TransactionsState extends State<Transactions> {
                     Row(
                       children: [
                         Text(
-                          widget.transactionData?[index].type ==
-                                  widget.transactionType
-                              ? 'Receive'
-                              : 'Send',
+                          type == widget.transactionType ? 'Receive' : 'Send',
                           style: TextStyle(
                               fontSize: font14,
                               fontFamily: 'Inter',
@@ -121,8 +126,7 @@ class _TransactionsState extends State<Transactions> {
                         ),
                         Text(
                           DateFormat('yyyy-MM-dd').format(
-                              widget.transactionData?[index].transactionTime ??
-                                  DateTime.now()),
+                              transaction.blockSignedAt ?? DateTime.now()),
                           style: TextStyle(
                               fontSize: font14,
                               fontFamily: 'Inter',
@@ -134,28 +138,30 @@ class _TransactionsState extends State<Transactions> {
                   ],
                 ),
                 const Spacer(),
-                Column(
-                  children: [
-                    Text(
-                      widget.transactionData?[index].amount ?? "",
-                      style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: font14,
-                          fontWeight: FontWeight.w600,
-                          color: black),
-                    ),
-                    Text(
-                      widget.transactionData?[index].status ==
-                              TransactionStatus.pending
-                          ? 'In-transit'
-                          : 'Success',
-                      style: TextStyle(
-                          color: widget.transactionData?[index].status ==
-                                  TransactionStatus.pending
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        transaction.value ?? "",
+                        style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: font14,
+                            fontWeight: FontWeight.w600,
+                            color: black),
+                      ),
+                      Text(
+                        status == TransactionStatus.pending
+                            ? 'In-transit'
+                            : 'Success',
+                        style: TextStyle(
+                          color: status == TransactionStatus.pending
                               ? blue2
-                              : darkGreen),
-                    ),
-                  ],
+                              : darkGreen,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 Container(
                     height: 36.512,
@@ -173,7 +179,7 @@ class _TransactionsState extends State<Transactions> {
           ),
         );
       },
-      itemCount: widget.transactionData?.length,
+      itemCount: transactionData.length,
     );
   }
 }

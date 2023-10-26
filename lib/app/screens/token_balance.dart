@@ -9,6 +9,7 @@ import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:pkswallet/app/theme/colors.dart';
 import 'package:pkswallet/const.dart';
 import 'package:web3dart/web3dart.dart';
+import 'package:pks_4337_sdk/src/modules/covalent_api/covalent_api.dart';
 
 class TokenData {
   final EthereumAddress? contractAddress;
@@ -30,7 +31,7 @@ class TokenData {
 }
 
 class TokenBalance extends StatefulWidget {
-  final List<TokenData>? tokenData;
+  final List<Token>? tokenData;
   const TokenBalance({super.key, required this.tokenData});
 
   @override
@@ -155,9 +156,9 @@ class _TokenBalanceState extends State<TokenBalance>
                               padding: EdgeInsets.symmetric(horizontal: 9.4.w),
                               child: Row(
                                 children: [
-                                  SvgPicture.asset(
-                                    '${widget.tokenData?[index].logoUrl}',
-                                  ),
+                                  SvgPicture.asset('assets/images/ethereum.svg'
+                                      // '${widget.tokenData?[index].logoUrl}',
+                                      ),
                                   SizedBox(
                                     width: 13.51.w,
                                   ),
@@ -179,7 +180,7 @@ class _TokenBalanceState extends State<TokenBalance>
                                   Column(
                                     children: [
                                       Text(
-                                        "${widget.tokenData?[index].tokenBalanceInUSD}",
+                                        "${widget.tokenData?[index].quoteRate}",
                                         style: TextStyle(
                                             fontFamily: 'Inter',
                                             fontSize: font14,
@@ -188,7 +189,7 @@ class _TokenBalanceState extends State<TokenBalance>
                                       ),
                                       SizedBox(height: 3.91.h),
                                       Text(
-                                        "${widget.tokenData?[index].balance}",
+                                        "${widget.tokenData?[index].balance?.getInEther.toDouble()}",
                                         style: TextStyle(
                                           color: black.withOpacity(0.30),
                                           fontFamily: 'Inter',

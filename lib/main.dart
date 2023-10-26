@@ -8,9 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pkswallet/app/providers/wallet_provider.dart';
 import 'package:pkswallet/app/screens/contacts.dart';
 import 'package:pkswallet/app/screens/create_account.dart';
-import 'package:pkswallet/app/screens/token_balance.dart';
-import 'package:pkswallet/app/screens/transaction.dart';
-import 'package:pkswallet/const.dart';
+
 import 'package:pkswallet/utils/crypto_details.dart';
 import 'package:pkswallet/app/screens/home_page.dart';
 import 'package:pkswallet/app/screens/onboarding.dart';
@@ -25,6 +23,7 @@ import 'package:pkswallet/utils/transactionData.dart';
 import 'package:pkswallet/utils/transaction_details.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:web3dart/web3dart.dart';
+import 'app/providers/home_provider.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 
@@ -62,104 +61,20 @@ class MyApp extends StatelessWidget {
                 GoRoute(
                   path: '/',
                   builder: (BuildContext context, GoRouterState state) {
+                    return const OnBoarding();
+                  },
+                  redirect: (context, state) {
                     if (user != null) {
-                      return FutureBuilder(
-                        future: context
-                            .read<WalletProvider>()
-                            .getBlockchainDataForAddress(withEns, cKey),
-                        builder: (context, snapshot) {
-                          // List<cov.Token> tk = snapshot.data?[1];
-                          // List<cov.Transaction> tx = snapshot.data?[2];
-
-                          // List<TokenData> td = tk.map((e) {
-                          //   return TokenData(
-                          //     contractAddress: e.contractAddress,
-                          //     quoteRate: e.quoteRate.toString(),
-                          //     balance: e.balance?.getInEther.toString(),
-                          //     tokenBalanceInUSD: e.quoteRate.toString(),
-                          //     contractName: e.contractName,
-                          //     contractTickerSymbol: e.contractTickerSymbol,
-                          //     logoUrl: e.logoUrl,
-                          //   );
-                          // }).toList();
-
-                          // List<TransactionData> txd = tx.map((e) {
-                          //   return TransactionData(
-                          //       coinImage: e.transfers?[0].logoUrl,
-                          //       ensName: e.toAddressLabel,
-                          //       txHash: e.txHash,
-                          //       type: TransactionType.send,
-                          //       status: e.successful!
-                          //           ? TransactionStatus.success
-                          //           : TransactionStatus.failed,
-                          //       transactionTime: e.blockSignedAt,
-                          //       amount: e.value);
-                          // }).toList();
-
-                          // if (!snapshot.hasData) {
-                          //   return const Center(
-                          //     child: CircularProgressIndicator(),
-                          //   );
-                          // } else {
-                          return HomePage(
-                            balance: EtherAmount.zero(),
-                            tokenData: token,
-                            transactionData: transactionData,
-                          );
-                        },
-                      );
+                      return '/home';
                     } else {
-                      return const OnBoarding();
+                      return null;
                     }
                   },
                 ),
                 GoRoute(
                   path: '/home',
                   builder: (BuildContext context, GoRouterState state) {
-                    return FutureBuilder(
-                      future: context
-                          .read<WalletProvider>()
-                          .getBlockchainDataForAddress(withEns, cKey),
-                      builder: (context, snapshot) {
-                        // List<cov.Token> tk = snapshot.data?[1];
-                        // List<cov.Transaction> tx = snapshot.data?[2];
-
-                        // List<TokenData> td = tk.map((e) {
-                        //   return TokenData(
-                        //     contractAddress: e.contractAddress,
-                        //     quoteRate: e.quoteRate.toString(),
-                        //     balance: e.balance?.getInEther.toString(),
-                        //     tokenBalanceInUSD: e.quoteRate.toString(),
-                        //     contractName: e.contractName,
-                        //     contractTickerSymbol: e.contractTickerSymbol,
-                        //     logoUrl: e.logoUrl,
-                        //   );
-                        // }).toList();
-
-                        // List<TransactionData> txd = tx.map((e) {
-                        //   return TransactionData(
-                        //       coinImage: e.transfers?[0].logoUrl,
-                        //       ensName: e.toAddressLabel,
-                        //       txHash: e.txHash,
-                        //       type: TransactionType.send,
-                        //       status: e.successful!
-                        //           ? TransactionStatus.success
-                        //           : TransactionStatus.failed,
-                        //       transactionTime: e.blockSignedAt,
-                        //       amount: e.value);
-                        // }).toList();
-                        // if (!snapshot.hasData) {
-                        //   return const Center(
-                        //     child: CircularProgressIndicator(),
-                        //   );
-                        // } else {
-                        return HomePage(
-                          balance: EtherAmount.zero(),
-                          tokenData: token,
-                          transactionData: transactionData,
-                        );
-                      },
-                    );
+                    return HomePage(balance: EtherAmount.zero());
                   },
                 ),
                 GoRoute(
@@ -259,11 +174,22 @@ class MyApp extends StatelessWidget {
                   debugShowCheckedModeBanner: false,
                   title: 'pks wallet',
                   routerConfig: router,
+                  builder: (context, child) {
+                    // pass providers down
+                    return MultiProvider(
+                      providers: [
+                        ChangeNotifierProvider(
+                          create: (context) => HomeProvider(),
+                        )
+                      ],
+                      child: child ?? const Text('Something went wrong'),
+                    );
+                  },
                 ),
               ),
             );
           } else {
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           }
         });
   }

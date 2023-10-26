@@ -66,7 +66,7 @@ class _TransactionDetailsState extends State<TransactionDetails>
                     fontFamily: 'Inter'),
               ),
               SizedBox(height: 50.h),
-              Transactions(transactionData: widget.transactionData)
+              const Transactions()
             ],
           ),
         ),
