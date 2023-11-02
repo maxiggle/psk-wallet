@@ -87,7 +87,7 @@ class _TransactionsState extends State<Transactions> {
             onPressed: () => widget.includeModal?.call(index),
             child: Row(
               children: [
-                SvgPicture.network(image ?? ""),
+                // SvgPicture.network(image ?? "assets/image/"),
                 SizedBox(width: 9.74.w),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

@@ -24,111 +24,6 @@ final List<String> items = [
   'Item4',
 ];
 
-class AddressBar extends StatefulWidget {
-  final String hintText;
-  final TextEditingController? textEditingController;
-  final TextStyle? hintTextStyle;
-
-  // Add an optional parameter for the initial value
-  final String initialValue;
-
-  const AddressBar({
-    required this.hintText,
-    this.hintTextStyle,
-    this.textEditingController,
-    this.initialValue = "0.0", // Provide a default initial value
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<AddressBar> createState() => _AddressBarState();
-}
-
-class ButtonRow extends StatelessWidget {
-  const ButtonRow({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer(
-      builder: (context, value, child) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            SizedBox(
-              height: 87.63.h,
-              width: 150.714.w,
-              child: TextButton(
-                onPressed: () {
-                  context.push('/send_token', extra: '');
-                },
-                style: TextButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(radius / 2),
-                  ),
-                  backgroundColor: lightGreen,
-                ),
-                child: Text(
-                  'Send',
-                  style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: font19.sp,
-                      color: black,
-                      fontWeight: FontWeight.w500),
-                ),
-              ),
-            ),
-            const SizedBox(
-              width: 8.52,
-            ),
-            SizedBox(
-              height: 87.63.h,
-              width: 150.714.w,
-              child: TextButton(
-                onPressed: () {
-                  context.push('/receive_token');
-                },
-                style: TextButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(radius),
-                  ),
-                  backgroundColor: ash,
-                ),
-                child: Text(
-                  'Receive',
-                  style: TextStyle(
-                      fontFamily: 'Inter', fontSize: font19.sp, color: black),
-                ),
-              ),
-            ),
-            const SizedBox(
-              width: 8.52,
-            ),
-            SizedBox(
-              height: 87.63.h,
-              width: 150.714.w,
-              child: TextButton(
-                onPressed: () async {
-                  // await context
-                  //     .read<WalletProvider>()
-                  //     .register('Gef', '080012345457');
-                  Globals.auth.signOut();
-                },
-                style: TextButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(radius),
-                  ),
-                  backgroundColor: ash,
-                ),
-                child: SvgPicture.asset('assets/images/add.svg'),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
 class HomePage extends StatefulWidget {
   final EtherAmount? balance;
 
@@ -139,53 +34,6 @@ class HomePage extends StatefulWidget {
 
   @override
   State<HomePage> createState() => _HomePageState();
-}
-
-class _AddressBarState extends State<AddressBar> {
-  bool pwdVisibility = false;
-  final formKey = GlobalKey<FormState>();
-  late final TextEditingController textEditingController;
-  @override
-  void initState() {
-    super.initState();
-    // Initialize the TextEditingController with the initial value
-    textEditingController = widget.textEditingController ??
-        TextEditingController(text: widget.initialValue);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      cursorColor: black,
-      controller: widget.textEditingController,
-      textAlign: TextAlign.center,
-      decoration: InputDecoration(
-        fillColor: ash,
-        filled: true,
-        hintText: widget.hintText,
-        hintStyle: widget.hintTextStyle,
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.white,
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(radius),
-        ),
-        focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-              color: Colors.white,
-              width: 1,
-            ),
-            borderRadius: BorderRadius.circular(radius)),
-      ),
-      validator: (val) {
-        if (val!.isEmpty) {
-          return 'Required';
-        }
-        return null;
-      },
-    );
-  }
 }
 
 class _HomePageState extends State<HomePage> {
@@ -201,7 +49,9 @@ class _HomePageState extends State<HomePage> {
     final token = context.select(
       (HomeProvider provider) => provider.token,
     );
-
+    final wallet = context.select(
+      (WalletProvider provider) => provider.wallet,
+    );
     return isLoading
         ? const Center(child: CircularProgressIndicator())
         : SafeArea(
@@ -251,7 +101,8 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       SizedBox(height: 25.56.h / 2),
                                       Text(
-                                        'Hey, Geffy!',
+                                        wallet.address
+                                            .formattedAddress(length: 4),
                                         style: TextStyle(
                                           fontFamily: 'Inter',
                                           fontSize: font19,
@@ -434,5 +285,90 @@ class _HomePageState extends State<HomePage> {
 
     final homeProvider = context.read<HomeProvider>();
     homeProvider.getData();
+
+    final saved = context.read<WalletProvider>();
+    saved.getString('passKey');
+  }
+}
+
+class ButtonRow extends StatelessWidget {
+  const ButtonRow({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer(
+      builder: (context, value, child) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            SizedBox(
+              height: 87.63.h,
+              width: 150.714.w,
+              child: TextButton(
+                onPressed: () {
+                  context.push('/send_token', extra: '');
+                },
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(radius / 2),
+                  ),
+                  backgroundColor: lightGreen,
+                ),
+                child: Text(
+                  'Send',
+                  style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: font19.sp,
+                      color: black,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 8.52,
+            ),
+            SizedBox(
+              height: 87.63.h,
+              width: 150.714.w,
+              child: TextButton(
+                onPressed: () {
+                  context.push('/receive_token');
+                },
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(radius),
+                  ),
+                  backgroundColor: ash,
+                ),
+                child: Text(
+                  'Receive',
+                  style: TextStyle(
+                      fontFamily: 'Inter', fontSize: font19.sp, color: black),
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 8.52,
+            ),
+            SizedBox(
+              height: 87.63.h,
+              width: 150.714.w,
+              child: TextButton(
+                onPressed: () async {
+                  Globals.auth.signOut();
+                },
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(radius),
+                  ),
+                  backgroundColor: ash,
+                ),
+                child: SvgPicture.asset('assets/images/add.svg'),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

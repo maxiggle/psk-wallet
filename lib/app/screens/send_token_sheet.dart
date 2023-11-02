@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pkswallet/app/screens/address_bar.dart';
 
 import 'package:pkswallet/app/screens/home_page.dart';
 import 'package:pkswallet/app/theme/colors.dart';

@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pks_4337_sdk/pks_4337_sdk.dart';
 import 'package:pks_4337_sdk/src/modules/covalent_api/covalent_api.dart';
+import 'package:pkswallet/app/providers/persist_auth_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web3dart/web3dart.dart' as w3d;
 
@@ -16,7 +18,7 @@ class WalletProvider extends ChangeNotifier {
 
   late PassKey _passKey;
   late Wallet _wallet;
-  PassKeyPair? passKeyPair;
+  PersistAuthData? passKeyPair;
 
   PassKey get passKey => _passKey;
   Wallet get wallet => _wallet;
@@ -33,37 +35,23 @@ class WalletProvider extends ChangeNotifier {
         await _passKey.register(name, requiresUserVerification ?? false);
     await _wallet.createPasskeyAccount(pkp.credentialHexBytes, pkp.publicKey[0],
         pkp.publicKey[0], getSaltFromPhoneNumber(number));
-    passKeyPair = pkp;
+    passKeyPair = pkp as PersistAuthData;
+    setString('passKey', json.encode(passKeyPair?.toJson()));
   }
 
-  Future<void> setString(String name, String data) async {
+  Future<void> setString(String key, String passKeyPair) async {
     final SharedPreferences preferences = await _pref;
-    preferences.setString(name, data);
+    preferences.setString(key, passKeyPair);
   }
 
-  Future<void> getString(String name) async {
+  Future<void> getString(String key) async {
     final SharedPreferences preferences = await _pref;
-    preferences.getString('authData');
-    notifyListeners();
-  }
-
-  Future<List<dynamic>> getBlockchainDataForAddress(
-      w3d.EthereumAddress address, String cKey) async {
-    const chainName = "eth-mainnet";
-
-    if (address == Chains.zeroAddress) {
-      return Future.value([]);
+    String? passKeyPairString = preferences.getString(key);
+    log("passKeyPairString:$passKeyPairString");
+    if (passKeyPairString != null) {
+      passKeyPair = json.decode(passKeyPairString);
     }
-
-    final responses = await Future.wait([
-      getWalletBalance(address),
-      getTokensForAddress(cKey, address, chainName),
-      getTransactionsForAddress(cKey, address, chainName)
-    ]);
-
-    print(responses[0]);
-
-    return responses;
+    notifyListeners();
   }
 
   Uint256 getSaltFromPhoneNumber(String number) {

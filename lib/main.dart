@@ -46,14 +46,6 @@ class MyApp extends StatelessWidget {
     return FutureBuilder(
         future: FirebaseAuth.instance.authStateChanges().first,
         builder: (context, snapshot) {
-          final cKey = dotenv.get('CKEY');
-          final walletAddress = context.read<WalletProvider>().wallet.address;
-          final vitalik = EthereumAddress.fromHex(
-              "0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
-          final withEns = EthereumAddress.fromHex(
-              "0x104EDD9708fFeeCd0b6bAaA37387E155Bce7d060");
-          const chain = "eth-mainnet";
-
           if (snapshot.connectionState == ConnectionState.done) {
             final user = snapshot.data;
             final GoRouter router = GoRouter(
@@ -93,33 +85,8 @@ class MyApp extends StatelessWidget {
                 GoRoute(
                   path: '/transaction_details',
                   builder: (BuildContext context, GoRouterState state) {
-                    return FutureBuilder(
-                      future: context
-                          .read<WalletProvider>()
-                          .getBlockchainDataForAddress(withEns, cKey),
-                      builder: (context, snapshot) {
-                        // List<cov.Transaction> tx = snapshot.data?[2];
-                        // List<TransactionData> txd = tx.map((e) {
-                        //   return TransactionData(
-                        //       coinImage: e.transfers?[0].logoUrl,
-                        //       ensName: e.toAddressLabel,
-                        //       txHash: e.txHash,
-                        //       type: TransactionType.send,
-                        //       status: e.successful!
-                        //           ? TransactionStatus.success
-                        //           : TransactionStatus.failed,
-                        //       transactionTime: e.blockSignedAt,
-                        //       amount: e.value);
-                        // }).toList();
-                        // if (!snapshot.hasData) {
-                        //   return const Center(
-                        //     child: CircularProgressIndicator(),
-                        //   );
-                        // } else {
-                        return TransactionDetails(
-                          transactionData: transactionData,
-                        );
-                      },
+                    return TransactionDetails(
+                      transactionData: transactionData,
                     );
                   },
                 ),
@@ -159,9 +126,6 @@ class MyApp extends StatelessWidget {
                   path: "/crypto_details",
                   name: 'crypto_details',
                   builder: (BuildContext context, GoRouterState state) {
-                    final response = context
-                        .read<WalletProvider>()
-                        .getTokensForAddress(cKey, walletAddress, chain);
                     return CryptoDetails(tokenData: token);
                   },
                 ),

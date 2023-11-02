@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pkswallet/app/providers/wallet_provider.dart';
+import 'package:pkswallet/utils/globals.dart';
 import 'package:provider/provider.dart';
 
 class CreateAccount extends StatefulWidget {
@@ -69,12 +70,11 @@ class _CreateAccountState extends State<CreateAccount> {
                       child: TextButton(
                         onPressed: () async {
                           try {
-                            print('I got here');
                             await context.read<WalletProvider>().register(
-                                  controller.text,
-                                  "0000000000000",
-                                  requiresUserVerification: true,
-                                );
+                                controller.text,
+                                Globals.firebaseUser?.phoneNumber ??
+                                    '00000000000');
+
                             // ignore: use_build_context_synchronously
                             // context.go('/home');
                           } catch (e) {
