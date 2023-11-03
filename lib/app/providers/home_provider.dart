@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:pks_4337_sdk/src/modules/covalent_api/covalent_api.dart';
 import 'package:web3dart/web3dart.dart' as w3d;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
