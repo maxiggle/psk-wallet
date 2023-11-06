@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pkswallet/app/providers/wallet_provider.dart';
-import 'package:pkswallet/utils/globals.dart';
 import 'package:provider/provider.dart';
+import 'package:variancewallet/app/providers/wallet_provider.dart';
+import 'package:variancewallet/utils/globals.dart';
 
 class CreateAccount extends StatefulWidget {
   const CreateAccount({

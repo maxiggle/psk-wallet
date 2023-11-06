@@ -1,4 +1,4 @@
-name: pkswallet
+name: variancewallet
 description: A wallet that leverages Account Abstraction and allows users sign SAFE multi-sig transactions with biometrics, HDkey and Private keys
 
 publish_to: "none"
@@ -6,14 +6,14 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.0.6 <4.0.0"
+  sdk: ">=3.3.0-96.0.dev"
 
 dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
   flutter_screenutil: ^5.9.0
-  go_router: ^11.1.2
+  go_router: ^12.1.0 
   gradients: ^0.1.1+2
   flutter_svg: ^2.0.7
   simple_shadow: ^0.3.1
@@ -37,12 +37,16 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_dotenv: ^5.1.0
   rename: ^3.0.1
+  web3dart: ^2.7.2
+  variance_dart:
+    git:
+      url: https://github.com/vaariance/vaariance-dart.git
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
 
 dependency_overrides:
   http: ^1.1.0

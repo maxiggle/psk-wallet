@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pkswallet/app/providers/home_provider.dart';
-import 'package:pkswallet/app/providers/wallet_provider.dart';
 
-import 'package:pkswallet/app/screens/token_balance.dart';
-import 'package:pkswallet/app/screens/transaction.dart';
-import 'package:pkswallet/app/theme/colors.dart';
-import 'package:pkswallet/const.dart';
-import 'package:pkswallet/utils/globals.dart';
-import 'package:pkswallet/utils/quick_send.dart';
 import 'package:provider/provider.dart';
+import 'package:variancewallet/app/providers/home_provider.dart';
+import 'package:variancewallet/app/providers/wallet_provider.dart';
+import 'package:variancewallet/app/screens/token_balance.dart';
+import 'package:variancewallet/app/screens/transaction.dart';
+import 'package:variancewallet/app/theme/colors.dart';
+import 'package:variancewallet/const.dart';
+import 'package:variancewallet/utils/globals.dart';
+import 'package:variancewallet/utils/quick_send.dart';
 import 'package:web3dart/web3dart.dart';
 
 bool isNotOpen = false;

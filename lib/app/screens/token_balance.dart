@@ -6,10 +6,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
-import 'package:pkswallet/app/theme/colors.dart';
-import 'package:pkswallet/const.dart';
+import 'package:variance_dart/variance.dart';
+import 'package:variancewallet/app/theme/colors.dart';
+import 'package:variancewallet/const.dart';
 import 'package:web3dart/web3dart.dart';
-import 'package:pks_4337_sdk/src/modules/covalent_api/covalent_api.dart';
 
 class TokenData {
   final EthereumAddress? contractAddress;
@@ -167,7 +167,7 @@ class _TokenBalanceState extends State<TokenBalance>
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "${widget.tokenData?[index].contractName}",
+                                        "${widget.tokenData?[index].balance}",
                                         style: TextStyle(
                                             fontSize: font14,
                                             fontFamily: 'Inter',
@@ -180,7 +180,7 @@ class _TokenBalanceState extends State<TokenBalance>
                                   Column(
                                     children: [
                                       Text(
-                                        "${widget.tokenData?[index].quoteRate}",
+                                        "${widget.tokenData?[index].address}",
                                         style: TextStyle(
                                             fontFamily: 'Inter',
                                             fontSize: font14,

@@ -3,13 +3,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
-import 'package:pkswallet/app/providers/home_provider.dart';
-import 'package:pkswallet/app/theme/colors.dart';
-import 'package:pkswallet/const.dart';
 import 'package:provider/provider.dart';
+import 'package:variancewallet/app/providers/home_provider.dart';
+import 'package:variancewallet/app/theme/colors.dart';
+import 'package:variancewallet/const.dart';
 
 class Transactions extends StatefulWidget {
   const Transactions(
@@ -59,18 +58,17 @@ class _TransactionsState extends State<Transactions> {
 
   @override
   Widget build(BuildContext context) {
-    final transactionData = context.select(
-      (HomeProvider provider) => provider.transactionData,
+    final transfersData = context.select(
+      (HomeProvider provider) => provider.transferData,
     );
 
     return ListView.builder(
       shrinkWrap: true,
       padding: const EdgeInsets.only(top: 20).r,
       itemBuilder: (context, index) {
-        var transaction = transactionData[index];
-        final image = transaction.transfers?.firstOrNull?.logoUrl;
+        var transfers = transfersData[index];
         const type = TransactionType.send;
-        final status = (transaction.successful == true)
+        final status = (transfersData == true)
             ? TransactionStatus.success
             : TransactionStatus.failed;
 
@@ -93,7 +91,7 @@ class _TransactionsState extends State<Transactions> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      transaction.toAddressLabel ?? "",
+                      "",
                       style: TextStyle(
                           fontSize: font14,
                           fontFamily: 'Inter',
@@ -125,8 +123,7 @@ class _TransactionsState extends State<Transactions> {
                           width: 5.w,
                         ),
                         Text(
-                          DateFormat('yyyy-MM-dd').format(
-                              transaction.blockSignedAt ?? DateTime.now()),
+                          DateFormat('yyyy-MM-dd').format(DateTime.now()),
                           style: TextStyle(
                               fontSize: font14,
                               fontFamily: 'Inter',
@@ -143,7 +140,7 @@ class _TransactionsState extends State<Transactions> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        transaction.value ?? "",
+                        transfers.value.toString(),
                         style: TextStyle(
                             fontFamily: 'Inter',
                             fontSize: font14,
@@ -179,7 +176,7 @@ class _TransactionsState extends State<Transactions> {
           ),
         );
       },
-      itemCount: transactionData.length,
+      itemCount: transfersData.length,
     );
   }
 }

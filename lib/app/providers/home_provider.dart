@@ -1,21 +1,33 @@
 import 'package:flutter/foundation.dart';
+import 'package:variance_dart/variance.dart';
+import 'package:variancewallet/app/providers/wallet_provider.dart';
+import 'package:web3dart/credentials.dart';
 import 'package:web3dart/web3dart.dart' as w3d;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class HomeProvider with ChangeNotifier, DiagnosticableTreeMixin {
+  late WalletProvider _walletProvider;
+  late AlchemyTokenApi _tokenApi;
+  late AlchemyTransferApi _transferApi;
+
+  HomeProvider() {
+    _walletProvider = WalletProvider();
+    _tokenApi = AlchemyTokenApi(_walletProvider.wallet.rpcProvider);
+    _transferApi = AlchemyTransferApi(_walletProvider.wallet.rpcProvider);
+  }
   List<Token> _token = List.unmodifiable([]);
-  List<Transaction> _transactionData = List.unmodifiable([]);
+  List<Transfer> _transferData = List.unmodifiable([]);
   bool _isLoading = true;
 
+  //getters
   List<Token> get token => _token;
-  List<Transaction> get transactionData => _transactionData;
+  List<Transfer> get transferData => _transferData;
+  EthereumAddress get address => _testAddress;
   bool get isLoading => _isLoading;
 
-  String get _cKey => dotenv.get('CKEY', fallback: '');
   final _testAddress = w3d.EthereumAddress.fromHex(
     "0x104EDD9708fFeeCd0b6bAaA37387E155Bce7d060",
   );
-  final _testChain = "eth-mainnet";
+  // final _testChain = "eth-mainnet";
 
   void _updateIsLoading(bool value) {
     _isLoading = value;
@@ -26,15 +38,10 @@ class HomeProvider with ChangeNotifier, DiagnosticableTreeMixin {
     String? chain,
   }) async {
     final usableAddress = address ?? _testAddress;
-    final usableChain = chain ?? _testChain;
+    final transfers = await _transferApi.getAssetTransfers(usableAddress);
+    final token = await _tokenApi.getBalances(usableAddress);
 
-    final txApi = CovalentTransactionsApi(_cKey, usableChain);
-    final transactions = await txApi.getTransactionsForAddress(usableAddress);
-
-    final tokenApi = CovalentTokenApi(_cKey, usableChain);
-    final token = await tokenApi.getBalances(usableAddress);
-
-    _transactionData = transactions;
+    _transferData = transfers;
     _token = token;
     _updateIsLoading(false);
 

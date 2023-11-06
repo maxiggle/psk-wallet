@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pkswallet/utils/globals.dart';
 import 'dart:developer' as devtools show log;
+
+import 'package:variancewallet/utils/globals.dart';
 
 void showSnackBar(
   String text, {

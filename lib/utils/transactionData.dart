@@ -1,5 +1,7 @@
-import 'package:pkswallet/app/screens/transaction.dart';
-import 'package:pkswallet/const.dart';
+
+
+import 'package:variancewallet/app/screens/transaction.dart';
+import 'package:variancewallet/const.dart';
 
 final List<TransactionData> transactionData = [
   TransactionData(

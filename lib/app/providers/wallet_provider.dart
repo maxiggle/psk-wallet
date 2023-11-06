@@ -3,30 +3,32 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pks_4337_sdk/pks_4337_sdk.dart';
-import 'package:pks_4337_sdk/src/modules/covalent_api/covalent_api.dart';
-import 'package:pkswallet/app/providers/persist_auth_data.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:variance_dart/variance.dart';
 import 'package:web3dart/web3dart.dart' as w3d;
 
 ///
 class WalletProvider extends ChangeNotifier {
   final Future<SharedPreferences> _pref = SharedPreferences.getInstance();
   final IChain chain = Chains.getChain(Chain.localhost)
-    ..bundlerUrl = "https://e089-41-190-30-46.ngrok-free.app/rpc"
-    ..rpcUrl = "https://c4a4-41-190-30-46.ngrok-free.app";
+    ..bundlerUrl = "https://81bf-105-112-229-26.ngrok-free.app"
+    ..rpcUrl = " https://99c1-105-112-229-26.ngrok-free.app/rpc";
 
   late PassKey _passKey;
   late Wallet _wallet;
-  PersistAuthData? passKeyPair;
+  late AlchemyTokenApi _tokenApi;
 
   PassKey get passKey => _passKey;
   Wallet get wallet => _wallet;
+  String get _cKey => dotenv.get('CKEY', fallback: '');
 
   WalletProvider() {
     _passKey = PassKey("webauthn.io", "webauthn", "https://webauthn.io");
     _wallet =
         Wallet(chain: chain, signer: SignerType.passkey, passkey: _passKey);
+
+    _tokenApi = AlchemyTokenApi(wallet.rpcProvider);
   }
 
   Future<void> register(String name, String number,
@@ -35,8 +37,6 @@ class WalletProvider extends ChangeNotifier {
         await _passKey.register(name, requiresUserVerification ?? false);
     await _wallet.createPasskeyAccount(pkp.credentialHexBytes, pkp.publicKey[0],
         pkp.publicKey[0], getSaltFromPhoneNumber(number));
-    passKeyPair = pkp as PersistAuthData;
-    setString('passKey', json.encode(passKeyPair?.toJson()));
   }
 
   Future<void> setString(String key, String passKeyPair) async {
@@ -48,9 +48,7 @@ class WalletProvider extends ChangeNotifier {
     final SharedPreferences preferences = await _pref;
     String? passKeyPairString = preferences.getString(key);
     log("passKeyPairString:$passKeyPairString");
-    if (passKeyPairString != null) {
-      passKeyPair = json.decode(passKeyPairString);
-    }
+    if (passKeyPairString != null) {}
     notifyListeners();
   }
 
@@ -59,16 +57,14 @@ class WalletProvider extends ChangeNotifier {
     return Uint256.fromHex(salt);
   }
 
-  Future<List<Transaction>> getTransactionsForAddress(
-      String cKey, w3d.EthereumAddress address, String chain) async {
-    final txApi = CovalentTransactionsApi(cKey, chain);
-    return await txApi.getTransactionsForAddress(address);
-  }
+  // Future<List<w3d.Transaction>> getTransactionsForAddress(
+  //      w3d.EthereumAddress address, String chain) async {
+  //   return await _tokenApi
+  // }
 
   Future<List<Token>> getTokensForAddress(
       String cKey, w3d.EthereumAddress address, String chain) async {
-    final tokenApi = CovalentTokenApi(cKey, chain);
-    return await tokenApi.getBalances(address);
+    return await _tokenApi.getBalances(address);
   }
 
   Future<w3d.EtherAmount> getWalletBalance(w3d.EthereumAddress address) async {

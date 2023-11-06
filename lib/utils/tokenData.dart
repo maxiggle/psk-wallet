@@ -1,4 +1,6 @@
-import 'package:pkswallet/app/screens/token_balance.dart';
+
+
+import 'package:variancewallet/app/screens/token_balance.dart';
 
 List<TokenData> token = [
   TokenData(

@@ -4,15 +4,13 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_contacts/properties/address.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pks_4337_sdk/pks_4337_sdk.dart';
-import 'package:pkswallet/app/providers/wallet_provider.dart';
-import 'package:pkswallet/app/theme/colors.dart';
-import 'package:pkswallet/const.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:web3dart/web3dart.dart';
+import 'package:variancewallet/app/theme/colors.dart';
+import 'package:variancewallet/const.dart';
 
 Address? message;
 final FutureBuilder<ui.Image> qrFutureBuilder = FutureBuilder<ui.Image>(
@@ -25,7 +23,7 @@ final FutureBuilder<ui.Image> qrFutureBuilder = FutureBuilder<ui.Image>(
     return CustomPaint(
       size: const Size.square(size),
       painter: QrPainter(
-        data: message!.hex,
+        data: message!.toString(),
         version: QrVersions.auto,
         eyeStyle: const QrEyeStyle(
           eyeShape: QrEyeShape.square,
@@ -60,11 +58,11 @@ class ReceiveTokenSheet extends StatefulWidget {
 
 class _ReceiveTokenSheetState extends State<ReceiveTokenSheet> {
   @override
-  void initState() {
-    message = Address.fromEthAddress(
-        EthereumAddress.fromHex("0x104EDD9708fFeeCd0b6bAaA37387E155Bce7d060"));
-    super.initState();
-  }
+  // void initState() {
+  //   message = Address.(
+  //       EthereumAddress.fromHex("0x104EDD9708fFeeCd0b6bAaA37387E155Bce7d060"));
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +129,7 @@ class _ReceiveTokenSheetState extends State<ReceiveTokenSheet> {
                                     SizedBox(
                                       width: 280.w,
                                       child: Text(
-                                        message?.hexEip55 ?? "",
+                                        message?.address ?? "",
                                         style: const TextStyle(
                                             color: Color(0xff32353E),
                                             overflow: TextOverflow.ellipsis),
@@ -145,7 +143,7 @@ class _ReceiveTokenSheetState extends State<ReceiveTokenSheet> {
                             TextButton(
                               onPressed: () {
                                 Clipboard.setData(ClipboardData(
-                                  text: message?.hex ?? "",
+                                  text: message?.address ?? "",
                                 ));
                               },
                               style: TextButton.styleFrom(
