@@ -3,10 +3,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
-import 'package:provider/provider.dart';
-import 'package:variancewallet/app/providers/home_provider.dart';
+import 'package:variance_dart/variance.dart';
 import 'package:variancewallet/app/theme/colors.dart';
 import 'package:variancewallet/const.dart';
 
@@ -16,12 +15,14 @@ class Transactions extends StatefulWidget {
       this.refreshIndicatorKey,
       this.scaffoldKey,
       this.transactionType,
-      this.includeModal});
+      this.includeModal,
+      this.transferData});
 
   final TransactionType? transactionType;
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final GlobalKey<LiquidPullToRefreshState>? refreshIndicatorKey;
   final Function(int index)? includeModal;
+  final List<Transfer>? transferData;
 
   @override
   State<Transactions> createState() => _TransactionsState();
@@ -58,20 +59,11 @@ class _TransactionsState extends State<Transactions> {
 
   @override
   Widget build(BuildContext context) {
-    final transfersData = context.select(
-      (HomeProvider provider) => provider.transferData,
-    );
-
     return ListView.builder(
       shrinkWrap: true,
       padding: const EdgeInsets.only(top: 20).r,
       itemBuilder: (context, index) {
-        var transfers = transfersData[index];
-        const type = TransactionType.send;
-        final status = (transfersData == true)
-            ? TransactionStatus.success
-            : TransactionStatus.failed;
-
+        var transfers = widget.transferData?[index];
         return Padding(
           padding: const EdgeInsets.only(bottom: 9.74).r,
           child: TextButton(
@@ -85,13 +77,13 @@ class _TransactionsState extends State<Transactions> {
             onPressed: () => widget.includeModal?.call(index),
             child: Row(
               children: [
-                // SvgPicture.network(image ?? "assets/image/"),
+                SvgPicture.asset("assets/images/ethereum.svg"),
                 SizedBox(width: 9.74.w),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "",
+                      "${transfers?.erc1155Metadata?.tokenId}",
                       style: TextStyle(
                           fontSize: font14,
                           fontFamily: 'Inter',
@@ -101,7 +93,7 @@ class _TransactionsState extends State<Transactions> {
                     Row(
                       children: [
                         Text(
-                          type == widget.transactionType ? 'Receive' : 'Send',
+                          '${transfers?.asset}',
                           style: TextStyle(
                               fontSize: font14,
                               fontFamily: 'Inter',
@@ -123,7 +115,7 @@ class _TransactionsState extends State<Transactions> {
                           width: 5.w,
                         ),
                         Text(
-                          DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                          '${transfers?.blockTimestamp?.day}',
                           style: TextStyle(
                               fontSize: font14,
                               fontFamily: 'Inter',
@@ -140,7 +132,7 @@ class _TransactionsState extends State<Transactions> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        transfers.value.toString(),
+                        '${transfers?.to}',
                         style: TextStyle(
                             fontFamily: 'Inter',
                             fontSize: font14,
@@ -148,14 +140,8 @@ class _TransactionsState extends State<Transactions> {
                             color: black),
                       ),
                       Text(
-                        status == TransactionStatus.pending
-                            ? 'In-transit'
-                            : 'Success',
-                        style: TextStyle(
-                          color: status == TransactionStatus.pending
-                              ? blue2
-                              : darkGreen,
-                        ),
+                        '',
+                        style: TextStyle(color: blue2),
                       ),
                     ],
                   ),
@@ -176,26 +162,8 @@ class _TransactionsState extends State<Transactions> {
           ),
         );
       },
-      itemCount: transfersData.length,
+      itemCount: widget.transferData?.length,
     );
   }
 }
 
-class TransactionData {
-  final String? txHash;
-  final String? coinImage;
-  final String? ensName;
-  final TransactionType? type;
-  final TransactionStatus? status;
-  final DateTime? transactionTime;
-  final String? amount;
-
-  TransactionData(
-      {this.txHash,
-      required this.coinImage,
-      required this.ensName,
-      required this.type,
-      required this.status,
-      required this.transactionTime,
-      required this.amount});
-}

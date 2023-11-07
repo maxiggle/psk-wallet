@@ -49,6 +49,9 @@ class _HomePageState extends State<HomePage> {
     final token = context.select(
       (HomeProvider provider) => provider.token,
     );
+    final transferData = context.select(
+      (HomeProvider provider) => provider.transferData,
+    );
     final wallet = context.select(
       (WalletProvider provider) => provider.wallet,
     );
@@ -156,7 +159,7 @@ class _HomePageState extends State<HomePage> {
                                     height: 2.h,
                                   ),
                                   Text(
-                                    'ETH ${widget.balance?.getInEther}',
+                                    'ETH ${wallet}',
                                     style: TextStyle(
                                       fontFamily: 'Inter',
                                       fontSize: font51,
@@ -196,7 +199,9 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(
                         height: 24,
                       ),
-                      TokenBalance(tokenData: token),
+                      TokenBalance(
+                        tokenData: token,
+                      ),
                       SizedBox(
                         height: 24.h,
                       ),
@@ -260,7 +265,7 @@ class _HomePageState extends State<HomePage> {
                                   const SizedBox(height: 21.03),
                                 ],
                               ),
-                              const Transactions(),
+                               Transactions(transferData: transferData,),
                             ],
                           ),
                         ),

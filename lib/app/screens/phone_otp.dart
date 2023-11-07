@@ -68,18 +68,12 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
     super.dispose();
   }
 
-  @override
-  void didChangeMetrics() {
-    double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-    isKeyboardVisible = keyboardHeight > 0;
-  }
-
   // snackBar Widget
   void showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ),
     );
   }

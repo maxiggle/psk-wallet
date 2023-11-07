@@ -18,6 +18,9 @@ final TextEditingController controller = TextEditingController();
 class _CreateAccountState extends State<CreateAccount> {
   @override
   Widget build(BuildContext context) {
+    final wallet = context.select(
+      (WalletProvider provider) => provider.wallet,
+    );
     return SafeArea(
       child: Consumer(
         builder: (context, value, child) {
@@ -69,6 +72,7 @@ class _CreateAccountState extends State<CreateAccount> {
                       height: 45,
                       child: TextButton(
                         onPressed: () async {
+                          // wallet.getAccountAddress(owner, salt)
                           try {
                             await context.read<WalletProvider>().register(
                                 controller.text,

@@ -1,6 +1,5 @@
 
 
-import 'package:variancewallet/app/screens/transaction.dart';
 import 'package:variancewallet/const.dart';
 
 final List<TransactionData> transactionData = [
@@ -12,3 +11,21 @@ final List<TransactionData> transactionData = [
       type: TransactionType.send,
       status: TransactionStatus.pending),
 ];
+class TransactionData {
+  final String? txHash;
+  final String? coinImage;
+  final String? ensName;
+  final TransactionType? type;
+  final TransactionStatus? status;
+  final DateTime? transactionTime;
+  final String? amount;
+
+  TransactionData(
+      {this.txHash,
+      required this.coinImage,
+      required this.ensName,
+      required this.type,
+      required this.status,
+      required this.transactionTime,
+      required this.amount});
+}

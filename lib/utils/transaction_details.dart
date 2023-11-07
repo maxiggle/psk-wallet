@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:variancewallet/app/screens/transaction.dart';
 import 'package:variancewallet/app/theme/colors.dart';
 import 'package:variancewallet/const.dart';
+import 'package:variancewallet/utils/transactionData.dart';
 
 class TransactionDetails extends StatefulWidget {
   final List<TransactionData>? transactionData;

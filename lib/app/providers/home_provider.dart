@@ -38,7 +38,8 @@ class HomeProvider with ChangeNotifier, DiagnosticableTreeMixin {
     String? chain,
   }) async {
     final usableAddress = address ?? _testAddress;
-    final transfers = await _transferApi.getAssetTransfers(usableAddress);
+    final transfers =
+        await _transferApi.getAssetTransfers(usableAddress, withMetadata: true);
     final token = await _tokenApi.getBalances(usableAddress);
 
     _transferData = transfers;

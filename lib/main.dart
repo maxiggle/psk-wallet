@@ -83,12 +83,6 @@ class _AuthStateWidgetState extends State<AuthStateWidget> {
                 },
               ),
               GoRoute(
-                path: '/home',
-                builder: (BuildContext context, GoRouterState state) {
-                  return HomePage(balance: EtherAmount.zero());
-                },
-              ),
-              GoRoute(
                 path: '/phone-field',
                 builder: (BuildContext context, GoRouterState state) {
                   return const PhoneFieldScreen();
@@ -105,6 +99,12 @@ class _AuthStateWidgetState extends State<AuthStateWidget> {
                 path: '/CreateAccountScreen',
                 builder: (BuildContext context, GoRouterState state) {
                   return const CreateAccount();
+                },
+              ),
+              GoRoute(
+                path: '/home',
+                builder: (BuildContext context, GoRouterState state) {
+                  return HomePage(balance: EtherAmount.zero());
                 },
               ),
               GoRoute(
