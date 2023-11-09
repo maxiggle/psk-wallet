@@ -9,10 +9,13 @@ class HomeProvider with ChangeNotifier, DiagnosticableTreeMixin {
   late AlchemyTokenApi _tokenApi;
   late AlchemyTransferApi _transferApi;
 
+  final pr = BaseProvider(
+      "https://eth-mainnet.g.alchemy.com/v2/cLTpHWqs6iaOgFrnuxMVl9Z1Ung00otf");
+
   HomeProvider() {
     _walletProvider = WalletProvider();
-    _tokenApi = AlchemyTokenApi(_walletProvider.wallet.rpcProvider);
-    _transferApi = AlchemyTransferApi(_walletProvider.wallet.rpcProvider);
+    _tokenApi = AlchemyTokenApi(pr);
+    _transferApi = AlchemyTransferApi(pr);
   }
   List<Token> _token = List.unmodifiable([]);
   List<Transfer> _transferData = List.unmodifiable([]);
@@ -41,11 +44,18 @@ class HomeProvider with ChangeNotifier, DiagnosticableTreeMixin {
     final transfers =
         await _transferApi.getAssetTransfers(usableAddress, withMetadata: true);
     final token = await _tokenApi.getBalances(usableAddress);
+    await _tokenApi.getTokenMetadata(usableAddress);
 
     _transferData = transfers;
     _token = token;
     _updateIsLoading(false);
 
     notifyListeners();
+  }
+
+  Future<EthereumAddress> getPasskeyAccountAddress(
+      Uint8List credentialHex, Uint256 x, Uint256 y, Uint256 salt) async {
+    return _walletProvider.wallet
+        .getPassKeyAccountAddress(credentialHex, x, y, salt);
   }
 }

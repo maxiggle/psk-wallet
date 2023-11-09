@@ -39,8 +39,8 @@ dependencies:
   rename: ^3.0.1
   web3dart: ^2.7.2
   variance_dart:
-    git:
-      url: https://github.com/vaariance/vaariance-dart.git
+    git: 
+      url: "https://github.com/vaariance/vaariance-dart.git"
 
 dev_dependencies:
   flutter_test:

@@ -35,6 +35,8 @@ void main() async {
   ], child: const MyApp()));
 }
 
+final globalScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -154,6 +156,7 @@ class _AuthStateWidgetState extends State<AuthStateWidget> {
             child: FirebasePhoneAuthProvider(
               child: MaterialApp.router(
                 debugShowCheckedModeBanner: false,
+                scaffoldMessengerKey: globalScaffoldMessengerKey,
                 title: 'pks wallet',
                 routerConfig: router,
                 builder: (context, child) {

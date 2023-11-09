@@ -1075,7 +1075,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "399ff5fcfa2205318ad5341726854f239461e479"
+      resolved-ref: "0ce6ac54f2c7502009708d597f53b088a29dfed5"
       url: "https://github.com/vaariance/vaariance-dart.git"
     source: git
     version: "1.0.0+1"
@@ -1155,10 +1155,10 @@ packages:
     dependency: transitive
     description:
       name: webauthn
-      sha256: "4aa5998e0405b625f19da8f992e190eb997aba5d70ee24715156a50ba840e5be"
+      sha256: b4a9a58c73cbf501a28e6cc78dd9b48542bfbfdc6dbcb7677ef06114bc0cf6da
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.1"
+    version: "0.2.3"
   webcrypto:
     dependency: transitive
     description:

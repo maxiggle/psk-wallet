@@ -140,9 +140,8 @@ class _TokenBalanceState extends State<TokenBalance>
                               child: Row(
                                 children: [
                                   SvgPicture.network(
-                                    widget.tokenData?[index].metadata?.logo ??
-                                        'assets/images/ethereum.svg',
-                                  ),
+                                      widget.tokenData?[index].metadata?.logo ??
+                                          ""),
                                   SizedBox(
                                     width: 13.51.w,
                                   ),
@@ -175,7 +174,7 @@ class _TokenBalanceState extends State<TokenBalance>
                                       ),
                                       SizedBox(height: 3.91.h),
                                       Text(
-                                        "${widget.tokenData?[index].balance.getInEther}",
+                                        "${widget.tokenData?[index].balance.getInEther} ${widget.tokenData?[index].metadata?.symbol}",
                                         style: TextStyle(
                                           color: black.withOpacity(0.30),
                                           fontFamily: 'Inter',
