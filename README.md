@@ -1,3 +1,3 @@
 # variancewallet
 
-A wallet that leverages Account Abstraction and allows users sign SAFE multi-sig transactions with biometrics, hdkey and privatekeys
+A reference wallet for the variance sdk and enables passkeys signatures and contact based asset transfer
