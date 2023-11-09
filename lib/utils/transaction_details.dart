@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pkswallet/app/screens/transaction.dart';
-import 'package:pkswallet/app/theme/colors.dart';
-import 'package:pkswallet/const.dart';
+import 'package:variancewallet/app/screens/transaction.dart';
+import 'package:variancewallet/app/theme/colors.dart';
+import 'package:variancewallet/const.dart';
+import 'package:variancewallet/utils/transactionData.dart';
 
 class TransactionDetails extends StatefulWidget {
   final List<TransactionData>? transactionData;
@@ -66,7 +67,7 @@ class _TransactionDetailsState extends State<TransactionDetails>
                     fontFamily: 'Inter'),
               ),
               SizedBox(height: 50.h),
-              Transactions(transactionData: widget.transactionData)
+              const Transactions()
             ],
           ),
         ),

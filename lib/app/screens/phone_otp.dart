@@ -6,10 +6,10 @@ import 'package:firebase_phone_auth_handler/firebase_phone_auth_handler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:variancewallet/app/theme/colors.dart';
+import 'package:variancewallet/const.dart';
+import 'package:variancewallet/utils/firebase_helpers.dart';
 
-import 'package:pkswallet/app/theme/colors.dart';
-import 'package:pkswallet/const.dart';
-import 'package:pkswallet/utils/firebase_helpers.dart';
 
 class PinCodeVerificationScreen extends StatefulWidget {
   static const id = 'VerifyPhoneNumberScreen';
@@ -68,18 +68,12 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen>
     super.dispose();
   }
 
-  @override
-  void didChangeMetrics() {
-    double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-    isKeyboardVisible = keyboardHeight > 0;
-  }
-
   // snackBar Widget
   void showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ),
     );
   }

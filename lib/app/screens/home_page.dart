@@ -3,16 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pkswallet/app/providers/wallet_provider.dart';
-
-import 'package:pkswallet/app/screens/token_balance.dart';
-import 'package:pkswallet/app/screens/transaction.dart';
-import 'package:pkswallet/app/theme/colors.dart';
-import 'package:pkswallet/const.dart';
-import 'package:pkswallet/utils/globals.dart';
-import 'package:pkswallet/utils/quick_send.dart';
 import 'package:provider/provider.dart';
 import 'package:web3dart/web3dart.dart';
+
+import 'package:variancewallet/app/providers/home_provider.dart';
+import 'package:variancewallet/app/providers/wallet_provider.dart';
+import 'package:variancewallet/app/screens/token_balance.dart';
+import 'package:variancewallet/app/screens/transaction.dart';
+import 'package:variancewallet/app/theme/colors.dart';
+import 'package:variancewallet/const.dart';
+import 'package:variancewallet/utils/globals.dart';
+import 'package:variancewallet/utils/quick_send.dart';
 
 bool isNotOpen = false;
 
@@ -23,179 +24,43 @@ final List<String> items = [
   'Item4',
 ];
 
-class AddressBar extends StatefulWidget {
-  final String hintText;
-  final TextEditingController? textEditingController;
-  final TextStyle? hintTextStyle;
-
-  // Add an optional parameter for the initial value
-  final String initialValue;
-
-  const AddressBar({
-    required this.hintText,
-    this.hintTextStyle,
-    this.textEditingController,
-    this.initialValue = "0.0", // Provide a default initial value
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<AddressBar> createState() => _AddressBarState();
-}
-
-class ButtonRow extends StatelessWidget {
-  const ButtonRow({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer(
-      builder: (context, value, child) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            SizedBox(
-              height: 87.63.h,
-              width: 150.714.w,
-              child: TextButton(
-                onPressed: () {
-                  context.push('/send_token', extra: '');
-                },
-                style: TextButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(radius / 2),
-                  ),
-                  backgroundColor: lightGreen,
-                ),
-                child: Text(
-                  'Send',
-                  style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: font19.sp,
-                      color: black,
-                      fontWeight: FontWeight.w500),
-                ),
-              ),
-            ),
-            const SizedBox(
-              width: 8.52,
-            ),
-            SizedBox(
-              height: 87.63.h,
-              width: 150.714.w,
-              child: TextButton(
-                onPressed: () {
-                  context.push('/receive_token');
-                },
-                style: TextButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(radius),
-                  ),
-                  backgroundColor: ash,
-                ),
-                child: Text(
-                  'Receive',
-                  style: TextStyle(
-                      fontFamily: 'Inter', fontSize: font19.sp, color: black),
-                ),
-              ),
-            ),
-            const SizedBox(
-              width: 8.52,
-            ),
-            SizedBox(
-              height: 87.63.h,
-              width: 150.714.w,
-              child: TextButton(
-                onPressed: () async {
-                  // await context
-                  //     .read<WalletProvider>()
-                  //     .register('Gef', '080012345457');
-                  Globals.auth.signOut();
-                },
-                style: TextButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(radius),
-                  ),
-                  backgroundColor: ash,
-                ),
-                child: SvgPicture.asset('assets/images/add.svg'),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
 class HomePage extends StatefulWidget {
   final EtherAmount? balance;
-  final List<TransactionData>? transactionData;
-  final List<TokenData>? tokenData;
-  const HomePage(
-      {super.key,
-      required this.balance,
-      required this.transactionData,
-      required this.tokenData});
+
+  const HomePage({
+    super.key,
+    required this.balance,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
-}
-
-class _AddressBarState extends State<AddressBar> {
-  bool pwdVisibility = false;
-  final formKey = GlobalKey<FormState>();
-  late final TextEditingController textEditingController;
-  @override
-  void initState() {
-    super.initState();
-    // Initialize the TextEditingController with the initial value
-    textEditingController = widget.textEditingController ??
-        TextEditingController(text: widget.initialValue);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      cursorColor: black,
-      controller: widget.textEditingController,
-      textAlign: TextAlign.center,
-      decoration: InputDecoration(
-        fillColor: ash,
-        filled: true,
-        hintText: widget.hintText,
-        hintStyle: widget.hintTextStyle,
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.white,
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(radius),
-        ),
-        focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-              color: Colors.white,
-              width: 1,
-            ),
-            borderRadius: BorderRadius.circular(radius)),
-      ),
-      validator: (val) {
-        if (val!.isEmpty) {
-          return 'Required';
-        }
-        return null;
-      },
-    );
-  }
 }
 
 class _HomePageState extends State<HomePage> {
   String? selectedValue = items.first;
 
   late final ScrollController? scrollController;
+  @override
+  void initState() {
+    super.initState();
+    scrollController = ScrollController();
+
+    final homeProvider = context.read<HomeProvider>();
+    homeProvider.getData();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final token = context.select(
+      (HomeProvider provider) => provider.token,
+    );
+    final transferData = context.select(
+      (HomeProvider provider) => provider.transferData,
+    );
+    final wallet = context.select(
+      (WalletProvider provider) => provider.wallet,
+    );
+
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -227,11 +92,13 @@ class _HomePageState extends State<HomePage> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(70.591),
                                 ),
-                                child: SvgPicture.network(context
-                                    .read<WalletProvider>()
-                                    .wallet
-                                    .address
-                                    .diceAvatar())),
+                                child: CircleAvatar(
+                                  child: SvgPicture.network(context
+                                      .read<WalletProvider>()
+                                      .wallet
+                                      .address
+                                      .avatarUrl()),
+                                )),
                             const SizedBox(
                               width: 14.6,
                             ),
@@ -240,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 SizedBox(height: 25.56.h / 2),
                                 Text(
-                                  'Hey, Geffy!',
+                                  wallet.address.formattedAddress(length: 4),
                                   style: TextStyle(
                                     fontFamily: 'Inter',
                                     fontSize: font19,
@@ -334,7 +201,9 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 24,
                 ),
-                TokenBalance(tokenData: widget.tokenData),
+                TokenBalance(
+                  tokenData: token,
+                ),
                 SizedBox(
                   height: 24.h,
                 ),
@@ -395,7 +264,7 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                         Transactions(
-                          transactionData: widget.transactionData,
+                          transferData: transferData,
                         ),
                       ],
                     ),
@@ -408,15 +277,86 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+class ButtonRow extends StatelessWidget {
+  const ButtonRow({super.key});
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    scrollController = ScrollController();
+  Widget build(BuildContext context) {
+    return Consumer(
+      builder: (context, value, child) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            SizedBox(
+              height: 87.63.h,
+              width: 150.714.w,
+              child: TextButton(
+                onPressed: () {
+                  context.push('/send_token', extra: '');
+                },
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(radius / 2),
+                  ),
+                  backgroundColor: lightGreen,
+                ),
+                child: Text(
+                  'Send',
+                  style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: font19.sp,
+                      color: black,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 8.52,
+            ),
+            SizedBox(
+              height: 87.63.h,
+              width: 150.714.w,
+              child: TextButton(
+                onPressed: () {
+                  context.push('/receive_token');
+                },
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(radius),
+                  ),
+                  backgroundColor: ash,
+                ),
+                child: Text(
+                  'Receive',
+                  style: TextStyle(
+                      fontFamily: 'Inter', fontSize: font19.sp, color: black),
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 8.52,
+            ),
+            SizedBox(
+              height: 87.63.h,
+              width: 150.714.w,
+              child: TextButton(
+                onPressed: () async {
+                  Globals.auth.signOut();
+                },
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(radius),
+                  ),
+                  backgroundColor: ash,
+                ),
+                child: SvgPicture.asset('assets/images/add.svg'),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

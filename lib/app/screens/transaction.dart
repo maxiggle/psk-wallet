@@ -4,25 +4,25 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
-import 'package:pkswallet/app/theme/colors.dart';
-import 'package:pkswallet/const.dart';
+import 'package:variance_dart/variance.dart';
+import 'package:variancewallet/app/theme/colors.dart';
+import 'package:variancewallet/const.dart';
 
 class Transactions extends StatefulWidget {
   const Transactions(
       {super.key,
-      required this.transactionData,
       this.refreshIndicatorKey,
       this.scaffoldKey,
       this.transactionType,
-      this.includeModal});
+      this.includeModal,
+      this.transferData});
 
-  final List<TransactionData>? transactionData;
   final TransactionType? transactionType;
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final GlobalKey<LiquidPullToRefreshState>? refreshIndicatorKey;
   final Function(int index)? includeModal;
+  final List<Transfer>? transferData;
 
   @override
   State<Transactions> createState() => _TransactionsState();
@@ -63,6 +63,7 @@ class _TransactionsState extends State<Transactions> {
       shrinkWrap: true,
       padding: const EdgeInsets.only(top: 20).r,
       itemBuilder: (context, index) {
+        var transfers = widget.transferData?[index];
         return Padding(
           padding: const EdgeInsets.only(bottom: 9.74).r,
           child: TextButton(
@@ -76,16 +77,13 @@ class _TransactionsState extends State<Transactions> {
             onPressed: () => widget.includeModal?.call(index),
             child: Row(
               children: [
-                SvgPicture.asset(
-                    widget.transactionData?[index].coinImage ?? ""),
-                SizedBox(
-                  width: 9.74.w,
-                ),
+                SvgPicture.asset("assets/images/ethereum.svg"),
+                SizedBox(width: 9.74.w),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.transactionData?[index].ensName ?? "",
+                      "${transfers?.erc1155Metadata?.tokenId}",
                       style: TextStyle(
                           fontSize: font14,
                           fontFamily: 'Inter',
@@ -95,10 +93,7 @@ class _TransactionsState extends State<Transactions> {
                     Row(
                       children: [
                         Text(
-                          widget.transactionData?[index].type ==
-                                  widget.transactionType
-                              ? 'Receive'
-                              : 'Send',
+                          '${transfers?.asset}',
                           style: TextStyle(
                               fontSize: font14,
                               fontFamily: 'Inter',
@@ -120,9 +115,7 @@ class _TransactionsState extends State<Transactions> {
                           width: 5.w,
                         ),
                         Text(
-                          DateFormat('yyyy-MM-dd').format(
-                              widget.transactionData?[index].transactionTime ??
-                                  DateTime.now()),
+                          '${transfers?.blockTimestamp?.day}',
                           style: TextStyle(
                               fontSize: font14,
                               fontFamily: 'Inter',
@@ -134,28 +127,24 @@ class _TransactionsState extends State<Transactions> {
                   ],
                 ),
                 const Spacer(),
-                Column(
-                  children: [
-                    Text(
-                      widget.transactionData?[index].amount ?? "",
-                      style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: font14,
-                          fontWeight: FontWeight.w600,
-                          color: black),
-                    ),
-                    Text(
-                      widget.transactionData?[index].status ==
-                              TransactionStatus.pending
-                          ? 'In-transit'
-                          : 'Success',
-                      style: TextStyle(
-                          color: widget.transactionData?[index].status ==
-                                  TransactionStatus.pending
-                              ? blue2
-                              : darkGreen),
-                    ),
-                  ],
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '${transfers?.to}',
+                        style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: font14,
+                            fontWeight: FontWeight.w600,
+                            color: black),
+                      ),
+                      Text(
+                        '',
+                        style: TextStyle(color: blue2),
+                      ),
+                    ],
+                  ),
                 ),
                 Container(
                     height: 36.512,
@@ -173,26 +162,8 @@ class _TransactionsState extends State<Transactions> {
           ),
         );
       },
-      itemCount: widget.transactionData?.length,
+      itemCount: widget.transferData?.length,
     );
   }
 }
 
-class TransactionData {
-  final String? txHash;
-  final String? coinImage;
-  final String? ensName;
-  final TransactionType? type;
-  final TransactionStatus? status;
-  final DateTime? transactionTime;
-  final String? amount;
-
-  TransactionData(
-      {this.txHash,
-      required this.coinImage,
-      required this.ensName,
-      required this.type,
-      required this.status,
-      required this.transactionTime,
-      required this.amount});
-}

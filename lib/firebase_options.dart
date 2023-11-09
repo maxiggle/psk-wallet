@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCJFUETmKB4c_XNYo_lPXATz8tbG_N5Qmo',
-    appId: '1:1072954622080:android:e4fcaa697f66cc5ed9a665',
+    appId: '1:1072954622080:android:7f60737dd597ab92d9a665',
     messagingSenderId: '1072954622080',
     projectId: 'pks-wallet',
     storageBucket: 'pks-wallet.appspot.com',
@@ -59,10 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAeXW4W9t_n6Q1r9e_ZGPuXyIEw9frLwV0',
-    appId: '1:1072954622080:ios:00419ca133869121d9a665',
+    appId: '1:1072954622080:ios:27c51f775bd329efd9a665',
     messagingSenderId: '1072954622080',
     projectId: 'pks-wallet',
     storageBucket: 'pks-wallet.appspot.com',
-    iosBundleId: 'com.pks.pkswallet',
+    androidClientId: '1072954622080-viao34jeqci9ggn35vkma0kct29s24c6.apps.googleusercontent.com',
+    iosBundleId: 'com.variance.variancewallet',
   );
 }

@@ -3,9 +3,9 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:go_router/go_router.dart';
-import 'package:pkswallet/app/theme/colors.dart';
-import 'package:pkswallet/const.dart';
 import 'package:after_layout/after_layout.dart';
+import 'package:variancewallet/app/theme/colors.dart';
+import 'package:variancewallet/const.dart';
 
 class QuickSend extends StatefulWidget {
   const QuickSend({super.key});

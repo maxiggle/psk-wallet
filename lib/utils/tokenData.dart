@@ -1,4 +1,7 @@
-import 'package:pkswallet/app/screens/token_balance.dart';
+
+
+import 'package:variancewallet/app/screens/token_balance.dart';
+import 'package:web3dart/web3dart.dart';
 
 List<TokenData> token = [
   TokenData(
@@ -18,3 +21,22 @@ List<TokenData> token = [
     logoUrl: 'assets/images/polygon.svg',
   ),
 ];
+
+class TokenData {
+  final EthereumAddress? contractAddress;
+  final String? quoteRate;
+  final String? balance;
+  final String? tokenBalanceInUSD;
+  final String? contractName;
+  final String? contractTickerSymbol;
+  final String? logoUrl;
+
+  TokenData(
+      {this.contractAddress,
+      this.quoteRate,
+      this.balance,
+      this.tokenBalanceInUSD,
+      this.contractName,
+      this.contractTickerSymbol,
+      this.logoUrl});
+}

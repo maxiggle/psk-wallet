@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pkswallet/app/providers/wallet_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:variancewallet/app/providers/wallet_provider.dart';
+import 'package:variancewallet/main.dart';
+import 'package:variancewallet/utils/globals.dart';
 
 class CreateAccount extends StatefulWidget {
   const CreateAccount({
@@ -13,8 +15,15 @@ class CreateAccount extends StatefulWidget {
 }
 
 final TextEditingController controller = TextEditingController();
+final _formKey = GlobalKey<FormState>();
 
 class _CreateAccountState extends State<CreateAccount> {
+  void showSnackbar(String message) {
+    var currentScaffoldMessenger = globalScaffoldMessengerKey.currentState;
+    currentScaffoldMessenger?.hideCurrentSnackBar();
+    currentScaffoldMessenger?.showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -41,7 +50,23 @@ class _CreateAccountState extends State<CreateAccount> {
                         child: Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(25)),
-                      child: TextField(
+                      child: TextFormField(
+                        key: _formKey,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter a username';
+                          }
+                          if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
+                            return 'Username must contain only alphabets with no spaces';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            controller.text = value;
+                          });
+                        },
                         controller: controller,
                         maxLines: 1,
                         textAlign: TextAlign.center,
@@ -69,20 +94,12 @@ class _CreateAccountState extends State<CreateAccount> {
                       child: TextButton(
                         onPressed: () async {
                           try {
-                            print('I got here');
                             await context.read<WalletProvider>().register(
-                                  controller.text,
-                                  "0000000000000",
-                                  requiresUserVerification: true,
-                                );
-                            // ignore: use_build_context_synchronously
-                            // context.go('/home');
+                                controller.text.trim(),
+                                '${Globals.firebaseUser?.phoneNumber}');
                           } catch (e) {
                             // ignore: use_build_context_synchronously
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text(
-                              e.toString(),
-                            )));
+                            // showSnackbar(e.toString());
                           }
                           // ignore: use_build_context_synchronously
                           context.go('/home');
