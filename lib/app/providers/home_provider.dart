@@ -1,3 +1,4 @@
+
 import 'package:flutter/foundation.dart';
 import 'package:variance_dart/variance.dart';
 import 'package:variancewallet/app/providers/wallet_provider.dart';
@@ -43,8 +44,7 @@ class HomeProvider with ChangeNotifier, DiagnosticableTreeMixin {
     final usableAddress = address ?? _testAddress;
     final transfers =
         await _transferApi.getAssetTransfers(usableAddress, withMetadata: true);
-    final token = await _tokenApi.getBalances(usableAddress);
-    await _tokenApi.getTokenMetadata(usableAddress);
+    await _tokenApi.getBalances(usableAddress);
 
     _transferData = transfers;
     _token = token;
@@ -53,6 +53,7 @@ class HomeProvider with ChangeNotifier, DiagnosticableTreeMixin {
     notifyListeners();
   }
 
+ 
   Future<EthereumAddress> getPasskeyAccountAddress(
       Uint8List credentialHex, Uint256 x, Uint256 y, Uint256 salt) async {
     return _walletProvider.wallet

@@ -41,6 +41,7 @@ dependencies:
   variance_dart:
     git: 
       url: "https://github.com/vaariance/vaariance-dart.git"
+  cloud_firestore: ^4.12.2
 
 dev_dependencies:
   flutter_test:

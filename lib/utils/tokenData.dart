@@ -1,6 +1,5 @@
 
 
-import 'package:variancewallet/app/screens/token_balance.dart';
 import 'package:web3dart/web3dart.dart';
 
 List<TokenData> token = [
