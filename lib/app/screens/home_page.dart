@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:variance_dart/utils.dart';
+import 'package:variance_dart/variance.dart';
 import 'package:web3dart/web3dart.dart';
 
 import 'package:variancewallet/app/providers/home_provider.dart';
@@ -51,15 +53,22 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final token = context.select(
-      (HomeProvider provider) => provider.token,
-    );
     final transferData = context.select(
-      (HomeProvider provider) => provider.transferData,
+      (HomeProvider provider) => provider.tokenTransfer,
+    );
+    final tokenData = context.select(
+      (HomeProvider provider) => provider.tokenBalance,
     );
     final wallet = context.select(
       (WalletProvider provider) => provider.wallet,
     );
+
+    String avatarUrl = '';
+    if (wallet.address != null) {
+      var ethAddress = EthereumAddress.fromHex(wallet.address!.hex);
+      var address = Address.fromEthAddress(ethAddress);
+      avatarUrl = address.avatarUrl();
+    } else {}
 
     return SafeArea(
       child: Scaffold(
@@ -93,11 +102,7 @@ class _HomePageState extends State<HomePage> {
                                   borderRadius: BorderRadius.circular(70.591),
                                 ),
                                 child: CircleAvatar(
-                                  child: SvgPicture.network(context
-                                      .read<WalletProvider>()
-                                      .wallet
-                                      .address
-                                      .avatarUrl()),
+                                  child: SvgPicture.network(avatarUrl),
                                 )),
                             const SizedBox(
                               width: 14.6,
@@ -107,7 +112,8 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 SizedBox(height: 25.56.h / 2),
                                 Text(
-                                  wallet.address.formattedAddress(length: 4),
+                                  Address.fromEthAddress(wallet.address!)
+                                      .formattedAddress(length: 4),
                                   style: TextStyle(
                                     fontFamily: 'Inter',
                                     fontSize: font19,
@@ -202,7 +208,7 @@ class _HomePageState extends State<HomePage> {
                   height: 24,
                 ),
                 TokenBalance(
-                  tokenData: token,
+                  tokenData: tokenData,
                 ),
                 SizedBox(
                   height: 24.h,

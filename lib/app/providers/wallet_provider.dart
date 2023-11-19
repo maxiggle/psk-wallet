@@ -2,32 +2,37 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:variance_dart/utils.dart';
 import 'package:variance_dart/variance.dart';
 import 'package:web3dart/web3dart.dart' as w3d;
 
 ///
 class WalletProvider extends ChangeNotifier {
-  late PassKey _passKey;
-  late Wallet _wallet;
+  late PassKeySigner _passKey;
+  late SmartWallet _wallet;
   late PassKeyPair _keyPair;
+  late RPCProvider _provider;
+  late BundlerProvider _bundler;
   late Uint256 _salt;
 
-  PassKey get passKey => _passKey;
-  Wallet get wallet => _wallet;
+  PassKeySigner get passKey => _passKey;
+  SmartWallet get wallet => _wallet;
   PassKeyPair get keyPair => _keyPair;
   Uint256 get salt => _salt;
 
   WalletProvider() {
-    _passKey = PassKey("webauthn.io", "webauthn", "https://webauthn.io");
-    _wallet = Wallet(
-        chain: chain.validate(), signer: SignerType.passkey, passkey: _passKey);
+    _passKey = PassKeySigner("webauthn.io", "webauthn", "https://webauthn.io");
+    _provider = RPCProvider(chain.bundlerUrl!);
+    _bundler = BundlerProvider(chain, _provider);
+    _wallet = SmartWallet(bundler: _bundler, chain: chain, signer: _passKey);
   }
   final Future<SharedPreferences> _pref = SharedPreferences.getInstance();
 
-  final IChain chain = IChain(
+  final Chain chain = Chain(
       chainId: 1337,
       explorer: "http//localhost:8545",
       entrypoint: w3d.EthereumAddress.fromHex(
@@ -35,24 +40,20 @@ class WalletProvider extends ChangeNotifier {
       accountFactory: w3d.EthereumAddress.fromHex(
           '0x690832791538Ff4DD15407817B0DAc54456631bc'))
     ..bundlerUrl = "https://8bac-41-190-2-196.ngrok-free.app/rpc"
-    ..rpcUrl = "https://d248-41-190-2-196.ngrok-free.app";
+    ..ethRpcUrl = "https://d248-41-190-2-196.ngrok-free.app";
 
   Future register(String name, String number,
       {bool? requiresUserVerification}) async {
-    _keyPair = await _passKey.register(name, requiresUserVerification ?? false);
+    _keyPair = await _passKey.register(name, requiresUserVerification!);
     _salt = getSaltFromPhoneNumber(number);
+
     try {
-      final addr = await _wallet.getPassKeyAccountAddress(
-          _keyPair.credentialHexBytes,
-          _keyPair.publicKey[0],
-          _keyPair.publicKey[1],
-          salt);
+      await _wallet.getSimplePassKeyAccountAddress(_keyPair, _salt);
 
-      log("${_keyPair.toJson()}");
-      await _wallet.createPasskeyAccount(_keyPair.credentialHexBytes,
-          _keyPair.publicKey[0], _keyPair.publicKey[1], salt);
+      await _wallet.createSimplePasskeyAccount(_keyPair, _salt);
 
-      log("last one");
+      await saveToFireStore(_keyPair.toJson(), _salt.toHex(), number);
+      await saveKeyPairToDevice('pkp', _keyPair.toJson());
     } catch (e) {
       log("something happened: $e");
     }
@@ -65,15 +66,16 @@ class WalletProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> setString(String key, String passKeyPair) async {
+  Future<void> saveKeyPairToDevice(String key, String passKeyPair) async {
     final SharedPreferences preferences = await _pref;
     preferences.setString(key, passKeyPair);
   }
 
   Future saveToFireStore(String pkp, salt, phoneNumber) async {
-    await FirebaseFirestore.instance
-        .collection("rofiles")
-        .add({"pkp": pkp, "salt": salt, "number": phoneNumber});
+    FirebaseMessaging fcm = FirebaseMessaging.instance;
+    String token = await fcm.getToken() ?? '';
+    await FirebaseFirestore.instance.collection("Profiles").add(
+        {"pkp": pkp, "salt": salt, "number": phoneNumber, "fcm_token": token});
   }
 
   Future<void> getString(String key) async {
@@ -90,6 +92,6 @@ class WalletProvider extends ChangeNotifier {
   }
 
   Future<w3d.EtherAmount> getWalletBalance(w3d.EthereumAddress address) async {
-    return wallet.module<Contract>('contract').getBalance(address);
+    return _wallet.plugin<Contract>('Contract').getBalance(address);
   }
 }

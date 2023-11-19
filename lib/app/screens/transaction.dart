@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
-import 'package:variance_dart/variance.dart';
+import 'package:variance_dart/utils.dart';
 import 'package:variancewallet/app/theme/colors.dart';
 import 'package:variancewallet/const.dart';
 
@@ -22,7 +22,7 @@ class Transactions extends StatefulWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final GlobalKey<LiquidPullToRefreshState>? refreshIndicatorKey;
   final Function(int index)? includeModal;
-  final List<Transfer>? transferData;
+  final List<TokenTransfer>? transferData;
 
   @override
   State<Transactions> createState() => _TransactionsState();
@@ -83,7 +83,7 @@ class _TransactionsState extends State<Transactions> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "${transfers?.erc1155Metadata?.tokenId}",
+                      "${transfers?.fromAddress}",
                       style: TextStyle(
                           fontSize: font14,
                           fontFamily: 'Inter',
@@ -93,7 +93,7 @@ class _TransactionsState extends State<Transactions> {
                     Row(
                       children: [
                         Text(
-                          '${transfers?.asset}',
+                          '${transfers?.toAddress}',
                           style: TextStyle(
                               fontSize: font14,
                               fontFamily: 'Inter',
@@ -132,7 +132,7 @@ class _TransactionsState extends State<Transactions> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        '${transfers?.to}',
+                        '${transfers?.txFee}',
                         style: TextStyle(
                             fontFamily: 'Inter',
                             fontSize: font14,

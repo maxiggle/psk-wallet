@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
-import 'package:variance_dart/variance.dart';
+import 'package:variance_dart/utils.dart';
 import 'package:variancewallet/app/theme/colors.dart';
 import 'package:variancewallet/const.dart';
 
@@ -119,6 +119,8 @@ class _TokenBalanceState extends State<TokenBalance>
                   shrinkWrap: true,
                   padding: const EdgeInsets.only(top: 20).r,
                   itemBuilder: (context, index) {
+                    final logo = widget.tokenData?[index].logos;
+                    final url = widget.tokenData?[index].urls;
                     return Column(
                       children: [
                         Padding(
@@ -139,9 +141,7 @@ class _TokenBalanceState extends State<TokenBalance>
                               padding: EdgeInsets.symmetric(horizontal: 9.4.w),
                               child: Row(
                                 children: [
-                                  SvgPicture.network(
-                                      widget.tokenData?[index].metadata?.logo ??
-                                          ""),
+                                  SvgPicture.network(logo![index].uri),
                                   SizedBox(
                                     width: 13.51.w,
                                   ),
@@ -150,8 +150,7 @@ class _TokenBalanceState extends State<TokenBalance>
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        widget.tokenData?[index].metadata
-                                                ?.name ??
+                                        widget.tokenData?[index].symbol ??
                                             'ETH',
                                         style: TextStyle(
                                             fontSize: font14,
@@ -165,7 +164,7 @@ class _TokenBalanceState extends State<TokenBalance>
                                   Column(
                                     children: [
                                       Text(
-                                        "${widget.tokenData?[index].balance.getInEther}",
+                                        "${widget.tokenData?[index]}",
                                         style: TextStyle(
                                             fontFamily: 'Inter',
                                             fontSize: font14,
@@ -174,7 +173,7 @@ class _TokenBalanceState extends State<TokenBalance>
                                       ),
                                       SizedBox(height: 3.91.h),
                                       Text(
-                                        "${widget.tokenData?[index].balance.getInEther} ${widget.tokenData?[index].metadata?.symbol}",
+                                        "${widget.tokenData?[index].balance} ${widget.tokenData?[index].symbol}",
                                         style: TextStyle(
                                           color: black.withOpacity(0.30),
                                           fontFamily: 'Inter',

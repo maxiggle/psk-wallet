@@ -6,7 +6,7 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.3.0-96.0.dev"
+  sdk: '>=3.1.5 <4.0.0'
 
 dependencies:
   flutter:
@@ -39,9 +39,12 @@ dependencies:
   rename: ^3.0.1
   web3dart: ^2.7.2
   variance_dart:
-    git: 
+    git:
       url: "https://github.com/vaariance/vaariance-dart.git"
+      ref: feat/injection-inversion
   cloud_firestore: ^4.12.2
+  dio: ^5.3.3
+  firebase_messaging: ^14.7.4
 
 dev_dependencies:
   flutter_test:
@@ -51,6 +54,7 @@ dev_dependencies:
 
 dependency_overrides:
   http: ^1.1.0
+  stream_channel: ^2.1.2
 
 flutter:
   uses-material-design: true

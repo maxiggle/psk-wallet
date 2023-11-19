@@ -96,13 +96,15 @@ class _CreateAccountState extends State<CreateAccount> {
                           try {
                             await context.read<WalletProvider>().register(
                                 controller.text.trim(),
+                                requiresUserVerification: true,
                                 '${Globals.firebaseUser?.phoneNumber}');
+
+                            // ignore: use_build_context_synchronously
+                            GoRouter.of(context).go('/home');
                           } catch (e) {
                             // ignore: use_build_context_synchronously
-                            // showSnackbar(e.toString());
+                            showSnackbar(e.toString());
                           }
-                          // ignore: use_build_context_synchronously
-                          context.go('/home');
                         },
                         style: TextButton.styleFrom(
                           shape: RoundedRectangleBorder(

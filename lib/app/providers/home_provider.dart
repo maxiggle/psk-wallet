@@ -1,37 +1,38 @@
-
 import 'package:flutter/foundation.dart';
+import 'package:variance_dart/utils.dart';
 import 'package:variance_dart/variance.dart';
 import 'package:variancewallet/app/providers/wallet_provider.dart';
-import 'package:web3dart/credentials.dart';
 import 'package:web3dart/web3dart.dart' as w3d;
 
 class HomeProvider with ChangeNotifier, DiagnosticableTreeMixin {
   late WalletProvider _walletProvider;
-  late AlchemyTokenApi _tokenApi;
-  late AlchemyTransferApi _transferApi;
-
-  final pr = BaseProvider(
-      "https://eth-mainnet.g.alchemy.com/v2/cLTpHWqs6iaOgFrnuxMVl9Z1Ung00otf");
+  late ChainBaseApi _baseApi;
+  DioClient dioClient = DioClient(
+      baseOptions: BaseOptions(
+          headers: {'x-api-key': "2XGB8lcFSea5vlmFijhRe1KAyUY"},
+          contentType: 'application/json',
+          baseUrl: "https://api.chainbase.online/v1"));
 
   HomeProvider() {
     _walletProvider = WalletProvider();
-    _tokenApi = AlchemyTokenApi(pr);
-    _transferApi = AlchemyTransferApi(pr);
+    _baseApi =
+        ChainBaseApi(restClient: dioClient, chain: _walletProvider.chain);
   }
-  List<Token> _token = List.unmodifiable([]);
-  List<Transfer> _transferData = List.unmodifiable([]);
+
   bool _isLoading = true;
 
+  List<TokenTransfer> _transferData = List.unmodifiable([]);
+  List<Token> _tokenBalances = List.unmodifiable([]);
+
   //getters
-  List<Token> get token => _token;
-  List<Transfer> get transferData => _transferData;
-  EthereumAddress get address => _testAddress;
+  List<TokenTransfer> get tokenTransfer => _transferData;
+  List<Token> get tokenBalance => _tokenBalances;
+  w3d.EthereumAddress get address => _testAddress;
   bool get isLoading => _isLoading;
 
   final _testAddress = w3d.EthereumAddress.fromHex(
     "0x104EDD9708fFeeCd0b6bAaA37387E155Bce7d060",
   );
-  // final _testChain = "eth-mainnet";
 
   void _updateIsLoading(bool value) {
     _isLoading = value;
@@ -42,21 +43,22 @@ class HomeProvider with ChangeNotifier, DiagnosticableTreeMixin {
     String? chain,
   }) async {
     final usableAddress = address ?? _testAddress;
-    final transfers =
-        await _transferApi.getAssetTransfers(usableAddress, withMetadata: true);
-    await _tokenApi.getBalances(usableAddress);
 
-    _transferData = transfers;
-    _token = token;
+    final transferRespnse =
+        await _baseApi.getTokenTransfersForAddress(usableAddress);
+    final tokenBalanceResponse =
+        await _baseApi.getTokenBalancesForAddress(usableAddress);
+
+    _transferData = transferRespnse.data!;
+    _tokenBalances = tokenBalanceResponse.data!;
+
     _updateIsLoading(false);
 
     notifyListeners();
   }
 
- 
-  Future<EthereumAddress> getPasskeyAccountAddress(
-      Uint8List credentialHex, Uint256 x, Uint256 y, Uint256 salt) async {
-    return _walletProvider.wallet
-        .getPassKeyAccountAddress(credentialHex, x, y, salt);
+  Future<w3d.EthereumAddress> getPasskeyAccountAddress(
+      PassKeyPair pkp, Uint256 salt) async {
+    return _walletProvider.wallet.getSimplePassKeyAccountAddress(pkp, salt);
   }
 }
