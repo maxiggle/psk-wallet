@@ -4,10 +4,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:variance_dart/utils.dart';
+import 'package:variance_dart/variance.dart';
 import 'package:variancewallet/app/theme/colors.dart';
 import 'package:variancewallet/const.dart';
+import 'package:web3dart/web3dart.dart' as w3d;
 
 class Transactions extends StatefulWidget {
   const Transactions(
@@ -16,13 +19,15 @@ class Transactions extends StatefulWidget {
       this.scaffoldKey,
       this.transactionType,
       this.includeModal,
-      this.transferData});
+      this.transferData,
+      this.metaData});
 
   final TransactionType? transactionType;
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final GlobalKey<LiquidPullToRefreshState>? refreshIndicatorKey;
   final Function(int index)? includeModal;
   final List<TokenTransfer>? transferData;
+  final TokenMetadata? metaData;
 
   @override
   State<Transactions> createState() => _TransactionsState();
@@ -63,7 +68,6 @@ class _TransactionsState extends State<Transactions> {
       shrinkWrap: true,
       padding: const EdgeInsets.only(top: 20).r,
       itemBuilder: (context, index) {
-        var transfers = widget.transferData?[index];
         return Padding(
           padding: const EdgeInsets.only(bottom: 9.74).r,
           child: TextButton(
@@ -77,13 +81,21 @@ class _TransactionsState extends State<Transactions> {
             onPressed: () => widget.includeModal?.call(index),
             child: Row(
               children: [
-                SvgPicture.asset("assets/images/ethereum.svg"),
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(radius),
+                    child: Image.network(
+                      widget.metaData?.logos?.first.uri ?? '',
+                      height: 32,
+                    )),
                 SizedBox(width: 9.74.w),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "${transfers?.fromAddress}",
+                      AddressFormatter.fromEthAddress(
+                              w3d.EthereumAddress.fromHex(
+                                  widget.transferData![index].fromAddress))
+                          .formattedAddress(length: 4),
                       style: TextStyle(
                           fontSize: font14,
                           fontFamily: 'Inter',
@@ -93,7 +105,9 @@ class _TransactionsState extends State<Transactions> {
                     Row(
                       children: [
                         Text(
-                          '${transfers?.toAddress}',
+                          widget.transferData?[index].direction.name
+                                  .toLowerCase() ??
+                              "CALL",
                           style: TextStyle(
                               fontSize: font14,
                               fontFamily: 'Inter',
@@ -115,7 +129,8 @@ class _TransactionsState extends State<Transactions> {
                           width: 5.w,
                         ),
                         Text(
-                          '${transfers?.blockTimestamp?.day}',
+                          DateFormat('MMM d y').format(
+                              widget.transferData![index].blockTimestamp),
                           style: TextStyle(
                               fontSize: font14,
                               fontFamily: 'Inter',
@@ -132,38 +147,26 @@ class _TransactionsState extends State<Transactions> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        '${transfers?.txFee}',
+                        '\$${(widget.transferData![index].value.toUnit(widget.metaData!.decimals as int) * widget.metaData!.currentUsdPrice!).toStringAsFixed(3)}',
                         style: TextStyle(
                             fontFamily: 'Inter',
                             fontSize: font14,
                             fontWeight: FontWeight.w600,
                             color: black),
                       ),
-                      Text(
-                        '',
-                        style: TextStyle(color: blue2),
+                      const Text(
+                        'Success',
+                        style: TextStyle(color: darkGreen),
                       ),
                     ],
                   ),
                 ),
-                Container(
-                    height: 36.512,
-                    width: 36.512,
-                    decoration: BoxDecoration(
-                        // color: black,
-                        borderRadius: BorderRadius.circular(100).w),
-                    child: Icon(
-                      Icons.arrow_forward_ios,
-                      size: 20.sp,
-                      color: black,
-                    )),
               ],
             ),
           ),
         );
       },
-      itemCount: widget.transferData?.length,
+      itemCount: min(widget.transferData?.length ?? 0, 5),
     );
   }
 }
-

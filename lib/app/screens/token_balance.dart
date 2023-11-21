@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -11,10 +12,10 @@ import 'package:variancewallet/app/theme/colors.dart';
 import 'package:variancewallet/const.dart';
 
 class TokenBalance extends StatefulWidget {
-  final List<Token>? tokenData;
+  final List<Token>? tokenBalance;
   const TokenBalance({
     super.key,
-    required this.tokenData,
+    required this.tokenBalance,
   });
 
   @override
@@ -50,7 +51,7 @@ class _TokenBalanceState extends State<TokenBalance>
       completer.complete();
     });
     setState(() {
-      refreshNum = Random().nextInt(100);
+      // refreshNum = Random().nextInt(100);
     });
     return completer.future.then<void>((_) {
       ScaffoldMessenger.of(scaffoldKey!.currentState!.context).showSnackBar(
@@ -105,7 +106,8 @@ class _TokenBalanceState extends State<TokenBalance>
                               borderRadius: BorderRadius.circular(100).w),
                           child: IconButton(
                             onPressed: () {
-                              context.push('/crypto_details');
+                              context.push('/crypto_details',
+                                  extra: widget.tokenBalance);
                             },
                             icon: Icon(
                               Icons.arrow_forward_ios,
@@ -119,29 +121,34 @@ class _TokenBalanceState extends State<TokenBalance>
                   shrinkWrap: true,
                   padding: const EdgeInsets.only(top: 20).r,
                   itemBuilder: (context, index) {
-                    final logo = widget.tokenData?[index].logos;
-                    final url = widget.tokenData?[index].urls;
-                    return Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 9.74).r,
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                              elevation: 0,
-                              backgroundColor: ash,
-                              padding: const EdgeInsets.fromLTRB(
-                                      23.31, 24.34, 13.51, 24.34)
-                                  .r,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(radius).r),
-                            ),
-                            onPressed: () {},
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 9.4.w),
+                    if (widget.tokenBalance != null &&
+                        index < widget.tokenBalance!.length) {
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 9.74).r,
+                            child: TextButton(
+                              style: TextButton.styleFrom(
+                                elevation: 0,
+                                backgroundColor: ash,
+                                padding: const EdgeInsets.fromLTRB(
+                                        23.31, 24.34, 13.51, 24.34)
+                                    .r,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(radius).r),
+                              ),
+                              onPressed: () {},
                               child: Row(
                                 children: [
-                                  SvgPicture.network(logo![index].uri),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(radius),
+                                    child: Image.network(
+                                      widget.tokenBalance![index].logos![index]
+                                          .uri,
+                                      height: 32,
+                                    ),
+                                  ),
                                   SizedBox(
                                     width: 13.51.w,
                                   ),
@@ -150,8 +157,7 @@ class _TokenBalanceState extends State<TokenBalance>
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        widget.tokenData?[index].symbol ??
-                                            'ETH',
+                                        widget.tokenBalance![index].name,
                                         style: TextStyle(
                                             fontSize: font14,
                                             fontFamily: 'Inter',
@@ -161,37 +167,45 @@ class _TokenBalanceState extends State<TokenBalance>
                                     ],
                                   ),
                                   const Spacer(),
-                                  Column(
-                                    children: [
-                                      Text(
-                                        "${widget.tokenData?[index]}",
-                                        style: TextStyle(
+                                  Container(
+                                    margin: const EdgeInsets.only(right: 15),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          "\$"
+                                          "${widget.tokenBalance![index].currentUsdPrice}",
+                                          style: TextStyle(
+                                              fontFamily: 'Inter',
+                                              fontSize: font14,
+                                              fontWeight: FontWeight.w600,
+                                              color: black),
+                                        ),
+                                        SizedBox(height: 3.91.h),
+                                        Text(
+                                          '${widget.tokenBalance![index].balance.toEther().toString()} ${widget.tokenBalance![index].symbol}',
+                                          style: TextStyle(
+                                            color: black.withOpacity(0.30),
                                             fontFamily: 'Inter',
                                             fontSize: font14,
-                                            fontWeight: FontWeight.w600,
-                                            color: black),
-                                      ),
-                                      SizedBox(height: 3.91.h),
-                                      Text(
-                                        "${widget.tokenData?[index].balance} ${widget.tokenData?[index].symbol}",
-                                        style: TextStyle(
-                                          color: black.withOpacity(0.30),
-                                          fontFamily: 'Inter',
-                                          fontSize: font14,
-                                          fontWeight: FontWeight.w400,
+                                            fontWeight: FontWeight.w400,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    );
+                        ],
+                      );
+                    } else {
+                      return Container();
+                    }
                   },
-                  itemCount: widget.tokenData?.length,
+                  itemCount: min(widget.tokenBalance?.length ?? 0, 5),
                 ),
               ],
             ),

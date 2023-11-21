@@ -1074,7 +1074,7 @@ packages:
     description:
       path: "."
       ref: "feat/injection-inversion"
-      resolved-ref: "10b0a27071eec3db0f64491f622b8b234f8b0053"
+      resolved-ref: b3ac5108c4e2517de3a75e432b8241cd06a87555
       url: "https://github.com/vaariance/vaariance-dart.git"
     source: git
     version: "1.1.0+1"

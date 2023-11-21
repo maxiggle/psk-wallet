@@ -38,13 +38,14 @@ dependencies:
   flutter_dotenv: ^5.1.0
   rename: ^3.0.1
   web3dart: ^2.7.2
+  cloud_firestore: ^4.12.2
+  dio: ^5.3.3
+  firebase_messaging: ^14.7.4
   variance_dart:
     git:
       url: "https://github.com/vaariance/vaariance-dart.git"
       ref: feat/injection-inversion
-  cloud_firestore: ^4.12.2
-  dio: ^5.3.3
-  firebase_messaging: ^14.7.4
+
 
 dev_dependencies:
   flutter_test:

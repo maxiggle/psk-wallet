@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:variance_dart/utils.dart';
 import 'package:variance_dart/variance.dart';
 import 'package:web3dart/web3dart.dart';
 
@@ -56,7 +55,12 @@ class _HomePageState extends State<HomePage> {
     final transferData = context.select(
       (HomeProvider provider) => provider.tokenTransfer,
     );
-    final tokenData = context.select(
+    final keyPair = context.select(
+      (WalletProvider provider) => provider.keyPair,
+    );
+    final metaData =
+        context.select((HomeProvider provider) => provider.metaData);
+    final tokenBalance = context.select(
       (HomeProvider provider) => provider.tokenBalance,
     );
     final wallet = context.select(
@@ -208,7 +212,7 @@ class _HomePageState extends State<HomePage> {
                   height: 24,
                 ),
                 TokenBalance(
-                  tokenData: tokenData,
+                  tokenBalance: tokenBalance,
                 ),
                 SizedBox(
                   height: 24.h,
@@ -271,6 +275,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Transactions(
                           transferData: transferData,
+                          metaData: metaData,
                         ),
                       ],
                     ),

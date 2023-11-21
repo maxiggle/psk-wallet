@@ -23,6 +23,7 @@ class WalletProvider extends ChangeNotifier {
   SmartWallet get wallet => _wallet;
   PassKeyPair get keyPair => _keyPair;
   Uint256 get salt => _salt;
+  
 
   WalletProvider() {
     _passKey = PassKeySigner("webauthn.io", "webauthn", "https://webauthn.io");
@@ -42,15 +43,22 @@ class WalletProvider extends ChangeNotifier {
     ..bundlerUrl = "https://8bac-41-190-2-196.ngrok-free.app/rpc"
     ..ethRpcUrl = "https://d248-41-190-2-196.ngrok-free.app";
 
+  final Chain chainBase = Chain(
+      chainId: 1,
+      explorer: "https://etherscan.io/",
+      entrypoint: Constants.entrypoint,
+      ethRpcUrl: "https://rpc.ankr.com/eth",
+      accountFactory: Constants.accountFactory);
+
   Future register(String name, String number,
       {bool? requiresUserVerification}) async {
     _keyPair = await _passKey.register(name, requiresUserVerification!);
     _salt = getSaltFromPhoneNumber(number);
 
     try {
-      await _wallet.getSimplePassKeyAccountAddress(_keyPair, _salt);
+    final get =  await _wallet.getSimplePassKeyAccountAddress(_keyPair, _salt);
 
-      await _wallet.createSimplePasskeyAccount(_keyPair, _salt);
+     final hop = await _wallet.createSimplePasskeyAccount(_keyPair, _salt);
 
       await saveToFireStore(_keyPair.toJson(), _salt.toHex(), number);
       await saveKeyPairToDevice('pkp', _keyPair.toJson());
