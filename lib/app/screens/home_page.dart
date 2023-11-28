@@ -1,10 +1,15 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:variance_dart/variance.dart';
+import 'package:variancewallet/app/gen/passkey_account.dart';
+import 'package:variancewallet/app/providers/hive_service.dart';
 import 'package:web3dart/web3dart.dart';
 
 import 'package:variancewallet/app/providers/home_provider.dart';
@@ -39,15 +44,23 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String? selectedValue = items.first;
-
+  late final AltPasskeyAccount? testAccount;
   late final ScrollController? scrollController;
+
   @override
   void initState() {
     super.initState();
     scrollController = ScrollController();
 
+    _updateTestAccount();
+
     final homeProvider = context.read<HomeProvider>();
     homeProvider.getData();
+  }
+
+  Future<void> _updateTestAccount() async {
+    testAccount = await HiveService.getAltPasskeyAccount();
+    log('hello${testAccount?.address}');
   }
 
   @override
@@ -116,7 +129,8 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 SizedBox(height: 25.56.h / 2),
                                 Text(
-                                  Address.fromEthAddress(wallet.address!)
+                                  Address.fromEthAddress(
+                                          EthereumAddress.fromHex(''))
                                       .formattedAddress(length: 4),
                                   style: TextStyle(
                                     fontFamily: 'Inter',

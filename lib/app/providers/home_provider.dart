@@ -80,4 +80,5 @@ class HomeProvider with ChangeNotifier, DiagnosticableTreeMixin {
       PassKeyPair pkp, Uint256 salt) async {
     return _walletProvider.wallet.getSimplePassKeyAccountAddress(pkp, salt);
   }
+
 }

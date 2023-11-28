@@ -1,13 +1,19 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:variance_dart/utils.dart';
+import 'package:variancewallet/app/providers/home_provider.dart';
+import 'package:variancewallet/app/providers/wallet_provider.dart';
 import 'package:variancewallet/app/screens/address_bar.dart';
 import 'package:variancewallet/app/theme/colors.dart';
 import 'package:variancewallet/const.dart';
-import 'package:variancewallet/utils/tokenData.dart';
+import 'package:web3dart/web3dart.dart';
 
 class SendTokenSheet extends StatefulWidget {
   final String? contactName;
@@ -22,11 +28,12 @@ class SendTokenSheet extends StatefulWidget {
 
 class _SendTokenSheetState extends State<SendTokenSheet> {
   String? selectedValue;
-  // String hintText = "0x0000000000000000000000000000000000000000";
-
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
   late TextEditingController _contactController;
   final TextEditingController _amountController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  double? selectedTokenBalance;
 
   @override
   void initState() {
@@ -51,144 +58,173 @@ class _SendTokenSheetState extends State<SendTokenSheet> {
 
   @override
   Widget build(BuildContext _) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: const Text(
-            'Send Token',
-            style: TextStyle(
-              color: black,
-              fontFamily: 'Inter',
-              fontSize: 19,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          elevation: 0,
-          leading: IconButton(
-            onPressed: () {
-              GoRouter.of(_).pop();
-            },
-            icon: const Icon(
-              Icons.arrow_back,
-              color: black,
-            ),
-          ),
-        ),
-        body: Center(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0).r,
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.89.h,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SizedBox(
-                    height: 50.h,
+    final tokenBalance = context.select(
+      (HomeProvider provider) => provider.tokenBalance,
+    );
+    return Consumer(
+      builder: (context, value, child) {
+        return SafeArea(
+          child: ScaffoldMessenger(
+            key: scaffoldMessengerKey,
+            child: Scaffold(
+              backgroundColor: Colors.white,
+              appBar: AppBar(
+                backgroundColor: Colors.white,
+                title: const Text(
+                  'Send Token',
+                  style: TextStyle(
+                    color: black,
+                    fontFamily: 'Inter',
+                    fontSize: 19,
+                    fontWeight: FontWeight.w600,
                   ),
-                  AddressBar(
-                    textEditingController: _contactController,
-                    hintText: 'Enter Address',
-                    hintTextStyle:
-                        TextStyle(fontFamily: 'Inter', fontSize: font19),
+                ),
+                elevation: 0,
+                leading: IconButton(
+                  onPressed: () {
+                    GoRouter.of(_).pop();
+                  },
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: black,
                   ),
-                  SizedBox(
-                    height: 50.h,
-                  ),
-                  SendTokenButton(
-                    buttonText: selectedValue ?? 'Select Token',
-                    color: ash,
-                    buttonTextStyle: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: font19,
-                        color: Colors.grey.shade600),
-                    onPressed: () {
-                      TokenModal(_);
-                    },
-                  ),
-                  SizedBox(
-                    height: 50.h,
-                  ),
-                  TextFormField(
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 51.sp,
-                        fontWeight: FontWeight.w600,
-                        color: black,
-                      ),
-                      key: _formKey,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a value';
-                        } else if (int.parse(value) > 100) {
-                          return 'Value should be less than or equal to 100';
-                        }
-                        return null;
-                      },
-                      onChanged: (value) {
-                        if (int.parse(value) > 100) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              backgroundColor: Colors.white,
-                              content: Text(
-                                'Value should be less than or equal to 100',
-                                style: TextStyle(color: Colors.red),
+                ),
+              ),
+              body: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0).r,
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.89.h,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(
+                          height: 50.h,
+                        ),
+                        AddressBar(
+                          textEditingController: _contactController,
+                          hintText: 'Enter Address',
+                          hintTextStyle:
+                              TextStyle(fontFamily: 'Inter', fontSize: font19),
+                        ),
+                        SizedBox(
+                          height: 50.h,
+                        ),
+                        SendTokenButton(
+                          buttonText: selectedValue ?? 'Select Token',
+                          color: ash,
+                          buttonTextStyle: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: font19,
+                              color: Colors.grey.shade600),
+                          onPressed: () {
+                            selectTokenToSend(_, tokenBalance);
+                          },
+                        ),
+                        SizedBox(
+                          height: 50.h,
+                        ),
+                        TextFormField(
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 51.sp,
+                              fontWeight: FontWeight.w600,
+                              color: black,
+                            ),
+                            key: _formKey,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a value';
+                              } else if (int.parse(value) > 100) {
+                                return 'Value should be less than or equal to 100';
+                              }
+                              return null;
+                            },
+                            onChanged: (value) {
+                              if (value.isEmpty ||
+                                  selectedTokenBalance == null) {
+                                return;
+                              }
+
+                              if (double.parse(value) >
+                                  double.parse(
+                                      selectedTokenBalance.toString())) {
+                                scaffoldMessengerKey.currentState?.showSnackBar(
+                                  const SnackBar(
+                                    backgroundColor: Colors.white,
+                                    content: Text(
+                                      'Insufficient balance',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                            textAlign: TextAlign.center,
+                            controller: _amountController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              focusColor: white,
+                              hintText: '0.0',
+                              hintStyle: const TextStyle(
+                                  fontFamily: 'Inter', fontSize: 51),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Colors.white,
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(15.0),
+                              ),
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: white),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
                               ),
                             ),
-                          );
-                        }
-                      },
-                      textAlign: TextAlign.center,
-                      controller: _amountController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        focusColor: white,
-                        hintText: '0.0',
-                        hintStyle:
-                            const TextStyle(fontFamily: 'Inter', fontSize: 51),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Colors.white,
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: white),
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                        ),
-                      ),
-                      cursorColor: black,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                          RegExp(r'^\.?\d*(?<!\.)\.?\d*'),
+                            cursorColor: black,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                RegExp(r'^\.?\d*(?<!\.)\.?\d*'),
+                              )
+                            ]),
+                        Expanded(child: Container()),
+                        SendTokenButton(
+                          buttonText: 'Send',
+                          color: lightGreen,
+                          buttonTextStyle: TextStyle(
+                              color: black,
+                              fontFamily: 'Inter',
+                              fontSize: font19.sp),
+                          onPressed: () {
+                            context.read<WalletProvider>().sendNativeToken(
+                                EthereumAddress.fromHex(
+                                    _contactController.text),
+                                _amountController.text);
+                          },
                         )
-                      ]),
-                  Expanded(child: Container()),
-                  SendTokenButton(
-                    buttonText: 'Send',
-                    color: lightGreen,
-                    buttonTextStyle: TextStyle(
-                        color: black, fontFamily: 'Inter', fontSize: font19.sp),
-                    onPressed: () {},
-                  )
-                ],
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-  Future<dynamic> TokenModal(BuildContext _) {
+  Future<dynamic> selectTokenToSend(
+    BuildContext _,
+    List<Token> tokenBalance,
+  ) {
     return showModalBottomSheet(
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        context: _,
-        builder: (context) {
-          return Wrap(children: <Widget>[
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      context: _,
+      builder: (context) {
+        return Wrap(
+          children: <Widget>[
             Container(
               padding: const EdgeInsets.fromLTRB(23.31, 24.34, 13.51, 24.34).r,
               decoration: BoxDecoration(
@@ -201,6 +237,7 @@ class _SendTokenSheetState extends State<SendTokenSheet> {
               child: ListView.builder(
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
+                  final token = tokenBalance[index];
                   return Column(
                     children: [
                       Padding(
@@ -217,69 +254,73 @@ class _SendTokenSheetState extends State<SendTokenSheet> {
                           ),
                           onPressed: () {
                             setState(() {
-                              selectedValue = token[index].contractName;
+                              selectedValue = token.name;
+                              selectedTokenBalance =
+                                  token.balance.toUnit(token.decimals as int);
                             });
                             context.pop();
                           },
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 9.4.w),
-                            child: Row(
-                              children: [
-                                SvgPicture.asset(
-                                  '${token[index].logoUrl}',
-                                ),
-                                SizedBox(
-                                  width: 13.51.w,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "${token[index].contractName}",
-                                      style: TextStyle(
-                                          fontSize: font14,
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.w600,
-                                          color: black),
-                                    ),
-                                  ],
-                                ),
-                                const Spacer(),
-                                Column(
-                                  children: [
-                                    Text(
-                                      "${token[index].tokenBalanceInUSD}",
-                                      style: TextStyle(
-                                          fontFamily: 'Inter',
-                                          fontSize: font14,
-                                          fontWeight: FontWeight.w600,
-                                          color: black),
-                                    ),
-                                    SizedBox(height: 3.91.h),
-                                    Text(
-                                      "${token[index].balance}",
-                                      style: TextStyle(
-                                        color: black.withOpacity(0.30),
+                          child: Row(
+                            children: [
+                              ClipRRect(
+                                  borderRadius: BorderRadius.circular(radius),
+                                  child: Image.network(
+                                    "${token.logos?[index].uri}",
+                                    height: 32,
+                                  )),
+                              SizedBox(
+                                width: 13.51.w,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    token.name,
+                                    style: TextStyle(
+                                        fontSize: font14,
+                                        fontFamily: 'Inter',
+                                        fontWeight: FontWeight.w600,
+                                        color: black),
+                                  ),
+                                ],
+                              ),
+                              const Spacer(),
+                              Column(
+                                children: [
+                                  Text(
+                                    "${token.currentUsdPrice}",
+                                    style: TextStyle(
                                         fontFamily: 'Inter',
                                         fontSize: font14,
-                                        fontWeight: FontWeight.w400,
-                                      ),
+                                        fontWeight: FontWeight.w600,
+                                        color: black),
+                                  ),
+                                  SizedBox(height: 3.91.h),
+                                  Text(
+                                    "${token.balance.toUnit(token.decimals as int)} ${token.symbol}",
+                                    style: TextStyle(
+                                      color: black.withOpacity(0.30),
+                                      fontFamily: 'Inter',
+                                      fontSize: font14,
+                                      fontWeight: FontWeight.w400,
                                     ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ],
                   );
                 },
-                itemCount: token.length,
+                itemCount: tokenBalance.length,
               ),
             ),
-          ]);
-        });
+          ],
+        );
+      },
+    );
   }
 }
 

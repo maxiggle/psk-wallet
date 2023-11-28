@@ -6,6 +6,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:variancewallet/app/gen/passkey_account.dart';
 import 'package:variancewallet/app/providers/wallet_provider.dart';
 import 'package:variancewallet/app/screens/contacts.dart';
 import 'package:variancewallet/app/screens/home_page.dart';
@@ -27,6 +30,9 @@ import 'package:provider/provider.dart';
 void main() async {
   await dotenv.load(fileName: "assets/.env");
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(PasskeyAccountAdapter());
+  await Hive.openBox<PasskeyAccount>('accounts');
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -60,6 +66,11 @@ class _AuthStateWidgetState extends State<AuthStateWidget> {
   void initState() {
     super.initState();
     _authState = FirebaseAuth.instance.authStateChanges().first;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
